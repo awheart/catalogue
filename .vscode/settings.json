@@ -1,0 +1,14 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": [
+        "javascript"
+    ],
+    "workbench.tree.indent": 30,
+    "workbench.colorCustomizations": {
+        "tree.indentGuidesStroke": "#fa0101",
+        "editorIndentGuide.activeBackground": "#ff0000",
+        "editorIndentGuide.background": "#ff00ff"
+    }
+}
