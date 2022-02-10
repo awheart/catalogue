@@ -1,12 +1,12 @@
 <template>
   <div>
     <logo />
-    <h1>Wecome aboard players !</h1> <hr>
+    <h1>Games</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage'
+  name: 'GamePage'
 }
 </script>
