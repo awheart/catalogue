@@ -6,8 +6,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // import api routes
-const users = require('./routes/users')
-const articles = require('./routes/articles')
+const users = require('./routes/user.routes')
+const articles = require('./routes/article.routes')
 
 // use api routes
 app.use(users)

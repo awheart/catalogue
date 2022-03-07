@@ -51,6 +51,6 @@ export default {
   },
 
   serverMiddleware: [
-    '~/src/api/index.js'
+    '~/src/api/server.js'
   ]
 }
