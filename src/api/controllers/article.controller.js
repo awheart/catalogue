@@ -88,6 +88,10 @@ module.exports.update = [
 ]
 
 // delete article
-module.exports.delete = (req.res) => {
+module.exports.delete = (req, res) => {
     const id = req.params.id
+    return Article.deleteOne(id, (err, article) => {
+        if (err) return res.status(500).json({ message: 'Error'})
+        return res.json(article)
+    })
 }
