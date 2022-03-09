@@ -1,84 +1,82 @@
 const { config } = require('../config')
-const User = require('../models/user.model')
+const userModel = require('../models/user.model')
 const validator = require('express-validator')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+0
+
+const asyncAction = (action) => (req, res, next) => action(req, res, next).catch(next)
 
 // register
 module.exports.register = [
-    // validations needed
-    validator.body('user_name', 'Enter your name').isLength({ min: 1 }),
-    validator.body('email', 'Enter a valid email').isLength({ min: 1 }),
-    validator.body('email').custom(value => {
-        return User.findOne({email:value})
-            .then(user => {
-                if (user !== null) return Promise.reject('User with this email already exist')
-            })
+    // validations rules
+    validator.body('name', 'Name is required').isLength({ min: 1 }),
+    validator.body('email', 'Email is required').isLength({ min: 1 }),
+    validator.body('email').custom(async value => {
+        const emailCheck = await userModel.find({ email: value})
+        console.log(emailCheck)
+        if (emailCheck.length !== 0) return Promise.reject('Email already exist' )
     }),
-    validator.body('password', 'Enter your password').isLength({ min: 4 }),
+    validator.body('password', 'Password is required').isLength({ min: 1 }),
     
-    (req, res) => {
-        // throw errors
+    asyncAction(async (req, res) => {
+        // throw validation errors
         const errors = validator.validationResult(req)
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
-        // create new user
-        const user = new User({
-            username: req.body.user_name,
-            email: req.body.email,
-            password: req.body.password
+        const user = new userModel(req.body, err => {
+            if (err) return res.status(500).json({ message: 'Error saving user'})
         })
+
         // encrypt password
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(user.password, salt)
         user.password = hash
-
-        // save user
+        
         user.save((err, user) => {
-            if (err) return res.status(500).json({ message: 'Error during the saving', error: err })
-            return res.json({ message: 'Saved succesfully', _id: user._id })
+            if (err) return res.status(500).json({ message: 'Error while saving', error: err })
+            res.json(user)
         })
-    }
+    })
 ]
 
 // login
 module.exports.login = [
-    // validations needed
-    validator.body('email', 'Enter your email').isLength({ min: 1 }),
-    validator.body('password', 'Enter your password').isLength({ min: 4 }),
+    // validation rules
+    validator.body('email', 'Email is required').isLength({ min: 1 }),
+    validator.body('password', 'Password is required').isLength({ min: 1 }),
 
-    (req, res) => {
-        // throw errors
-        const errors = validator.validationResult(req)
-        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
+    asyncAction(async(req, res) => {
+    // throw validation errors
+    const errors = validator.validationResult(req);
+    if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() });
+    // check email & password exist & are correct
+    const { email, password } = req.body
+    const user = await userModel.findOne({ email: email })
 
-        // check email & password exist & are correct
-        User.findOne({ email: req.body.email }, (err, user) => {
-            if (err) return res.status(500).json({ message: 'Error login in', error: err })
-            if (user === null) return res.status(500).json({ message: 'User with this email does not exist' })
-            
-            // check password
-            return bcrypt.compare(req.body.password, user.password, (err, isMatched) => {
-                if (isMatched === true) {
-                    return res.json({
-                    user: {
-                        _id: user._id,
-                        email: user.email,
-                        username: user.user_name
-                    },
-                    token: jwt.sign({ _id: user._id, email: user.email, username: user.user_name }, config.authSecret)
-                    })
-                } else {
-                    return res.status(500).json({ message: 'Invalid Email or Password' })
-                }
+    if (!user) return res.status(404).json({ message: 'Invalid Email or Password'})
+    // check password
+    bcrypt.compare(password, user.password, (err, isMatched) => {
+        if (isMatched === true) {
+            return res.json({ 
+            user: {
+                message: 'login successful',
+                _id: user._id,
+                email: user.email,
+                name: user.name
+            },
+            token: jwt.sign({ _id: user._id, email: user.email, name: user.name }, config.authSecret)
             })
-        })
+        } else {
+            return res.status(500).json({ message: 'Invalid Email or Password', error: err })
+        }
+    })
 
-    }
+})
 ]
 
 // get User
-module.exports.user = (req, res) => {
+module.exports.getMe = asyncAction(async (req, res) => {
     const token = req.headers.authorization
     if(token){
         jwt.verify(token.replace(/^Bearer\s/, ''), config.authSecret, (err, decoded) => {
@@ -91,4 +89,46 @@ module.exports.user = (req, res) => {
     } else {
         return res.status(401).json({ message: 'Unauthorized' })
     }
-}
+    })
+
+// get one user
+module.exports.showOne = asyncAction(async (req, res) => {
+    const id = req.params.id
+    const user = await userModel.findById(id)
+    if (!user) return res.status(404).json({ message: 'User not found' })
+    res.json(user)
+})
+
+// get all users
+module.exports.getAll = asyncAction(async (req, res) => {
+    const users = await userModel.find()
+    if (users.length == 0) return res.status(500).json({ message: 'No user recorded' })
+    res.json(users)
+})
+
+// update User
+module.exports.update = [
+    // validation rules
+    validator.body('password', 'Password is required').isLength({ min: 1 }),
+
+    asyncAction(async (req, res) => {
+    // throw validation errors
+    const errors = validator.validationResult(req);
+        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
+
+        const data = req.body
+        const id = req.params.id
+        const user = await userModel.findByIdAndUpdate({ _id: id }, data, { new: true })
+        if (!user) return res.status(404).json({ message: 'User not found' })
+        res.json(user)
+    })
+]
+
+// delete User
+module.exports.delete = asyncAction(async (req, res) => {
+    const id = req.params.id
+    const article = await userModel.findById(id)
+    if(!article) return res.status(404).json({ message: 'User not found'})
+    await userModel.deleteOne({ _id: id })
+    res.json('User deleted').send()   
+})
