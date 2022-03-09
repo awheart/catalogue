@@ -24,7 +24,15 @@ module.exports.register = [
         const errors = validator.validationResult(req)
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
-        const user = new userModel(req.body, err => {
+        if (req.body.role !== 'admin') req.body.role = 'user'
+        console.log(req.body.role)
+
+        const user = new userModel({
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            role: req.body.role,
+        }, err => {
             if (err) return res.status(500).json({ message: 'Error saving user'})
         })
 
