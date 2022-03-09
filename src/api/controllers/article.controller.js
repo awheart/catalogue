@@ -1,97 +1,84 @@
-const Article = require('../models/article.model')
+const articleModel = require('../models/article.model')
 const validator = require('express-validator')
 
-// get all articles from
-module.exports.list = (req, res) => {
-    Article.find({}, (err, articles) => {
-        if (err) return res.status(500).json({ message: 'Error getting records' })
-        return res.json(articles)
-    })
-}
+const asyncAction = (action) => (req, res, next) => action(req, res, next).catch(next)
 
-// get one article from
-module.exports.showOne = (req, res) => {
+// get all articles
+module.exports.list = asyncAction(async (req, res) => {
+    const articles = await articleModel.find()
+    res.json(articles)
+})
+
+// get one article
+module.exports.showOne = asyncAction(async (req, res) => {
     const id = req.params.id
-    Article.findOne({ _id: id }, (err, article) => {
-        if (err) return res.status(500).json({ message: 'Error getting this article' })
-        if (!article) return res.status(500).json({ message: 'Article not found' })
-        return res.json(article)
-    })
-}
+    const article = await articleModel.findById(id)
+    res.json(article)
+})
 
 // create article
 module.exports.create = [
-    // validation needed
-    validator.body('title', 'Enter article name').isLength({ min: 3 }),
-    validator.body('title').custom(value => {
-        return Article.findOne({ title:value }).then(article => {
-            if (article !== null) return Promise.reject('Title is already existing')
-        })
-    }),
-    validator.body('author', 'Enter author name').isLength({ min: 1 }),
-    validator.body('body', 'Enter article description').isLength({ min: 4 }),
+    // validations rules
+    validator.body('title', 'Title is required').isLength({ min: 1 }),
+    validator.body('title').custom(async value => {
+        const titleCheck = await articleModel.find({ title: value })
+        console.log(titleCheck)
+        if (titleCheck.length !== 0) return Promise.reject('Title already exist' )
+  }),
+  validator.body('author', 'Author name is required').isLength({ min: 1 }),
+  validator.body('content', 'Content is required').isLength({ min: 1 }),
 
-    (req, res) => {
-        // validation errors
-        const errors = validator.validationResult(req)
-        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
+    asyncAction(async (req, res) => {
 
-        const article = new Article({
-            title: req.body.title,
-            author: req.body.author,
-            body: req.body.body
-        })
-
-        // save article
-        article.save((err, article) => {
+        // throw validation errors
+        const errors = validator.validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.mapped() });
+        }
+        const article = new articleModel(req.body, err => {
             if (err) return res.status(500).json({ message: 'Error saving article', error: err })
-            return res.json({ message: 'article saved', _id: article._id })
         })
-    },
+        article.save((err, article) => {
+            if (err) return res.status(500).json({ message: 'Error while saving', error: err })
+            res.json(article)
+        })
+
+    })
 ]
 
 // update article
 module.exports.update = [
-    // validations needed
-    validator.body('title', 'Enter article updated name').isLength({ min: 1 }),
-    validator.body('title').custom((value, { req }) => {
-        return Article.findOne({ title:value, _id:{ $ne: req.params.id } })
-        .then(article => {
-            if (article !== null) return Promise.reject('Title already used')
-        })
+    // validations rules
+    validator.body('title', 'Title is required').isLength({ min: 1 }),
+    validator.body('title').custom(async value => {
+        const titleCheck = await articleModel.find({ title: value })
+        if (titleCheck.length !== 0) return Promise.reject('Title already exist' )
     }),
-    validator.body('author', 'Enter author updated name').isLength({ min: 1 }),
-    validator.body('body', 'Enter article content').isLength({ min: 1 }),
+    validator.body('author', 'Author name is required').isLength({ min: 1 }),
+    validator.body('content', 'Content is required').isLength({ min: 1 }),
 
-    (req, res) => {
-        // validation error
-        const errors = validator.validationResult(req)
-        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
-        const id = req.params.id
-        Article.findOne({ _id: id }, (err, article) => {
-            if (err) return res.status(500).json({ message: 'Error getting this article', error: err })
-            if (!article) return res.status(404).json({ message: 'Article not found' })
-
-            // init article
-            article.title = req.body.title ? req.body.title : article.title
-            article.author = req.body.title ? req.body.title : article.author
-            article.body = req.body.body ? req.body.body : article.body
-
-            // save article
-            article.save((err, article) => {
-                if (err) return res.status(500).json({ message: 'Error saving this article' })
-                if (!article) return res.status(404).json({ message: 'Article not found' })
-                return res.json(article)
-            })
-        })
+    asyncAction(async (req, res) => {
+    // throw validation errors
+    const errors = validator.validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.mapped() });
     }
+
+    const data = req.body
+    const id = req.params.id
+    const article = await articleModel.findByIdAndUpdate({ _id: id }, data, { new: true })
+
+    // not found
+    if (!article) return res.status(404).json({ message: 'Article not found' })
+    res.json(article)
+})
 ]
 
 // delete article
-module.exports.delete = (req, res) => {
+module.exports.delete = asyncAction(async (req, res) => {
     const id = req.params.id
-    return Article.deleteOne(id, (err, article) => {
-        if (err) return res.status(500).json({ message: 'Error'})
-        return res.json(article)
-    })
-}
+    const article = await articleModel.findById(id)
+    if(!article) return res.status(404).json({ message: 'Article not found'})
+    await articleModel.deleteOne({ _id: id })
+    res.json('Article deleted').send()    
+})
