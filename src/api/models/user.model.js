@@ -6,6 +6,11 @@ const User = new Schema({
     email: { type: String, required: true, index: { unique: true } },
     password: { type: String, required: true },
     roles: { type: Schema.Types.ObjectId, ref: 'Role' }
-})
+},
+{ 
+    collection: 'users',
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
+}
+)  
 
 module.exports = mongoose.model('User', User)
