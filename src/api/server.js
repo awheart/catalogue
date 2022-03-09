@@ -1,19 +1,15 @@
 const express = require('express')
+const routes = require('./routes')
+const router = express.Router({ strict: true })
+const db = require('./db')
 
-const app = express()
+const api = express()
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+api.use(express.json())
+api.use(express.urlencoded({ extended: true }))
+api.use(router)
+api.use(routes)
 
-// import api routes
-const users = require('./routes/user.routes')
-const articles = require('./routes/article.routes')
+db.init()
 
-// use api routes
-app.use(users)
-app.use(articles)
-
-module.exports = {
-    path: '/api',
-    handler: app
-}
+module.exports = api
