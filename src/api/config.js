@@ -5,7 +5,7 @@ const config = {
 }
 
 // check if user is connecter 
-module.exports.isAuthentificated = (req, res, next) => {
+module.exports.isAuthenticated = async(req, res, next) => {
     var token = req.headers.authorization
     if (token) {
         // check if token is valid and verifies secret
@@ -21,7 +21,7 @@ module.exports.isAuthentificated = (req, res, next) => {
 
 module.exports = {
     database: {
-        uri: 'mongodb://localhost:207017/catalogue',
+        uri: 'mongodb://localhost:27017/catalogue',
         options: { useUnifiedTopology: true }
     },
     server: { port: process.env.PORT || 8000 },
