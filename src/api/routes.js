@@ -2,13 +2,6 @@ const router = require('express').Router({ strict: true })
 const users = require('./routes/user.routes')
 const articles = require('./routes/article.routes')
 
-router.use('/users', users)
-router.use('/articles', articles)
-router.get('/healthz', async (req, res) => {
-    return res.status(200).json({ status: 'OK' })
-})
-router.get('/*', async (req, res) => {
-    return res.status(404).json({ error: { message: 'dead' } })
-})
-
+router.use('/api/users', users)
+router.use('/api/articles', articles)
 module.exports = router

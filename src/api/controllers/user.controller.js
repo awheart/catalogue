@@ -14,7 +14,6 @@ module.exports.register = [
     validator.body('email', 'Email is required').isLength({ min: 1 }),
     validator.body('email').custom(async value => {
         const emailCheck = await userModel.find({ email: value})
-        console.log(emailCheck)
         if (emailCheck.length !== 0) return Promise.reject('Email already exist' )
     }),
     validator.body('password', 'Password is required').isLength({ min: 1 }),
@@ -24,8 +23,8 @@ module.exports.register = [
         const errors = validator.validationResult(req)
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
+        // check for admin authorization
         if (req.body.role !== 'admin') req.body.role = 'user'
-        console.log(req.body.role)
 
         const user = new userModel({
             name: req.body.name,
@@ -126,6 +125,12 @@ module.exports.update = [
 
         const data = req.body
         const id = req.params.id
+
+        // encrypt password
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(data.password, salt)
+        data.password = hash
+
         const user = await userModel.findByIdAndUpdate({ _id: id }, data, { new: true })
         if (!user) return res.status(404).json({ message: 'User not found' })
         res.json(user)
