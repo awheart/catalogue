@@ -1,6 +1,5 @@
 <template>
   <div>
-    <logo />
     <h1>Wecome aboard players !</h1> <hr>
   </div>
 </template>

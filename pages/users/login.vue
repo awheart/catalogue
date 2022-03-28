@@ -10,7 +10,7 @@
       <div class="col-md-6">
         <form action=""
           method="post"
-          @submit.prevent="submitForm()">
+          @submit.prevent="login()">
 
           <div class="form-group">
             <label for="">Email</label>
@@ -46,32 +46,40 @@
 
 <script>
 export default {
-    name: 'LoginPage',
+  name: 'LoginPage',
   middleware: 'auth',
   auth: 'guest',
-  data(){
+  data() {
     return{
       errors:null,
       login_error:null,
       email:null,
       password:null,
+      role:null,
       status:false,
     }
   },
   methods:{
-    submitForm(){
-      this.$auth.loginWith('local', {
+    async login(){
+      const loginSuccessful = await this.$auth.loginWith('local', {
           data: {
             email: this.email,
-            password: this.password
+            password: this.password,
+            role: this.role
           }
         })
-        .catch( (error) => {
-          console.log(error)
-          if(error.response.data.message){
-            this.login_error = error.response.data.message
-          }
+      this.$store.commit('saveUser', loginSuccessful.data.user)
+      this.$store.commit('saveToken', loginSuccessful.data.token)
+      this.$store.commit('saveId', loginSuccessful.data.user.id)
+
+      if (loginSuccessful) {
+        this.$toast.success("Login successfully !", { duration: 800 })
+        await this.$auth.setUser({
+          email: this.email,
+          password: this.password,
+          role: this.role
         })
+      }
     }
   }
 }
