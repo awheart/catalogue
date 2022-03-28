@@ -5,10 +5,9 @@
     "eslint.validate": [
         "javascript"
     ],
-    "workbench.tree.indent": 30,
+    "workbench.tree.indent": 20,
     "workbench.colorCustomizations": {
         "tree.indentGuidesStroke": "#fa0101",
-        "editorIndentGuide.activeBackground": "#ff0000",
-        "editorIndentGuide.background": "#ff00ff"
+        "editorIndentGuide.activeBackground": "#ff0000"
     }
 }

@@ -34,19 +34,40 @@ export default {
     '@nuxtjs/eslint-module',
     'bootstrap-vue/nuxt', // enables bootstrap vue module
     '@nuxtjs/axios', // enables Nuxt Axios module
-    '@nuxtjs/auth', // enables Nuxt Auth module
+    '@nuxtjs/auth-next', // enables Nuxt Auth module
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/bootstrap
+    '@nuxtjs/toast',
     'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
     '@nuxtjs/auth-next'
   ],
+  toast: {
+    position: 'top-center',
+    register: [
+      {
+        name: 'error',
+        message: 'Oops...Something went wrong',
+        options: {
+          type: 'error'
+        }
+      },
+      {
+        name: 'success',
+        message: 'Successfully registered !'
+      }
+    ]
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+  },
+
+  publicRuntimeConfig: {
+    baseURL: "http://localhost:3000/",
   },
 
   server: {
@@ -54,23 +75,23 @@ export default {
   },
   auth: {
     strategies: {
-		local: {
-			endpoints: {
-				login: {
-					url: '/api/users/login',
-					method: 'post',
-					propertyName: 'token'
-				},
-				logout: true,
-				user: {
-					url: '/api/users/user',
-					method: 'get',
-					propertyName: 'user'
-				}
-			},
-			tokenRequired: true,
-			tokenType: "Bearer"
-		}
+      local: {
+        endpoints: {
+          login: {
+            url: '/api/users/login',
+            method: 'post',
+            propertyName: 'token'
+          },
+          logout: false,
+          user: {
+            url: '/api/users/user',
+            method: 'get',
+            propertyName: 'user'
+          }
+        },
+        tokenRequired: true,
+        tokenType: "Bearer"
+      }
     },
     redirect: {
       login: '/users/login', // User will be redirected to this path if login is required
@@ -78,7 +99,7 @@ export default {
       home: '/' // User will be redirect to this path after login if accessed login page directly
     },
     rewriteRedirects: true,
-},
+  },
 
   serverMiddleware: [
     '~/src/api/server.js'

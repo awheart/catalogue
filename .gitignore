@@ -90,3 +90,7 @@ sw.*
 *.swp
 
 package-lock.json
+
+.vscode
+
+settings.json
