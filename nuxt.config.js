@@ -31,15 +31,12 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/eslint
-    '@nuxtjs/eslint-module',
-    'bootstrap-vue/nuxt', // enables bootstrap vue module
-    '@nuxtjs/axios', // enables Nuxt Axios module
-    '@nuxtjs/auth-next', // enables Nuxt Auth module
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/bootstrap
+    '@nuxtjs/eslint-module',
     '@nuxtjs/toast',
     'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
@@ -96,7 +93,7 @@ export default {
     redirect: {
       login: '/users/login', // User will be redirected to this path if login is required
       logout: '/', // User will be redirected to this path if after logout, current route is protected
-      home: '/' // User will be redirect to this path after login if accessed login page directly
+      home: '/users/loginIn' // User will be redirect to this path after login if accessed login page directly
     },
     rewriteRedirects: true,
   },
