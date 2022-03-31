@@ -9,11 +9,14 @@
 
 <script>
 export default {
-  name: 'logoutPage',
+  name: 'LogoutPage',
   middleware: 'auth',
 
   async asyncData(context) {
     await context.$auth.logout()
+  },
+  updated() {
+    this.$toast.success('Vous avez été déconnecté.', { duration: 1000 })
   }
 }
 </script>
