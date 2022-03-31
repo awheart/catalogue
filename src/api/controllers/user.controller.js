@@ -3,7 +3,6 @@ const userModel = require('../models/user.model')
 const validator = require('express-validator')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-0
 
 const asyncAction = (action) => (req, res, next) => action(req, res, next).catch(next)
 
@@ -13,11 +12,11 @@ module.exports.register = [
     validator.body('name', 'Name is required').isLength({ min: 1 }),
     validator.body('email', 'Email is required').isLength({ min: 1 }),
     validator.body('email').custom(async value => {
-        const emailCheck = await userModel.find({ email: value})
-        if (emailCheck.length !== 0) return Promise.reject('Email already exist' )
+        const emailCheck = await userModel.find({ email: value })
+        if (emailCheck.length !== 0) return Promise.reject('Email already exist')
     }),
     validator.body('password', 'Password is required').isLength({ min: 1 }),
-    
+
     asyncAction(async (req, res) => {
         // throw validation errors
         const errors = validator.validationResult(req)
@@ -32,14 +31,14 @@ module.exports.register = [
             password: req.body.password,
             role: req.body.role,
         }, err => {
-            if (err) return res.status(500).json({ message: 'Error saving user'})
+            if (err) return res.status(500).json({ message: 'Error saving user' })
         })
 
         // encrypt password
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(user.password, salt)
         user.password = hash
-        
+
         user.save((err, user) => {
             if (err) return res.status(500).json({ message: 'Error while saving', error: err })
             res.json(user)
@@ -53,39 +52,40 @@ module.exports.login = [
     validator.body('email', 'Email is required').isLength({ min: 1 }),
     validator.body('password', 'Password is required').isLength({ min: 1 }),
 
-    asyncAction(async(req, res) => {
-    // throw validation errors
-    const errors = validator.validationResult(req);
-    if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() });
-    // check email & password exist & are correct
-    const { email, password } = req.body
-    const user = await userModel.findOne({ email: email })
+    asyncAction(async (req, res) => {
+        // throw validation errors
+        const errors = validator.validationResult(req);
+        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() });
+        // check email & password exist & are correct
+        const { email, password } = req.body
+        const user = await userModel.findOne({ email: email })
+        if (!user) return res.status(404).json({ message: 'Invalid Email or Password' })
 
-    if (!user) return res.status(404).json({ message: 'Invalid Email or Password'})
-    // check password
-    bcrypt.compare(password, user.password, (err, isMatched) => {
-        if (isMatched === true) {
-            return res.json({ 
-            user: {
-                message: 'login successful',
-                _id: user._id,
-                email: user.email,
-                name: user.name
-            },
-            token: jwt.sign({ _id: user._id, email: user.email, name: user.name }, config.authSecret)
-            })
-        } else {
-            return res.status(500).json({ message: 'Invalid Email or Password', error: err })
-        }
+        // check password
+        bcrypt.compare(password, user.password, (err, isMatched) => {
+            if (isMatched === true) {
+                return res.json({
+                    user: {
+                        message: 'login successful',
+                        _id: user._id,
+                        email: user.email,
+                        name: user.name,
+                        role: user.role
+                    },
+                    token: jwt.sign({ _id: user._id, email: user.email, name: user.name, role: user.role }, config.authSecret)
+                })
+            } else {
+                return res.status(500).json({ message: 'Invalid Email or Password', error: err })
+            }
+        })
+
     })
-
-})
 ]
 
 // get User
 module.exports.getMe = asyncAction(async (req, res) => {
     const token = req.headers.authorization
-    if(token){
+    if (token) {
         jwt.verify(token.replace(/^Bearer\s/, ''), config.authSecret, (err, decoded) => {
             if (err) {
                 return res.status(401).json({ message: 'Unauthorized' })
@@ -96,7 +96,7 @@ module.exports.getMe = asyncAction(async (req, res) => {
     } else {
         return res.status(401).json({ message: 'Unauthorized' })
     }
-    })
+})
 
 // get one user
 module.exports.showOne = asyncAction(async (req, res) => {
@@ -113,14 +113,31 @@ module.exports.getAll = asyncAction(async (req, res) => {
     res.json(users)
 })
 
+
+module.exports.updateAdmin = [
+    // validation rules
+
+    asyncAction(async (req, res) => {
+        // throw validation errors
+        const errors = validator.validationResult(req);
+        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
+
+        const data = req.body
+        const id = req.params.id
+        const user = await userModel.findByIdAndUpdate({ _id: id }, data, { new: true })
+        if (!user) return res.status(404).json({ message: 'User not found' })
+        res.json(user)
+    })
+]
+
 // update User
-module.exports.update = [
+module.exports.updateUser = [
     // validation rules
     validator.body('password', 'Password is required').isLength({ min: 1 }),
 
     asyncAction(async (req, res) => {
-    // throw validation errors
-    const errors = validator.validationResult(req);
+        // throw validation errors
+        const errors = validator.validationResult(req);
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
         const data = req.body
@@ -141,7 +158,7 @@ module.exports.update = [
 module.exports.delete = asyncAction(async (req, res) => {
     const id = req.params.id
     const article = await userModel.findById(id)
-    if(!article) return res.status(404).json({ message: 'User not found'})
+    if (!article) return res.status(404).json({ message: 'User not found' })
     await userModel.deleteOne({ _id: id })
-    res.json('User deleted').send()   
+    res.json('User deleted').send()
 })

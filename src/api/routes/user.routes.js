@@ -16,8 +16,11 @@ router.get('/:id', userController.showOne)
 // get all users
 router.get('/', userController.getAll)
 
-// update user
-router.patch('/:id', userController.update)
+// update user as user
+router.patch('/:id', userController.updateUser)
+
+// update user as admin
+router.patch('/:id/admin', userController.updateAdmin)
 
 // delete user
 router.delete('/:id', userController.delete)
