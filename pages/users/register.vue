@@ -73,32 +73,25 @@ export default {
     }
   },
   methods:{
-    register(){
-      const registerSuccessful = this.$axios.post( '/api/users/register', {
+    async register(){
+      const registerSuccessful = await this.$axios.post( '/api/users/register', {
           name: this.name,
           email: this.email,
           password: this.password,
           role: this.role
         })
         if (registerSuccessful) {
-          this.$toast.success('Successfully registered !')
-          if(registerSuccessful.data._id){
-            this.$router.push({ name:'user-login', params:{ registered:'yes' } })
-            // log in if successfully registered
-            this.$auth.loginWith('local', {
-                data: {
-                  email: this.email,
-                  password: this.password
-                }
-              })
-              .catch( (error) => {
-                console.log(error)
-              })
+          this.$toast.success('Successfully registered and logged in!', { duration: 2000 })
+          this.$router.push({ name:'user-login', params:{ registered:'yes' } })
+          // log in if successfully registered
+          await this.$auth.loginWith('local', {
+              data: {
+                email: this.email,
+                password: this.password
+              }
+            })
           }
         }
-          
-        
     }
-  }
 }
 </script>

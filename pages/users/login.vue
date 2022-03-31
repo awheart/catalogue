@@ -37,7 +37,7 @@
 
           <input type="submit" value="Login" class="btn btn-primary mr-3">
           <nuxt-link to="/" class="btn btn-secondary mr-3">Cancel</nuxt-link>
-
+          <nuxt-link to="/users/register">S'inscrire</nuxt-link>
         </form>
       </div>
     </div>
@@ -61,25 +61,13 @@ export default {
   },
   methods:{
     async login(){
-      const loginSuccessful = await this.$auth.loginWith('local', {
+      await this.$auth.loginWith('local', {
           data: {
             email: this.email,
-            password: this.password,
-            role: this.role
+            password: this.password
           }
         })
-      this.$store.commit('saveUser', loginSuccessful.data.user)
-      this.$store.commit('saveToken', loginSuccessful.data.token)
-      this.$store.commit('saveId', loginSuccessful.data.user.id)
-
-      if (loginSuccessful) {
-        this.$toast.success("Login successfully !", { duration: 800 })
-        await this.$auth.setUser({
-          email: this.email,
-          password: this.password,
-          role: this.role
-        })
-      }
+        this.$toast.success('Vous êtes connecté.', { duration: 1000 })
     }
   }
 }
