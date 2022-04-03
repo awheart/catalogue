@@ -13,7 +13,7 @@
             <label for="">Name</label>
             <input type="text" class="form-control"
               :class="{ 'is-invalid': errors && errors.name }"
-              v-model="name">
+              v-model="name" required>
             <div class="invalid-feedback" v-if="errors && errors.name">
               {{ errors.name.msg }}
             </div>
@@ -23,7 +23,7 @@
             <label for="">Email</label>
             <input type="text" class="form-control"
               :class="{ 'is-invalid': errors && errors.email }"
-              v-model="email">
+              v-model="email" required>
             <div class="invalid-feedback" v-if="errors && errors.email">
               {{ errors.email.msg }}
             </div>
@@ -33,17 +33,17 @@
             <label for="">Password</label>
             <input type="password" class="form-control"
               :class="{ 'is-invalid': errors && errors.password }"
-              v-model="password">
+              v-model="password" required>
             <div class="invalid-feedback" v-if="errors && errors.password">
               {{ errors.password.msg }}
             </div>
           </div>
 
           <div class="form-group">
-            <label for="">Admin access (optional)</label>
+            <label for="">Rôle (optional)</label>
             <input type="text" class="form-control"
               :class="{ 'is-invalid': errors && errors.role }"
-              v-model="role">
+              v-model="role" placeholder="utilisateur">
             <div class="invalid-feedback" v-if="errors && errors.role">
               {{ errors.role.msg }}
             </div>
@@ -82,7 +82,7 @@ export default {
         })
         if (registerSuccessful) {
           this.$toast.success('Successfully registered and logged in!', { duration: 2000 })
-          this.$router.push({ name:'user-login', params:{ registered:'yes' } })
+          this.$router.push({ path:'/' })
           // log in if successfully registered
           await this.$auth.loginWith('local', {
               data: {
