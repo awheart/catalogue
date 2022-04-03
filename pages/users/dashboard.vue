@@ -14,7 +14,7 @@
                     <td>{{ user.email }}</td>
                     <td>{{ user.role }}</td>
                     <td><button @click="deleteUser(user)" class="btn btn-danger">delete</button></td>
-                    <td><button @click="$router.push(`../users/${user._id}/update`)" class="btn btn-primary mr-3">update</button></td>
+                    <td><button @click="$router.push(`/users/${user._id}/details`)" class="btn btn-primary mr-3">Détails</button></td>
                 </tr>
             </tbody>
         </table>
@@ -31,8 +31,8 @@ export default {
     },
     async mounted() {
         try {
-            const user = await this.$axios.get('/api/users')
-            if(user) this.Users = user.data
+            const {data} = await this.$axios.get('/api/users')
+            this.Users = data
         } catch (err) {
             console.error(err)
         }
@@ -44,8 +44,8 @@ export default {
                 try {
                     const res = await this.$axios.delete(`/api/users/${user._id}`)
                     if (res) {
-                        const user =  await this.$axios.get('api/users')
-                        if(user) this.Users = user.data
+                        const {data} =  await this.$axios.get('api/users')
+                        if(user) this.Users = data
                     }
                 } catch (err) {
                     console.error(err)
