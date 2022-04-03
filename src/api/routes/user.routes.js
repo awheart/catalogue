@@ -20,7 +20,7 @@ router.get('/', userController.getAll)
 router.patch('/:id', userController.updateUser)
 
 // update user as admin
-router.patch('/:id/admin', userController.updateAdmin)
+router.patch('/admin/:id', userController.updateAdmin)
 
 // delete user
 router.delete('/:id', userController.delete)
