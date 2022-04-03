@@ -3,19 +3,20 @@ const userModel = require('../models/user.model')
 const validator = require('express-validator')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const { Error_Messages } = require('../utils/errors_handler')
 
 const asyncAction = (action) => (req, res, next) => action(req, res, next).catch(next)
 
 // register
 module.exports.register = [
     // validations rules
-    validator.body('name', 'Name is required').isLength({ min: 1 }),
-    validator.body('email', 'Email is required').isLength({ min: 1 }),
+    validator.body('username', Error_Messages.user_is_empty).isLength({ min: 1 }),
+    validator.body('email', Error_Messages.email_is_empty).isLength({ min: 1 }),
     validator.body('email').custom(async value => {
         const emailCheck = await userModel.find({ email: value })
-        if (emailCheck.length !== 0) return Promise.reject('Email already exist')
+        if (emailCheck.length !== 0) return Promise.reject(Error_Messages.email_existing)
     }),
-    validator.body('password', 'Password is required').isLength({ min: 1 }),
+    validator.body('password', Error_Messages.password_is_empty).isLength({ min: 4 }),
 
     asyncAction(async (req, res) => {
         // throw validation errors
@@ -26,12 +27,12 @@ module.exports.register = [
         if (req.body.role !== 'admin') req.body.role = 'user'
 
         const user = new userModel({
-            name: req.body.name,
+            username: req.body.username,
             email: req.body.email,
             password: req.body.password,
             role: req.body.role,
         }, err => {
-            if (err) return res.status(500).json({ message: 'Error saving user' })
+            if (err) return res.status(500).json({ message: Error_Messages.error_saving })
         })
 
         // encrypt password
@@ -40,7 +41,7 @@ module.exports.register = [
         user.password = hash
 
         user.save((err, user) => {
-            if (err) return res.status(500).json({ message: 'Error while saving', error: err })
+            if (err) return res.status(500).json({ message: Error_Messages.error_saving, error: err })
             res.json(user)
         })
     })
@@ -49,8 +50,8 @@ module.exports.register = [
 // login
 module.exports.login = [
     // validation rules
-    validator.body('email', 'Email is required').isLength({ min: 1 }),
-    validator.body('password', 'Password is required').isLength({ min: 1 }),
+    validator.body('email', Error_Messages.email_is_empty).isLength({ min: 1 }),
+    validator.body('password', Error_Messages.password_is_empty).isLength({ min: 4 }),
 
     asyncAction(async (req, res) => {
         // throw validation errors
@@ -59,7 +60,7 @@ module.exports.login = [
         // check email & password exist & are correct
         const { email, password } = req.body
         const user = await userModel.findOne({ email: email })
-        if (!user) return res.status(404).json({ message: 'Invalid Email or Password' })
+        if (!user) return res.status(404).json({ message: Error_Messages.invalid_credentials })
 
         // check password
         bcrypt.compare(password, user.password, (err, isMatched) => {
@@ -72,10 +73,10 @@ module.exports.login = [
                         name: user.name,
                         role: user.role
                     },
-                    token: jwt.sign({ _id: user._id, email: user.email, name: user.name, role: user.role }, config.authSecret)
+                    token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, config.authSecret)
                 })
             } else {
-                return res.status(500).json({ message: 'Invalid Email or Password', error: err })
+                return res.status(500).json({ message: Error_Messages.invalid_credentials, error: err })
             }
         })
 
@@ -88,13 +89,13 @@ module.exports.getMe = asyncAction(async (req, res) => {
     if (token) {
         jwt.verify(token.replace(/^Bearer\s/, ''), config.authSecret, (err, decoded) => {
             if (err) {
-                return res.status(401).json({ message: 'Unauthorized' })
+                return res.status(401).json({ message: Error_Messages.unauthorized_action })
             } else {
                 return res.json({ user: decoded })
             }
         })
     } else {
-        return res.status(401).json({ message: 'Unauthorized' })
+        return res.status(401).json({ message: Error_Messages.unauthorized_action })
     }
 })
 
@@ -102,30 +103,37 @@ module.exports.getMe = asyncAction(async (req, res) => {
 module.exports.showOne = asyncAction(async (req, res) => {
     const id = req.params.id
     const user = await userModel.findById(id)
-    if (!user) return res.status(404).json({ message: 'User not found' })
+    if (!user) throw new Error(`User ${user.username} not found`)
     res.json(user)
 })
 
 // get all users
 module.exports.getAll = asyncAction(async (req, res) => {
-    const users = await userModel.find()
-    if (users.length == 0) return res.status(500).json({ message: 'No user recorded' })
-    res.json(users)
+    const filter = req.query
+    const users = await userModel.find(filter)
+
+    return res.json(users)
 })
 
 
 module.exports.updateAdmin = [
     // validation rules
-
+    validator.body('username', Error_Messages.user_is_empty).isLength({ min: 1 }),
+    validator.body('email', Error_Messages.email_is_empty).isLength({ min: 1 }),
+    validator.body('email').custom(async value => {
+        const user = await userModel.findOne({email:value})
+          if (user !== null) {
+            return Promise.reject(Error_Messages.email_existing);
+          }
+        }),
     asyncAction(async (req, res) => {
         // throw validation errors
         const errors = validator.validationResult(req);
-        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
+        if (!errors.isEmpty()) res.status(422).json({ errors: errors.mapped() });
 
         const data = req.body
         const id = req.params.id
-        const user = await userModel.findByIdAndUpdate({ _id: id }, data, { new: true })
-        if (!user) return res.status(404).json({ message: 'User not found' })
+        const user = await userModel.findByIdAndUpdate({ _id: id }, data, { new: true, runValidators: true, context: 'query' })
         res.json(user)
     })
 ]
@@ -133,7 +141,7 @@ module.exports.updateAdmin = [
 // update User
 module.exports.updateUser = [
     // validation rules
-    validator.body('password', 'Password is required').isLength({ min: 1 }),
+    validator.body('password', Error_Messages.password_is_empty).isLength({ min: 1 }),
 
     asyncAction(async (req, res) => {
         // throw validation errors
@@ -149,7 +157,7 @@ module.exports.updateUser = [
         data.password = hash
 
         const user = await userModel.findByIdAndUpdate({ _id: id }, data, { new: true })
-        if (!user) return res.status(404).json({ message: 'User not found' })
+        if (!user) return res.status(404).json({ message: Error_Messages.user_not_found })
         res.json(user)
     })
 ]
@@ -158,7 +166,7 @@ module.exports.updateUser = [
 module.exports.delete = asyncAction(async (req, res) => {
     const id = req.params.id
     const article = await userModel.findById(id)
-    if (!article) return res.status(404).json({ message: 'User not found' })
+    if (!article) return res.status(404).json({ message: Error_Messages.user_not_found })
     await userModel.deleteOne({ _id: id })
     res.json('User deleted').send()
 })
