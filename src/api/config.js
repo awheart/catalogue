@@ -21,7 +21,7 @@ module.exports.isAuthenticated = async(req, res, next) => {
 
 module.exports = {
     database: {
-        uri: process.env.MONGODB_URI,
+        uri: 'mongodb://localhost:27017/catalogue',
         options: { useUnifiedTopology: true }
     },
     server: { port: process.env.PORT || 8000 },
