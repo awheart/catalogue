@@ -18,6 +18,7 @@
   command = "echo 'default context'"
 
 [[plugins]]
+  package = "@netlify/plugin-lighthouse"
 
 # Production context: all deploys from the Production branch 
 # set in your site’s Branches settings in the UI will inherit 
