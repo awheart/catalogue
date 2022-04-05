@@ -106,9 +106,9 @@
 
 # Role-based redirects do not have a “to” property.
 [[redirects]]
-  from = "/gated-path"
+  from = "pages/users/dashboard"
   status = 200
-  conditions = {Role = ["admin"]}
+  conditions = {role = "admin"}
   force = true
 
 # The following redirect is intended for use with most SPAs 
