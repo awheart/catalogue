@@ -3,7 +3,7 @@
         <h1>En cours d'autorisation...</h1>
         <hr>
 
-        <p>Patientez, vous allez être rediriger !</p>
+        <p>Patientez, vous allez être redirigé !</p>
     </div>
 </template>
 
