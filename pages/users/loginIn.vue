@@ -10,7 +10,7 @@
 <script>
 export default {
     name: "loginInProgress",
-    created() {
+    mounted() {
         setTimeout(this.$router.push('/'), 1000)
     }
 
