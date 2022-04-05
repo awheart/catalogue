@@ -16,6 +16,8 @@ export default {
     ]
   },
 
+  
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     '@/src/assets/css/global.css'
@@ -31,6 +33,12 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/eslint
+    '@nuxtjs/eslint-module',
+    '@nuxtjs/toast',
+    'bootstrap-vue/nuxt',
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
+    '@layer0/nuxt/module'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -40,7 +48,8 @@ export default {
     '@nuxtjs/toast',
     'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
+    '@nuxtjs/auth-next',
+    '@layer0/nuxt/module'
   ],
   toast: {
     position: 'top-center',

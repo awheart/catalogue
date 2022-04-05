@@ -1,5 +1,6 @@
 const articleModel = require('../models/article.model')
 const validator = require('express-validator')
+const { Error_Messages } = require('../utils/errors_handler')
 
 const asyncAction = (action) => (req, res, next) => action(req, res, next).catch(next)
 
@@ -19,14 +20,13 @@ module.exports.showOne = asyncAction(async (req, res) => {
 // create article
 module.exports.create = [
     // validations rules
-    validator.body('title', 'Title is required').isLength({ min: 1 }),
+    validator.body('title', Error_Messages.title_is_empty).isLength({ min: 1 }),
     validator.body('title').custom(async value => {
         const titleCheck = await articleModel.find({ title: value })
         console.log(titleCheck)
-        if (titleCheck.length !== 0) return Promise.reject('Title already exist' )
+        if (titleCheck.length !== 0) return Promise.reject(Error_Messages.title_existing )
   }),
-  validator.body('author', 'Author name is required').isLength({ min: 1 }),
-  validator.body('content', 'Content is required').isLength({ min: 1 }),
+  validator.body('description', Error_Messages.description_is_empty).isLength({ min: 1 }),
 
     asyncAction(async (req, res) => {
 
@@ -36,10 +36,10 @@ module.exports.create = [
             return res.status(422).json({ errors: errors.mapped() });
         }
         const article = new articleModel(req.body, err => {
-            if (err) return res.status(500).json({ message: 'Error saving article', error: err })
+            if (err) return res.status(500).json({ message: Error_Messages.error_saving, error: err })
         })
         article.save((err, article) => {
-            if (err) return res.status(500).json({ message: 'Error while saving', error: err })
+            if (err) return res.status(500).json({ message: Error_Messages.error_saving, error: err })
             res.json(article)
         })
 
@@ -52,7 +52,7 @@ module.exports.update = [
     validator.body('title', 'Title is required').isLength({ min: 1 }),
     validator.body('title').custom(async value => {
         const titleCheck = await articleModel.find({ title: value })
-        if (titleCheck.length !== 0) return Promise.reject('Title already exist' )
+        if (titleCheck.data.length !== 0) return Promise.reject('Title already exist' )
     }),
     validator.body('author', 'Author name is required').isLength({ min: 1 }),
     validator.body('content', 'Content is required').isLength({ min: 1 }),
