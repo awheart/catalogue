@@ -68,8 +68,7 @@
 
 # A basic redirect rule
 [[redirects]]
-  from = "/*"
-  to = "pages/index.vue"
+
 
 # A redirect rule with many of the supported properties
 [[redirects]]
@@ -105,11 +104,11 @@
     X-Api-Key = "some-api-key-string"
 
 # Role-based redirects do not have a “to” property.
-[[redirects]]
-  from = "pages/users/dashboard"
-  status = 200
-  conditions = {role = "admin"}
-  force = true
+# [[redirects]]
+#  from = "pages/users/dashboard"
+#  status = 200
+#  conditions = {role = "admin"}
+#  force = true
 
 # The following redirect is intended for use with most SPAs 
 # that handle routing internally.
