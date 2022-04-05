@@ -1,11 +1,10 @@
 <template>
-    <div>
-        ArticleUpdate
-    </div>
+    <div></div>
+
 </template>
 
 <script>
 export default {
-    name: 'ArticleUpdate',
+    name: 'ArtileUpdate'
 }
 </script>
