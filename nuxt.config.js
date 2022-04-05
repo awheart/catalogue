@@ -37,8 +37,7 @@ export default {
     '@nuxtjs/toast',
     'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next',
-    '@layer0/nuxt/module'
+    '@nuxtjs/auth-next'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -48,8 +47,7 @@ export default {
     '@nuxtjs/toast',
     'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
-    '@nuxtjs/auth-next',
-    '@layer0/nuxt/module'
+    '@nuxtjs/auth-next'
   ],
   toast: {
     position: 'top-center',
