@@ -12,9 +12,11 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      // { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
+  ssr: true,
+  target: 'server',
 
   
 
@@ -71,11 +73,11 @@ export default {
   },
 
   publicRuntimeConfig: {
-    baseURL: "http://localhost:3000/",
+    baseURL: process.env.BASE_URL || "http://localhost:3000/",
   },
 
   server: {
-    port: 3000
+    port: process.env.PORT || 3000
   },
   auth: {
     strategies: {
