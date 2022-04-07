@@ -119,11 +119,10 @@ module.exports.getAll = asyncAction(async (req, res) => {
 module.exports.updateAdmin = [
     // validation rules
     validator.body('username', Error_Messages.user_is_empty).isLength({ min: 1 }),
-    validator.body('email', Error_Messages.email_is_empty).isLength({ min: 1 }),
-    validator.body('email').custom(async value => {
-        const user = await userModel.findOne({email:value})
+    validator.body('username').custom(async value => {
+        const user = await userModel.findOne({username:value})
           if (user !== null) {
-            return Promise.reject(Error_Messages.email_existing);
+            return Promise.reject(Error_Messages.username_existing);
           }
         }),
     asyncAction(async (req, res) => {
@@ -141,7 +140,7 @@ module.exports.updateAdmin = [
 // update User
 module.exports.updateUser = [
     // validation rules
-    validator.body('password', Error_Messages.password_is_empty).isLength({ min: 1 }),
+    validator.body('password', Error_Messages.password_is_empty).isLength({ min: 4 }),
 
     asyncAction(async (req, res) => {
         // throw validation errors

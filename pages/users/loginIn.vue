@@ -11,7 +11,7 @@
 export default {
     name: "loginInProgress",
     mounted() {
-        setTimeout(this.$router.push('/'), 1000)
+        setTimeout(this.$router.push( process.env.BASE_URL + '/'), 1000)
     }
 
 }

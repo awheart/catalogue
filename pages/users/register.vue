@@ -74,7 +74,7 @@ export default {
   },
   methods:{
     async register(){
-      const registerSuccessful = await this.$axios.post( '/api/users/register', {
+      const registerSuccessful = await this.$axios.post( process.env.BASE_URL + '/api/users/register', {
           name: this.name,
           email: this.email,
           password: this.password,
@@ -82,7 +82,7 @@ export default {
         })
         if (registerSuccessful) {
           this.$toast.success('Successfully registered and logged in!', { duration: 2000 })
-          this.$router.push({ path:'/' })
+          this.$router.push({ path: process.env.BASE_URL + '/' })
           // log in if successfully registered
           await this.$auth.loginWith('local', {
               data: {

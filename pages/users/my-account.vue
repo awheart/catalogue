@@ -50,7 +50,7 @@ export default {
         const hash = bcrypt.hashSync(this.password, salt)
         const newPassword = hash
         console.log(hash)
-            const response = await this.$axios.patch( '/api/users/' + this.$auth.user._id, {
+            const response = await this.$axios.patch( process.env.BASE_URL + '/api/users/' + this.$auth.user._id, {
                 password: newPassword
               })
             if(response){

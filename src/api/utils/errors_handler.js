@@ -9,6 +9,7 @@ exports.Error_Messages = Object.freeze({
     article_not_found: 'Article introuvable.',
     email_existing: 'Email déjà existante.',
     title_existing: 'Titre déjà existant.',
+    username_existing: 'Ce nom d\'utilisateur existe déjà',
     user_existing: 'Utilisateur déjà existant',
     password_is_empty: 'Le mot de passe doit faire doit contenir au moins 4 caractères.',
     invalid_credentials: 'L\'email ou le mot de passe est incorrecte.',

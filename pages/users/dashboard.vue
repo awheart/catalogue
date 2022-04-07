@@ -31,7 +31,7 @@ export default {
     },
     async mounted() {
         try {
-            const {data} = await this.$axios.get('/api/users')
+            const {data} = await this.$axios.get(process.env.BASE_URL + '/api/users')
             this.Users = data
         } catch (err) {
             console.error(err)
@@ -42,9 +42,9 @@ export default {
             if (this.$auth.user.email == user.email) return alert('cannot delete the account currently connected.')
             if (confirm('Are you sure you want to delete') === true) {
                 try {
-                    const res = await this.$axios.delete(`/api/users/${user._id}`)
+                    const res = await this.$axios.delete(process.env.BASE_URL + `/api/users/${user._id}`)
                     if (res) {
-                        const {data} =  await this.$axios.get('api/users')
+                        const {data} =  await this.$axios.get(process.env.BASE_URL + 'api/users')
                         if(user) this.Users = data
                     }
                 } catch (err) {

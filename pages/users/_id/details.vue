@@ -29,7 +29,7 @@ export default {
     name: 'UserDetails',
   middleware: 'auth',
   async asyncData(context){
-    const {data} = await context.$axios.get('/api/users/' + context.route.params.id)
+    const {data} = await context.$axios.get(process.env.BASE_URL + '/api/users/' + context.route.params.id)
     return {
       user : data
     }
@@ -39,9 +39,9 @@ export default {
             if (this.$auth.user.email == user.email) return alert('cannot delete the account currently connected.')
             if (confirm('Are you sure you want to delete') === true) {
                 try {
-                    const res = await this.$axios.delete(`/api/users/${user._id}`)
+                    const res = await this.$axios.delete(process.env.BASE_URL + `/api/users/${user._id}`)
                     if (res) {
-                        await this.$router.push({ path:'/users/dashboard', params:{ deleted:'yes' } })
+                        await this.$router.push({ path: process.env.BASE_URL + '/users/dashboard', params:{ deleted:'yes' } })
                     }
                 } catch (err) {
                     this.$toast.error('Erreur durant la suppression.', { duration: 2000 })
