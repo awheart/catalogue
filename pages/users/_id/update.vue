@@ -31,7 +31,7 @@ export default {
     name: 'UpdateUser',
     middleware: 'auth',
   async asyncData(context){
-    const {data} = await context.$axios.get(process.env.BASE_URL + '/api/users/' + context.route.params.id)
+    const {data} = await context.$axios.get( '/api/users/' + context.route.params.id)
     return {
       user: data
     }
@@ -52,9 +52,9 @@ export default {
     async submitForm(){
         try {
             const data = { username: this.username }
-            await this.$axios.patch(process.env.BASE_URL + '/api/users/admin/' + this.$route.params.id, data)
+            await this.$axios.patch( '/api/users/admin/' + this.$route.params.id, data)
             this.$toast.success('updated', { duration: 1000 })
-            this.$router.push( {path: process.env.BASE_URL + '/users/dashboard/', params:{ updated:'yes', id: this.$route.params.id }})
+            this.$router.push( {path:  '/users/dashboard/', params:{ updated:'yes', id: this.$route.params.id }})
         } catch (error) {
             if(error.response.data.errors) this.errors = error.response.data.errors
         }

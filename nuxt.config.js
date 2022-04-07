@@ -71,9 +71,15 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
+  axios: {
+    baseURL: 'http://localhost:3000', // Used as fallback if no runtime config is provided
+  },
 
   publicRuntimeConfig: {
-    baseURL: process.env.BASE_URL || "http://localhost:3000/",
+    baseURL: process.env.BASE_URL,
+    axios: {
+      baseURL: process.env.BASE_URL, // Used as fallback if no runtime config is provided
+    },
   },
 
   server: {
