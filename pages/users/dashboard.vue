@@ -10,7 +10,7 @@
             </thead>
             <tbody>
                 <tr v-for="user of Users" :key="user.id">
-                    <td>{{ user.name }}</td>
+                    <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.role }}</td>
                     <td><button @click="deleteUser(user)" class="btn btn-danger">delete</button></td>

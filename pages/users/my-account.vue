@@ -6,7 +6,7 @@
 
     <div class="card">
       <div class="card-body">
-        <h4>Name: {{ this.$auth.user.name }}</h4>
+        <h4>Name: {{ this.$auth.user.username }}</h4>
         <h4>Authorization: {{ this.$auth.user.role }}</h4>
         <div class="mb-5"><strong>Email:</strong> {{ this.$auth.user.email }}</div>
         <form action=""

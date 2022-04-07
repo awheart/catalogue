@@ -10,12 +10,12 @@
           @submit.prevent="register()">
 
           <div class="form-group">
-            <label for="">Name</label>
+            <label for="">Nom d'utilisateur</label>
             <input type="text" class="form-control"
-              :class="{ 'is-invalid': errors && errors.name }"
-              v-model="name" required>
-            <div class="invalid-feedback" v-if="errors && errors.name">
-              {{ errors.name.msg }}
+              :class="{ 'is-invalid': errors && errors.username }"
+              v-model="username" required>
+            <div class="invalid-feedback" v-if="errors && errors.username">
+              {{ errors.username.msg }}
             </div>
           </div>
 
