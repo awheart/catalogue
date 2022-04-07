@@ -49,7 +49,7 @@
             </div>
         </div>
 
-          <input type="submit" value="Register" class="btn btn-primary mr-3">
+          <input type="submit" value="S'inscrire et se connecter" class="btn btn-primary mr-3">
           <nuxt-link to="/" class="btn btn-secondary mr-3">Cancel</nuxt-link>
 
         </form>
@@ -66,7 +66,7 @@ export default {
   data(){
     return{
       errors:null,
-      name:null,
+      username:null,
       email:null,
       password:null,
       status:false,
@@ -75,7 +75,7 @@ export default {
   methods:{
     async register(){
       const registerSuccessful = await this.$axios.post('/api/users/register', {
-          name: this.name,
+          username: this.username,
           email: this.email,
           password: this.password,
           role: this.role
