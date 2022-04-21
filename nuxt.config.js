@@ -12,9 +12,11 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      // { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
+  ssr: true,
+  target: 'server',
 
   
 
@@ -69,13 +71,19 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
+  axios: {
+    baseURL: 'http://localhost:3000', // Used as fallback if no runtime config is provided
+  },
 
   publicRuntimeConfig: {
-    baseURL: "http://localhost:3000/",
+    baseURL: process.env.BASE_URL,
+    axios: {
+      baseURL: process.env.BASE_URL, // Used as fallback if no runtime config is provided
+    },
   },
 
   server: {
-    port: 3000
+    port: process.env.PORT || 3000
   },
   auth: {
     strategies: {

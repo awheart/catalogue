@@ -10,12 +10,12 @@
           @submit.prevent="register()">
 
           <div class="form-group">
-            <label for="">Name</label>
+            <label for="">Nom d'utilisateur</label>
             <input type="text" class="form-control"
-              :class="{ 'is-invalid': errors && errors.name }"
-              v-model="name" required>
-            <div class="invalid-feedback" v-if="errors && errors.name">
-              {{ errors.name.msg }}
+              :class="{ 'is-invalid': errors && errors.username }"
+              v-model="username" required>
+            <div class="invalid-feedback" v-if="errors && errors.username">
+              {{ errors.username.msg }}
             </div>
           </div>
 
@@ -49,7 +49,7 @@
             </div>
         </div>
 
-          <input type="submit" value="Register" class="btn btn-primary mr-3">
+          <input type="submit" value="S'inscrire et se connecter" class="btn btn-primary mr-3">
           <nuxt-link to="/" class="btn btn-secondary mr-3">Cancel</nuxt-link>
 
         </form>
@@ -66,7 +66,7 @@ export default {
   data(){
     return{
       errors:null,
-      name:null,
+      username:null,
       email:null,
       password:null,
       status:false,
@@ -74,15 +74,15 @@ export default {
   },
   methods:{
     async register(){
-      const registerSuccessful = await this.$axios.post( '/api/users/register', {
-          name: this.name,
+      const registerSuccessful = await this.$axios.post('/api/users/register', {
+          username: this.username,
           email: this.email,
           password: this.password,
           role: this.role
         })
         if (registerSuccessful) {
           this.$toast.success('Successfully registered and logged in!', { duration: 2000 })
-          this.$router.push({ path:'/' })
+          this.$router.push({ path: '/' })
           // log in if successfully registered
           await this.$auth.loginWith('local', {
               data: {

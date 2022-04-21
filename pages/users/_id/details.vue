@@ -41,7 +41,7 @@ export default {
                 try {
                     const res = await this.$axios.delete(`/api/users/${user._id}`)
                     if (res) {
-                        await this.$router.push({ path:'/users/dashboard', params:{ deleted:'yes' } })
+                        await this.$router.push({ path: '/users/dashboard', params:{ deleted:'yes' } })
                     }
                 } catch (err) {
                     this.$toast.error('Erreur durant la suppression.', { duration: 2000 })
