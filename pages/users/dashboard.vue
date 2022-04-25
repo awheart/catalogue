@@ -3,9 +3,12 @@
         <table class="table table-stripped table-borderes">
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Nom d'utilisateur</th>
                     <th>email</th>
-                    <th>role</th>
+                    <th>rôle</th>
+                    <th>réseaux sociaux</th>
+                    <th>icône</th>
+                    <th>id</th>
                 </tr>
             </thead>
             <tbody>
@@ -13,8 +16,10 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.role }}</td>
+                    <td>{{ user.icone }}</td>
+                    <td>{{ user.users_id }}</td>
                     <td><button @click="deleteUser(user)" class="btn btn-danger">delete</button></td>
-                    <td><button @click="$router.push(`/users/${user._id}/details`)" class="btn btn-primary mr-3">Détails</button></td>
+                    <td><button @click="$router.push(`/users/${user.users_id}/details`)" class="btn btn-primary mr-3">Détails</button></td>
                 </tr>
             </tbody>
         </table>
@@ -42,7 +47,7 @@ export default {
             if (this.$auth.user.email == user.email) return alert('cannot delete the account currently connected.')
             if (confirm('Are you sure you want to delete') === true) {
                 try {
-                    const res = await this.$axios.delete( `/api/users/${user._id}`)
+                    const res = await this.$axios.delete( `/api/users/${user.users_id}`)
                     if (res) {
                         const {data} =  await this.$axios.get( 'api/users')
                         if(user) this.Users = data
