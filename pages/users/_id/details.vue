@@ -4,17 +4,16 @@
 
     <hr />    
 
-    <h2>{{ user.name }}</h2>
+    <h2>Nom d'utilisateur : {{ user.username }}</h2>
 
-    <h6>{{ user.email }}</h6>
-
-    <p>{{ user.role }}</p>
+    <h6>Email : {{ user.email }}</h6>
+    <p>Role : {{ user.role }}</p>
 
     <hr />
     <div class="d-flex justify-content-between">
       <div>
         <nuxt-link
-          :to="'/users/' + user._id + '/update'"
+          :to="'/users/' + user.users_id + '/update'"
           class="btn btn-primary mr-3"
           >Update</nuxt-link>
         <button @click="deleteUser(user)" class="btn btn-danger">delete</button>
@@ -39,9 +38,10 @@ export default {
             if (this.$auth.user.email == user.email) return alert('cannot delete the account currently connected.')
             if (confirm('Are you sure you want to delete') === true) {
                 try {
-                    const res = await this.$axios.delete(`/api/users/${user._id}`)
+                    const res = await this.$axios.delete(`/api/users/${user.users_id}`)
                     if (res) {
-                        await this.$router.push({ path: '/users/dashboard', params:{ deleted:'yes' } })
+                        await this.$router.push({ path: '/users/dashboard' })
+                        this.$toast.success('Entité supprimée avec succès!', { duration: 2000 })
                     }
                 } catch (err) {
                     this.$toast.error('Erreur durant la suppression.', { duration: 2000 })
