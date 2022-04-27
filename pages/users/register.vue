@@ -68,8 +68,9 @@ export default {
       errors:null,
       username:null,
       email:null,
+      role: null,
       password:null,
-      status:false,
+      status:false
     }
   },
   methods:{
@@ -78,7 +79,7 @@ export default {
           username: this.username,
           email: this.email,
           password: this.password,
-          role: this.role
+          role: this.role,
         })
         if (registerSuccessful) {
           this.$toast.success('Successfully registered and logged in!', { duration: 2000 })
@@ -91,7 +92,7 @@ export default {
               }
             })
           }
-        }
+        }  
     }
 }
 </script>
