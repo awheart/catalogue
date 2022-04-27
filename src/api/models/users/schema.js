@@ -15,8 +15,7 @@ class users extends model {
                 username: { type: 'string' },
                 email: { type: 'string' },
                 password: { type: 'string' },
-                social_media: { type: 'string' },
-                icone: { type: 'object' },
+                icone: { type: 'string' },
                 role: {
                     type: 'string',
                     enum: ['admin', 'user'],
