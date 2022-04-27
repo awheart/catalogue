@@ -10,7 +10,7 @@
           @submit.prevent="submitForm()">
 
           <div class="form-group">
-            <label for="">Nom de l'utilisateur</label>
+            <label for="">Nom d'utilisateur</label>
             <input type="text" class="form-control"
               :class="{ 'is-invalid': errors && errors.username }"
               v-model="username">
@@ -18,7 +18,7 @@
               {{ errors.username.msg }}
             </div>
           </div>
-          <input type="submit" value="Submit" class="btn btn-primary mr-3">
+          <input type="submit" value="Valider" class="btn btn-primary mr-3">
           <nuxt-link :to="'/users/' + $route.params.id + '/details'" class="btn btn-secondary mr-3">Annuler</nuxt-link>
         </form>
       </div>
@@ -53,7 +53,7 @@ export default {
         try {
             const data = { username: this.username }
             await this.$axios.patch( '/api/users/admin/' + this.$route.params.id, data)
-            this.$toast.success('updated', { duration: 1000 })
+            this.$toast.success('updated', { duration: 2000 })
             this.$router.push( {path:  '/users/dashboard/', params:{ updated:'yes', id: this.$route.params.id }})
         } catch (error) {
             if(error.response.data.errors) this.errors = error.response.data.errors

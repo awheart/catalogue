@@ -1,4 +1,4 @@
-const articleModel = require('../models/article.model')
+const articleModel = require('../models/recipes')
 const validator = require('express-validator')
 const { Error_Messages } = require('../utils/errors_handler')
 
@@ -35,6 +35,7 @@ module.exports.create = [
         if (!errors.isEmpty()) {
             return res.status(422).json({ errors: errors.mapped() });
         }
+
         const article = new articleModel(req.body, err => {
             if (err) return res.status(500).json({ message: Error_Messages.error_saving, error: err })
         })

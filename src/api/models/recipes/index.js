@@ -8,14 +8,13 @@ const Article = new Schema({
     date_of_creation: { type: Date, required: true },
     description: { type: String, required: true },
     comments: [{
-            body: {
-                type: String, required: true
-            },
-            by: {
-                type: Schema.Types.ObjectId, ref: 'users'
-            }
+        body: {
+            type: String, required: true
+        },
+        by: {
+            type: Schema.Types.ObjectId, ref: 'users'
         }
-    ]
+    }]
 },
     {
         collection: 'articles',
@@ -23,4 +22,8 @@ const Article = new Schema({
     }
 )
 
-module.exports = mongoose.model('Article', Article)
+
+const articleModel = mongoose.model('Article', Article)
+
+exports.create = async ({ article }) => articleModel.create(article)
+exports.update = async ({ articleId, data }) => articleModel.updateOne(articleId, data)
