@@ -18,7 +18,6 @@ module.exports.isAuthenticated = async (req, res, next) => {
 }
 
 
-
 module.exports = {
     configSecret
 }

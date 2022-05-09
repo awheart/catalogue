@@ -14,7 +14,7 @@ module.exports.register = [
     validator.body('email', Error_Messages.email_is_empty).isLength({ min: 1 }),
     validator.body('email').custom(async value => {
         const emailCheck = await userGetter.findOne({ email: value })
-        console.log(emailCheck)
+        console.log(emailCheck?.length)
         // if (emailCheck.length !== 0) return Promise.reject(Error_Messages.email_existing)
     }),
     validator.body('password', Error_Messages.password_is_empty).isLength({ min: 4 }),
@@ -25,13 +25,12 @@ module.exports.register = [
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
         // check for admin authorization
-        if (req.body.role == 'admin') req.body.role = 'admin'
+        if(req.body.role !== 'admin') req.body.role = 'user'
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(req.body.password, salt)
         req.body.password = hash
 
         const user = await userMutation.create(req.body)
-        console.log(user)
         res.json(user)
     })
 ]
@@ -57,7 +56,7 @@ module.exports.login = [
                 return res.json({
                     user: {
                         message: 'login successful',
-                        _id: user._id,
+                        id: user.id,
                         email: user.email,
                         name: user.name,
                         role: user.role
@@ -88,20 +87,27 @@ module.exports.getMe = asyncAction(async (req, res) => {
     }
 })
 
-// get one user
-module.exports.showOne = asyncAction(async (req, res) => {
+// get one user by id
+module.exports.findById = asyncAction(async (req, res) => {
     const id = req.params.id
     const user = await userGetter.findById(id)
-    if (!user) throw new Error(`User ${user.username} not found`)
+    if (!user) return res.status(404).json({ message: Error_Messages.user_id_is_invalid })
     res.json(user)
 })
 
+// get one user by filter
+module.exports.findOne = asyncAction(async (req, res) => {
+    const filter = req.query
+    const user = await userGetter.findOne(filter)
+    if(!user) return res.status(404).json({ message: Error_Messages.user_id_is_invalid })
+    return res.json(user)
+})
+
 // get all users
-module.exports.getAll = asyncAction(async (_req, res) => {
+module.exports.getAll = asyncAction(async (req, res) => {
     const users = await userGetter.getAll()
     return res.json(users)
 })
-
 
 module.exports.updateAdmin = [
     // validation rules
@@ -144,7 +150,7 @@ module.exports.updateUser = [
         const hash = bcrypt.hashSync(data.password, salt)
         data.password = hash
 
-        const user = await userGetter.findById({ _id: id })
+        const user = await userGetter.findById({ id })
         if (!user) return res.status(404).json({ message: Error_Messages.user_not_found })
         user.update({ data })
         res.json(user)
