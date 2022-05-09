@@ -1,6 +1,6 @@
 const knex = require('knex')
-const knexfile = require('../../src/api/database/knexfile')
-const dbconnect ={
+const knexfile = require('../../knexfile')
+module.exports = {
     client: 'pg',
     connection: {
       connectionString: process.env.DATABASE_URL,
@@ -17,6 +17,5 @@ const dbconnect ={
 
 module.exports = {
   knex,
-  knexfile,
-  dbconnect
+  knexfile
 }
