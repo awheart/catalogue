@@ -12,7 +12,11 @@
     "lint": "npm run lint:js",
     "lintfix": "npm run lint:js -- --fix",
     "heroku-postbuild": "npm run build",
+<<<<<<< Updated upstream
     "heroku-deploy-master": "git push heroku master:main"
+=======
+    "tests": "jest --coverage"
+>>>>>>> Stashed changes
   },
   "dependencies": {
     "@nuxtjs/auth": "^4.9.1",
@@ -24,6 +28,7 @@
     "bcryptjs": "^2.4.3",
     "bootstrap": "^4.6.1",
     "bootstrap-vue": "^2.21.2",
+    "cloudinary": "^1.29.1",
     "core-js": "^3.19.3",
     "cors": "^2.8.5",
     "express": "^4.17.2",
@@ -37,6 +42,7 @@
     "objection": "^3.0.1",
     "pg": "^8.7.3",
     "prettier": "^2.5.1",
+    "supertest": "^6.2.3",
     "vue": "^2.6.14",
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
