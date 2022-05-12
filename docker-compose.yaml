@@ -1,0 +1,56 @@
+version: '3'
+services:
+  catalogue:
+    container_name: catalogue
+    image: node:gallium
+    environment:
+      - POSTGRES_DB=catalogue-dev
+      - POSTGRES_USER=catalogue-user
+      - POSTGRES_PASSWORD=catalogue01
+      - POSTGRES_HOST=catalogue-postgres
+      - NODE_ENV=development
+    networks: 
+      net:
+        aliases:
+          - catalogue
+    ports:
+      - "3000:3000"
+    depends_on:
+      - catalogue-postgres
+    volumes:
+      - .:/catalogue
+    working_dir: /catalogue
+    command: npm run dev
+  
+  catalogue-postgres:
+    image: postgres
+    volumes:
+    - db-postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=catalogue-user
+      - POSTGRES_PASSWORD=catalogue01
+      - POSTGRES_DB=catalogue-dev
+    networks:
+      net:
+    command: postgres -c max_connections=1000
+  
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    depends_on:
+      - catalogue-postgres
+    environment:
+      - PGADMIN_DEFAULT_USER=catalogue
+      - PGADMIN_DEFAULT_PASSWORD=catalogue01
+      - PGADMIN_DEFAULT_EMAIL=admin@catalogue.net
+    ports:
+      - 5050:80
+    volumes:
+      - pg-admin:/var/lib/pgadmin
+    networks: 
+      net:
+
+volumes:
+  db-postgres:
+  pg-admin:
+networks:
+  net:
