@@ -8,7 +8,7 @@ exports.up = function (knex) {
         t.string('username')
         t.string('email')
         t.string('password')
-        t.byteA('icone')
+        t.string('icone')
         t.string('role')
         t.timestamp('created_at')
         t.timestamp('updated_at')
