@@ -11,11 +11,15 @@ const asyncAction = (action) => (req, res, next) => action(req, res, next).catch
 module.exports.register = [
     // validations rules
     validator.body('username', Error_Messages.user_is_empty).isLength({ min: 1 }),
+    validator.body('username').custom(async value => {
+        const usernameCheck = await userGetter.findOne({ username: value })
+        if (usernameCheck) return Promise.reject(Error_Messages.username_existing)
+    }),
     validator.body('email', Error_Messages.email_is_empty).isLength({ min: 1 }),
+    validator.body('email', Error_Messages.invalid_email).isEmail(),
     validator.body('email').custom(async value => {
         const emailCheck = await userGetter.findOne({ email: value })
-        console.log(emailCheck?.length)
-        // if (emailCheck.length !== 0) return Promise.reject(Error_Messages.email_existing)
+        if (emailCheck) return Promise.reject(Error_Messages.email_existing)
     }),
     validator.body('password', Error_Messages.password_is_empty).isLength({ min: 4 }),
 
@@ -25,7 +29,9 @@ module.exports.register = [
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
         // check for admin authorization
-        if(req.body.role !== 'admin') req.body.role = 'user'
+        if (req.body.role !== 'admin') req.body.role = 'user'
+
+        // encrypt password
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(req.body.password, salt)
         req.body.password = hash
@@ -39,35 +45,36 @@ module.exports.register = [
 module.exports.login = [
     // validation rules
     validator.body('email', Error_Messages.email_is_empty).isLength({ min: 1 }),
-    validator.body('password', Error_Messages.password_is_empty).isLength({ min: 4 }),
+    validator.body('email', Error_Messages.invalid_email).isEmail(),
+    validator.body('password', Error_Messages.password_is_needed).isLength({ min: 4 }),
 
     asyncAction(async (req, res) => {
         // throw validation errors
         const errors = validator.validationResult(req);
-        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() });
+        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
+
         // check email & password exist & are correct
         const { email, password } = req.body
         const user = await userGetter.findOne({ email: email })
-        if (!user) return res.status(404).json({ message: Error_Messages.invalid_credentials })
+        if (!user) return res.status(404).json({ errors: { msg: Error_Messages.invalid_credentials } })
 
         // check password
-        bcrypt.compare(password, user.password, (err, isMatched) => {
-            if (isMatched === true) {
-                return res.json({
-                    user: {
-                        message: 'login successful',
-                        id: user.id,
-                        email: user.email,
-                        name: user.name,
-                        role: user.role
-                    },
-                    token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, configSecret.authSecret)
-                })
-            } else {
-                return res.status(500).json({ message: Error_Messages.invalid_credentials, error: err })
-            }
-        })
-
+        const isMatched = await bcrypt.compare(password, user.password)
+        console.log(isMatched)
+        if (isMatched === true) {
+            return res.json({
+                user: {
+                    message: 'login successful',
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    role: user.role
+                },
+                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, configSecret.authSecret)
+            })
+        } else {
+            return res.status(500).json({ message: Error_Messages.invalid_credentials })
+        }
     })
 ]
 
@@ -99,13 +106,14 @@ module.exports.findById = asyncAction(async (req, res) => {
 module.exports.findOne = asyncAction(async (req, res) => {
     const filter = req.query
     const user = await userGetter.findOne(filter)
-    if(!user) return res.status(404).json({ message: Error_Messages.user_id_is_invalid })
+    if (!user) return res.status(404).json({ message: Error_Messages.invalid_filter })
     return res.json(user)
 })
 
 // get all users
 module.exports.getAll = asyncAction(async (req, res) => {
-    const users = await userGetter.getAll()
+    const filter = req.query
+    const users = await userGetter.getAll(filter)
     return res.json(users)
 })
 
@@ -135,25 +143,48 @@ module.exports.updateAdmin = [
 // update User
 module.exports.updateUser = [
     // validation rules
-    validator.body('password', Error_Messages.password_is_empty).isLength({ min: 4 }),
+    validator.body('password', Error_Messages.old_password_empty).isLength({ min: 4 }),
+    validator.body('password').custom(async (value, { req }) => {
+        const user = await userGetter.findById(req.params.id)
+        const isMatch = await bcrypt.compare(value, user.password)
+        if (!isMatch) return Promise.reject(Error_Messages.invalid_old_password)
+    }),
+    validator.body('newPassword', Error_Messages.new_password_empty).isLength({ min: 4 }),
+    validator.body('newPassword').custom((value, { req }) => {
+        if (value == req.body.password) {
+            return Promise.reject(Error_Messages.password_cannot_match)
+        } else return true
+    }),
+    validator.body('passwordCheck', Error_Messages.check_password_empty).isLength({ min: 4 }),
+    validator.body('passwordCheck').custom(async (value, { req }) => {
+        if (value !== req.body.newPassword) {
+            return Promise.reject(Error_Messages.password_no_match)
+        } else return true
+    }),
 
     asyncAction(async (req, res) => {
         // throw validation errors
         const errors = validator.validationResult(req);
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
-        const data = req.body
-        const id = req.params.id
+        const { id } = req.params
+        const { newPassword } = req.body
+        const user = await userGetter.findById(req.params.id)
 
-        // encrypt password
-        const salt = bcrypt.genSaltSync(10)
-        const hash = bcrypt.hashSync(data.password, salt)
-        data.password = hash
+        try {
+            // encrypt password
+            const salt = bcrypt.genSaltSync(10)
+            const hash = bcrypt.hashSync(newPassword, salt)
+            const newUserPassword = hash
 
-        const user = await userGetter.findById({ id })
-        if (!user) return res.status(404).json({ message: Error_Messages.user_not_found })
-        user.update({ data })
-        res.json(user)
+            const data = { password: newUserPassword, role: user.role }
+
+            const userPatched = await userMutation.patch(id, data)
+            if (!userPatched) return res.status(404).json({ message: Error_Messages.user_not_found })
+            res.json(userPatched)
+        } catch (err) {
+            console.log(err)
+        }
     })
 ]
 
@@ -163,5 +194,5 @@ module.exports.delete = asyncAction(async (req, res) => {
     const article = await userGetter.findById(id)
     if (!article) return res.status(404).json({ message: Error_Messages.user_not_found })
     await userMutation.deleteById(id)
-    res.json('User deleted').send()
+    res.json('L\'utilisateur a bien été supprimé').send()
 })
