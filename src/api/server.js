@@ -1,7 +1,7 @@
 const express = require('express')
 const routes = require('./routes')
 const router = express.Router({ strict: true })
-const migrateLastest = require('./database/migrate')
+const database = require('./database/migrate')
 const cors = require('cors')
 
 const api = express()
@@ -12,7 +12,7 @@ api.use(express.urlencoded({ extended: true }))
 api.use(router)
 api.use(routes)
 
-if(process.env.NODE_ENV !== 'test') migrateLastest()
+if (process.env.NODE_ENV !== 'test') database.migrateLastest()
 
 
 module.exports = api
