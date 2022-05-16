@@ -1,6 +1,6 @@
 exports.Error_Messages = Object.freeze({
     user_id_is_invalid: 'L\'id de cet utilisateur est invalide.',
-    article_id_is_invalid: 'L\'id de cette email est invalide.',
+    recipe_id_is_invalid: 'L\'id de cette recette est invalide.',
     user_is_empty: 'L\'utilisateur doit être renseigné.',
     email_is_empty: 'L\'email doit être renseignée.',
     title_is_empty: 'Le titre doit être renseigné.',
@@ -8,12 +8,22 @@ exports.Error_Messages = Object.freeze({
     user_not_found: 'Utilisateur introuvable',
     article_not_found: 'Article introuvable.',
     email_existing: 'Email déjà existante.',
+    invalid_email: 'Veuillez entrer une adresse email valide',
     title_existing: 'Titre déjà existant.',
     username_existing: 'Ce nom d\'utilisateur existe déjà',
     user_existing: 'Utilisateur déjà existant',
-    password_is_empty: 'Le mot de passe doit faire doit contenir au moins 4 caractères.',
+    password_is_empty: 'Le mot de passe doit contenir au moins 4 caractères.',
+    password_is_needed: 'Veuillez entrer votre mot de passe.',
     invalid_credentials: 'L\'email ou le mot de passe est incorrecte.',
     error_saving: 'Une erreur est survenue durant la sauvegarde.',
     incorrect_params: 'Paramètres incorrectes',
-    unauthorized_action: 'Vous n\'avez pas les permissions requises pour faire ceci.'
+    unauthorized_action: 'Vous n\'avez pas les permissions requises pour faire ceci.',
+    password_no_match: 'Veuillez répéter le nouveau mot de passe à l\'identique.',
+    invalid_password: 'Le mot de passe est incorrect',
+    invalid_old_password: 'Le mot de passe ne correspond pas à votre mot de passe actuel',
+    old_password_empty: 'Veuillez entrer votre ancien mot de passe pour le modifier.',
+    new_password_empty: 'Veuillez entrer un nouveau mot de passe.',
+    check_password_empty: 'Veuillez répéter votre nouveau mot de passe.',
+    password_cannot_match: 'Le nouveau mot de passe doit être différent du mot de passe actuel.',
+    invalid_filter: 'Filtre incorrect.'
 })
