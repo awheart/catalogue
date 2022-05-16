@@ -1,3 +1,3 @@
 module.exports = {
-    migrateLastest: require('./migrate')
+    database: require('./migrate')
 }

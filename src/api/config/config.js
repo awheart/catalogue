@@ -5,7 +5,7 @@ const configSecret = {
 }
 
 // check if user is connecter 
-module.exports.isAuthenticated = async (req, res, next) => {
+const isAuthenticated = async (req, res, next) => {
     var token = req.headers.authorization
     if (token) {
         // check if token is valid and verifies secret
@@ -19,5 +19,6 @@ module.exports.isAuthenticated = async (req, res, next) => {
 
 
 module.exports = {
-    configSecret
+    configSecret,
+    isAuthenticated
 }
