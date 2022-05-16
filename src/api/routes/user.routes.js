@@ -14,7 +14,7 @@ router.get('/user', userController.getMe)
 router.get('/:id', userController.findById)
 
 // get one user by filter
-router.get(`/user/whoami`, userController.findOne)
+router.get(`/user/who`, userController.findOne)
 
 // get all users
 router.get('/', userController.getAll)
