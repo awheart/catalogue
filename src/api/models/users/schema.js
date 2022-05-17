@@ -5,13 +5,13 @@ class users extends model {
         return 'users'
     }
     static get idColumn() {
-        return 'users_id'
+        return 'id'
     }
     static get jsonSchema() {
         return {
             type: 'object',
             properties: {
-                users_id: { type: 'integer' },
+                id: { type: 'integer' },
                 username: { type: 'string' },
                 email: { type: 'string' },
                 password: { type: 'string' },

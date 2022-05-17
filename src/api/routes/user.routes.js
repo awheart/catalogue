@@ -10,8 +10,11 @@ router.post('/login', userController.login)
 // get user
 router.get('/user', userController.getMe)
 
-// get one user
-router.get('/:id', userController.showOne)
+// get one user by id
+router.get('/:id', userController.findById)
+
+// get one user by filter
+router.get(`/user/who`, userController.findOne)
 
 // get all users
 router.get('/', userController.getAll)

@@ -1,5 +1,5 @@
-const getters = require('./getters')
-const mutations = require('./mutations')
-const schema = require('./schema')
-
-module.exports = { getters, mutations, schema }
+module.exports = {
+    getters: require('./getters'),
+    mutations: require('./mutations'),
+    schema: require('./schema')
+}
