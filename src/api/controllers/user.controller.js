@@ -4,23 +4,27 @@ const validator = require('express-validator')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const { Error_Messages } = require('../utils/errors_handler')
+const encryption = require('../utils/encryption')
 
 const asyncAction = (action) => (req, res, next) => action(req, res, next).catch(next)
 
 // register
 module.exports.register = [
+
     // validations rules
     validator.body('username', Error_Messages.user_is_empty).isLength({ min: 1 }),
     validator.body('username').custom(async value => {
         const usernameCheck = await userGetter.findOne({ username: value })
         if (usernameCheck) return Promise.reject(Error_Messages.username_existing)
     }),
+
     validator.body('email', Error_Messages.email_is_empty).isLength({ min: 1 }),
     validator.body('email', Error_Messages.invalid_email).isEmail(),
     validator.body('email').custom(async value => {
         const emailCheck = await userGetter.findOne({ email: value })
         if (emailCheck) return Promise.reject(Error_Messages.email_existing)
     }),
+
     validator.body('password', Error_Messages.password_is_empty).isLength({ min: 4 }),
 
     asyncAction(async (req, res) => {
@@ -28,14 +32,15 @@ module.exports.register = [
         const errors = validator.validationResult(req)
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
+        let { password } = req.body
+
         // check for admin authorization
         if (req.body.role !== 'admin') req.body.role = 'user'
 
         // encrypt password
-        const salt = bcrypt.genSaltSync(10)
-        const hash = bcrypt.hashSync(req.body.password, salt)
-        req.body.password = hash
+        password = encryption.password(password)
 
+        // create user
         const user = await userMutation.create(req.body)
         res.json(user)
     })
@@ -59,8 +64,7 @@ module.exports.login = [
         if (!user) return res.status(404).json({ errors: { msg: Error_Messages.invalid_credentials } })
 
         // check password
-        const isMatched = await bcrypt.compare(password, user.password)
-        console.log(isMatched)
+        const isMatched = encryption.compare(password, user.password)
         if (isMatched === true) {
             return res.json({
                 user: {
@@ -143,18 +147,22 @@ module.exports.updateAdmin = [
 // update User
 module.exports.updateUser = [
     // validation rules
+
     validator.body('password', Error_Messages.old_password_empty).isLength({ min: 4 }),
     validator.body('password').custom(async (value, { req }) => {
         const user = await userGetter.findById(req.params.id)
-        const isMatch = await bcrypt.compare(value, user.password)
+        if (!user) return Promise.reject(Error_Messages.user_not_found)
+        const isMatch = await encryption.compare(value, user.password)
         if (!isMatch) return Promise.reject(Error_Messages.invalid_old_password)
     }),
+
     validator.body('newPassword', Error_Messages.new_password_empty).isLength({ min: 4 }),
     validator.body('newPassword').custom((value, { req }) => {
         if (value == req.body.password) {
             return Promise.reject(Error_Messages.password_cannot_match)
         } else return true
     }),
+
     validator.body('passwordCheck', Error_Messages.check_password_empty).isLength({ min: 4 }),
     validator.body('passwordCheck').custom(async (value, { req }) => {
         if (value !== req.body.newPassword) {
@@ -163,6 +171,7 @@ module.exports.updateUser = [
     }),
 
     asyncAction(async (req, res) => {
+        
         // throw validation errors
         const errors = validator.validationResult(req);
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
@@ -173,9 +182,7 @@ module.exports.updateUser = [
 
         try {
             // encrypt password
-            const salt = bcrypt.genSaltSync(10)
-            const hash = bcrypt.hashSync(newPassword, salt)
-            const newUserPassword = hash
+            const newUserPassword = await encryption.password(newPassword)
 
             const data = { password: newUserPassword, role: user.role }
 

@@ -89,7 +89,6 @@ describe('USER', () => {
             const res = await request(server)
                 .patch(inputs.url)
                 .send(inputs.body)
-
             expect(res.statusCode).toBe(200)
             expect(res.body).toEqual(expects.update_user)
         })
@@ -98,8 +97,8 @@ describe('USER', () => {
             const res = await request(server)
                 .patch(inputs.url)
                 .send(inputs.body)
-
-            expect(res.statusCode).toBe(404)
+            console.log(res.error)
+            expect(res.statusCode).toBe(422)
             expect(res.body).toEqual(expects.update_failed)
         })
     })

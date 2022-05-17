@@ -1,3 +1,5 @@
+const encrypt = require('../../src/api/utils/encryption')
+
 exports.insertIntoDB = [
     {
         username: 'user1',
@@ -6,7 +8,7 @@ exports.insertIntoDB = [
         role: 'user',
         birth_date: '1989-05-13',
         icone: 'icone-user1',
-        password: 'password',
+        password: encrypt.password('password'),
     },
     {
         username: 'user2',
@@ -15,7 +17,7 @@ exports.insertIntoDB = [
         role: 'user',
         birth_date: '1996-05-13',
         icone: 'icone-user2',
-        password: 'password',
+        password: encrypt.password('password'),
     },
     {
         username: 'user3',
@@ -24,7 +26,7 @@ exports.insertIntoDB = [
         birth_date: '1972-05-13',
         // id: 3,
         icone: 'icone-user3',
-        password: 'password',
+        password: encrypt.password('password'),
     },
     {
         username: 'user4',
@@ -33,7 +35,7 @@ exports.insertIntoDB = [
         birth_date: '1986-05-13',
         // id: 4,
         icone: 'icone-user4',
-        password: 'password',
+        password: encrypt.password('password'),
     },
     {
         username: 'user5',
@@ -42,7 +44,7 @@ exports.insertIntoDB = [
         birth_date: '2000-05-13',
         // id: 5,
         icone: 'icone-user5',
-        password: 'password',
+        password: encrypt.password('password'),
     }
 ]
 
@@ -53,64 +55,64 @@ exports.users = {
             inputs: { url: '/api/users' },
             expects: {
                 all: [{
-                    "birth_date": expect.any(String),
-                    "created_at": expect.any(String),
-                    "description": null,
-                    "email": "user1@example.com",
-                    "icone": "icone-user1",
-                    "id": 1,
-                    "password": "password",
-                    "role": "user",
-                    "updated_at": expect.any(String),
-                    "username": "user1",
+                    birth_date: expect.any(String),
+                    created_at: expect.any(String),
+                    description: null,
+                    email: "user1@example.com",
+                    icone: "icone-user1",
+                    id: 1,
+                    password: expect.any(String),
+                    role: "user",
+                    updated_at: expect.any(String),
+                    username: "user1",
                 },
                 {
-                    "birth_date": expect.any(String),
-                    "created_at": expect.any(String),
-                    "description": null,
-                    "email": "user2@example.com",
-                    "icone": "icone-user2",
-                    "id": 2,
-                    "password": "password",
-                    "role": "user",
-                    "updated_at": expect.any(String),
-                    "username": "user2",
+                    birth_date: expect.any(String),
+                    created_at: expect.any(String),
+                    description: null,
+                    email: "user2@example.com",
+                    icone: "icone-user2",
+                    id: 2,
+                    password: expect.any(String),
+                    role: "user",
+                    updated_at: expect.any(String),
+                    username: "user2",
                 },
                 {
-                    "birth_date": expect.any(String),
-                    "created_at": expect.any(String),
-                    "description": null,
-                    "email": "user3@example.com",
-                    "icone": "icone-user3",
-                    "id": 3,
-                    "password": "password",
-                    "role": "user",
-                    "updated_at": expect.any(String),
-                    "username": "user3",
+                    birth_date: expect.any(String),
+                    created_at: expect.any(String),
+                    description: null,
+                    email: "user3@example.com",
+                    icone: "icone-user3",
+                    id: 3,
+                    password: expect.any(String),
+                    role: "user",
+                    updated_at: expect.any(String),
+                    username: "user3",
                 },
                 {
-                    "birth_date": expect.any(String),
-                    "created_at": expect.any(String),
-                    "description": null,
-                    "email": "user4@example.com",
-                    "icone": "icone-user4",
-                    "id": 4,
-                    "password": "password",
-                    "role": "user",
-                    "updated_at": expect.any(String),
-                    "username": "user4",
+                    birth_date: expect.any(String),
+                    created_at: expect.any(String),
+                    description: null,
+                    email: "user4@example.com",
+                    icone: "icone-user4",
+                    id: 4,
+                    password: expect.any(String),
+                    role: "user",
+                    updated_at: expect.any(String),
+                    username: "user4",
                 },
                 {
-                    "birth_date": expect.any(String),
-                    "created_at": expect.any(String),
-                    "description": null,
-                    "email": "user5@example.com",
-                    "icone": "icone-user5",
-                    "id": 5,
-                    "password": "password",
-                    "role": "user",
-                    "updated_at": expect.any(String),
-                    "username": "user5",
+                    birth_date: expect.any(String),
+                    created_at: expect.any(String),
+                    description: null,
+                    email: "user5@example.com",
+                    icone: "icone-user5",
+                    id: 5,
+                    password: expect.any(String),
+                    role: "user",
+                    updated_at: expect.any(String),
+                    username: "user5",
                 }]
             }
         },
@@ -125,7 +127,7 @@ exports.users = {
                     "email": "user1@example.com",
                     "icone": "icone-user1",
                     "id": 1,
-                    "password": "password",
+                    "password": expect.any(String),
                     "role": "user",
                     "updated_at": expect.any(String),
                     "username": "user1"
@@ -139,15 +141,15 @@ exports.users = {
             },
             expects: {
                 by_filter: [{
-                    birth_date: expect.any(String), 
-                    created_at: expect.any(String), 
-                    description: null, 
+                    birth_date: expect.any(String),
+                    created_at: expect.any(String),
+                    description: null,
                     email: "user1@example.com",
-                    icone: "icone-user1", 
-                    id: 1, 
-                    password: "password", 
-                    role: "user", 
-                    updated_at: expect.any(String), 
+                    icone: "icone-user1",
+                    id: 1,
+                    password: expect.any(String),
+                    role: "user",
+                    updated_at: expect.any(String),
                     username: "user1"
                 }]
             }
@@ -167,7 +169,7 @@ exports.users = {
     POST: {
         one: {
             mock: {},
-            inputs: { url: '/api/users/register', body: { email: 'userpost@gmail.com', password: 'password', username: 'userpost', role: 'test' } },
+            inputs: { url: '/api/users/register', body: { email: 'userpost@gmail.com', password: 'password', username: 'userpost', role: 'test', icone: 'icone-new-user' } },
             expects: {
                 one: {
                     email: 'userpost@gmail.com',
@@ -175,6 +177,7 @@ exports.users = {
                     updated_at: expect.any(String),
                     password: expect.any(String),
                     username: 'userpost',
+                    icone: 'icone-new-user',
                     role: 'user',
                     id: 6
                 }
@@ -225,9 +228,12 @@ exports.users = {
         update_user: {
             mocks: {},
             inputs: {
-                url: '/api/users/1',
+                url: '/api/users/3',
                 body: {
-                    password: 'newpassword'
+                    password: 'password',
+                    newPassword: 'newPassword',
+                    passwordCheck: 'newPassword',
+                    role: 'user'
                 }
             },
             expects: {
@@ -235,13 +241,13 @@ exports.users = {
                     birth_date: expect.any(String),
                     created_at: expect.any(String),
                     description: null,
-                    email: "user1@example.com",
-                    icone: "icone-user1",
-                    id: 1,
+                    email: "user3@example.com",
+                    icone: 'icone-user3',
+                    id: 3,
                     password: expect.any(String),
                     role: "user",
                     updated_at: expect.any(String),
-                    username: "user1",
+                    username: "user3",
                 }
             }
         },
@@ -250,12 +256,22 @@ exports.users = {
             inputs: {
                 url: '/api/users/-1',
                 body: {
-                    password: 'newpassword'
+                    password: 'password',
+                    newPassword: 'newPassword',
+                    passwordCheck: 'newPassword',
+                    role: 'user'
                 }
             },
             expects: {
                 update_failed: {
-                    message: 'Utilisateur introuvable'
+                    errors: {
+                        password: {
+                            location: "body",
+                            msg: "Utilisateur introuvable",
+                            param: "password",
+                            value: "password",
+                        }
+                    }
                 }
             }
         }
