@@ -2,7 +2,6 @@ const { configSecret } = require('../config/config')
 const { getters: userGetter, mutations: userMutation } = require('../models/users')
 const validator = require('express-validator')
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
 const { Error_Messages } = require('../utils/errors_handler')
 const encryption = require('../utils/encryption')
 
@@ -32,13 +31,11 @@ module.exports.register = [
         const errors = validator.validationResult(req)
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
-        let { password } = req.body
-
         // check for admin authorization
         if (req.body.role !== 'admin') req.body.role = 'user'
 
         // encrypt password
-        password = encryption.password(password)
+        req.body.password = encryption.password(req.body.password)
 
         // create user
         const user = await userMutation.create(req.body)
