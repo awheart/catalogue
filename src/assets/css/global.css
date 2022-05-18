@@ -27,25 +27,25 @@
     margin: 0;
 }
 .navbar {
-    background-color: rgb(39, 37, 37);
+    background-color: rgb(255, 255, 255);
+    border: dashed orange;
 }
 nav {
     list-style: none;
 }
 .nav-item {
-    border: solid 2px white;
+    border: solid 2px rgb(0, 0, 0);
     margin-right: 50px;
-    border-radius: 10px;
 }
 .last-nav-item {
     margin-right: 0;
 }
 .nav-link {
-    color: white;
+    color: rgb(0, 0, 0);
     font-weight: bold;
 }
 .nav-item:hover {
-    background-color: white;
+    background-color: rgb(175, 0, 0);
 }
 .nav-link:hover {
     color: rgb(139, 7, 7);
