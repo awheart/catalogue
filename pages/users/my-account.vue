@@ -15,23 +15,23 @@
         <form action="" method="post" @submit.prevent="changePassword()">
           <div class="form-group">
             
-            <label for="old-password">Ancien mot de passe</label>
+            <label for="old-password">Votre mot de passe</label>
             <input type="password" name="old-password" class="form-control" :class="{ 'is-invalid': errors }"
-              v-model="password">
+              v-model="password" placeholder="mot de passe actuel">
             <div class="invalid-feedback" v-if="errors && errors.password">
               {{ this.errors.password.msg }}
             </div>
 
             <label for="new-password">Nouveau mot de passe</label>
             <input type="password" name="new-password" class="form-control" :class="{ 'is-invalid': errors }"
-              v-model="newPassword">
+              v-model="newPassword" placeholder="nouveau mot de passe">
             <div class="invalid-feedback" v-if="errors && errors.newPassword">
               {{ this.errors.newPassword.msg }}
             </div>
 
             <label for="password-check">Répétez le nouveau mot de passe</label>
             <input type="password" name="password-check" class="form-control" :class="{ 'is-invalid': errors }"
-              v-model="passwordCheck">
+              v-model="passwordCheck" placeholder="nouveau mot de passe">
             <div class="invalid-feedback" v-if="errors && errors.passwordCheck">
               {{ this.errors.passwordCheck.msg }}
             </div>
@@ -75,10 +75,11 @@ export default {
           passwordCheck: this.passwordCheck
         })
         if (response) {
+          this.$router.push('/', 1000)
           this.$toast.success('Le mot de passe a été modifié.', { duration: 1000 })
         }
       } catch (err) {
-        return this.errors = err.response.data.errors
+        this.errors = err.response.data.errors
       }
     }
   }
