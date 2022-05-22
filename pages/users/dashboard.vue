@@ -1,6 +1,8 @@
 <template>
     <div>
-        <table class="table table-stripped table-borderes">
+        <button @click="isUser=true">Utilisateur</button>
+        <button @click="isUser=false">Recettes</button>
+        <table v-if="isUser" class="table table-stripped table-borderes">
             <thead>
                 <tr>
                     <th>Nom d'utilisateur</th>
@@ -29,6 +31,35 @@
                 </tr>
             </tbody>
         </table>
+        <table v-if="!isUser" class="table table-stripped table-borderes">
+            <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Créateur</th>
+                    <th>Date de création</th>
+                    <th>Nombre de like</th>
+                    <th>Image</th>
+                    <th>id</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="recipe of Recipes" :key="recipe.id">
+                    <td>{{ recipe.title }}</td>
+                    <td>{{ recipe.author }}</td>
+                    <td>{{ recipe.created_at }}</td>
+                    <td>{{ recipe.like }}</td>
+                    <td>{{ recipe.icone }}</td>
+                    <td>{{ recipe.id }}</td>
+                    <td>
+                        <button @click="deleteRecipe(recipe)" class="btn btn-danger">delete</button>
+                    </td>
+                    <td>
+                        <button @click="$router.push(`/recipes/${recipe.id}/details`)"
+                            class="btn btn-primary mr-3">Détails</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -38,12 +69,14 @@ export default {
     data() {
         return {
             Users: [],
-            Recipes: []
+            Recipes: [],
+            isUser: true
         }
     },
     async mounted() {
         try {
             const userData = await this.$axios.get(`/api/users`)
+            // const recipeData = await this.$axios.get('/api/recipes')
             this.Users = userData.data
         } catch (err) {
             console.error(err)
