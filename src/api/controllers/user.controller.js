@@ -122,14 +122,12 @@ module.exports.updateAdmin = [
     validator.body('username', Error_Messages.user_is_empty).isLength({ min: 1 }),
     validator.body('username').custom(async value => {
         const user = await userGetter.findOne({ username: value })
-        if (user !== null) {
-            return Promise.reject(Error_Messages.username_existing);
-        }
+        if (user) return Promise.reject(Error_Messages.username_existing)
     }),
     asyncAction(async (req, res) => {
         // throw validation errors
         const errors = validator.validationResult(req);
-        if (!errors.isEmpty()) res.status(422).json({ errors: errors.mapped() });
+        if (!errors.isEmpty()) res.status(422).json({ errors: errors.mapped() })
 
         const data = req.body
         const { id } = req.params

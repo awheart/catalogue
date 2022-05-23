@@ -1,8 +1,8 @@
 const model = require('../model')
 
-class User extends model {
+class Users extends model {
     static get tableName() {
-        return 'user'
+        return 'users'
     }
     static get idColumn() {
         return 'id'
@@ -32,4 +32,4 @@ class User extends model {
     }
 }
 
-module.exports = User
+module.exports = Users

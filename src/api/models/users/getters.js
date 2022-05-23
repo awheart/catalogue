@@ -1,5 +1,5 @@
-const User = require('./schema')
+const Users = require('./schema')
 
-exports.getAll = async filter => User.query().select().orderBy('created_at', 'desc').where(filter ? filter : "")
-exports.findById = async id => User.query().select().findById(id)
-exports.findOne = async filter => User.query().findOne(filter)
+exports.getAll = async filter => Users.query().select().orderBy('created_at', 'desc').where(filter ? filter : "")
+exports.findById = async id => Users.query().select().findById(id)
+exports.findOne = async filter => Users.query().findOne(filter)

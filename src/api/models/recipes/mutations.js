@@ -1,5 +1,5 @@
-const Recipe = require('./schema')
+const Recipes = require('./schema')
 
-exports.create = async user => Recipe.query().insert(user)
-exports.patch = async (id, inputs) => Recipe.query().updateAndFetchById(id, inputs)
-exports.deleteById = async id => Recipe.query().deleteById(id)
+exports.create = async user => Recipes.query().insert(user)
+exports.patch = async (id, inputs) => Recipes.query().updateAndFetchById(id, inputs)
+exports.deleteById = async id => Recipes.query().deleteById(id)
