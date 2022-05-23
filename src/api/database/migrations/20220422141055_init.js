@@ -27,7 +27,7 @@ exports.up = function (knex) {
                 t.string('description', 255)
                 t.timestamp('created_at').defaultTo(knex.fn.now())
                 t.timestamp('updated_at').defaultTo(knex.fn.now())
-                t.integer('id_user_role').references('id').inTable('user_role')
+                t.integer('role').references('id').inTable('user_role')
             })
             .createTable('recipes', t => {
                 t.increments('id').primary()
@@ -43,7 +43,7 @@ exports.up = function (knex) {
                 t.timestamp('created_at').defaultTo(knex.fn.now())
                 t.timestamp('updated_at').defaultTo(knex.fn.now())
                 t.integer('id_user').references('id').inTable('users')
-                t.integer('id_recipe_price').references('id').inTable('recipe_price')
+                t.integer('price').references('id').inTable('recipe_price')
             })
             .createTable('step', t => {
                 t.increments('id').primary()
