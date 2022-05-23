@@ -29,7 +29,6 @@ exports.up = function (knex) {
                 t.integer('cook_time')
                 t.integer('nbr_person')
                 t.string('image')
-                t.json('likes')
                 t.boolean('is_published')
                 t.string('price')
                 t.string('description', 255)
