@@ -2,7 +2,7 @@ const model = require('../model')
 
 class LikeRecipe extends model {
     static get tableName() {
-        return 'likeRecipe'
+        return 'like_recipe'
     }
     static get idColumn() {
         return 'id'

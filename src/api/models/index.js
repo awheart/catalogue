@@ -1,5 +1,7 @@
 module.exports = {
     Users: require('./users'),
+    UserRole: require('./user_role'),
+    RecipePrice: require('./recipe_price'),
     Recipes: require('./recipes'),
     Recipe_comment: require('./recipe_comments'),
     Steps: require('./steps'),
@@ -8,6 +10,6 @@ module.exports = {
     List_ingredients: require('./list_ingredient'),
     Like_recipe: require('./like_recipe'),
     Refresh_token: require('./refresh_tokens'),
-    Month_of_consumption: require('./month_of_consumption'),
-    MonthOfConsumtionRecipe: require('./month_of_consumption_recipe')
+    Month_of_consumption: require('./month'),
+    MonthOfConsumtionRecipe: require('./month_of_consumption')
 }

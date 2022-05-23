@@ -5,7 +5,15 @@
 exports.up = function (knex) {
     return Promise.all([
         knex.schema
-            .createTable('tag_ingredient', t => {
+            .createTable('user_role', t => {
+                t.increments('id').primary()
+                t.string('role_name')
+            })
+            .createTable('recipe_price', t => {
+                t.increments('id').primary()
+                t.string('price')
+            })
+            .createTable('tags', t => {
                 t.increments('id').primary()
                 t.string('tag_name').notNullable()
             })
@@ -15,11 +23,11 @@ exports.up = function (knex) {
                 t.string('email', 255).notNullable().unique()
                 t.string('password', 255).notNullable()
                 t.string('icone')
-                t.string('role', 255)
                 t.timestamp('birth_date')
                 t.string('description', 255)
                 t.timestamp('created_at').defaultTo(knex.fn.now())
                 t.timestamp('updated_at').defaultTo(knex.fn.now())
+                t.integer('id_user_role').references('id').inTable('user_role')
             })
             .createTable('recipes', t => {
                 t.increments('id').primary()
@@ -35,6 +43,7 @@ exports.up = function (knex) {
                 t.timestamp('created_at').defaultTo(knex.fn.now())
                 t.timestamp('updated_at').defaultTo(knex.fn.now())
                 t.integer('id_user').references('id').inTable('users')
+                t.integer('id_recipe_price').references('id').inTable('recipe_price')
             })
             .createTable('step', t => {
                 t.increments('id').primary()
@@ -42,7 +51,7 @@ exports.up = function (knex) {
                 t.integer('step_order')
                 t.integer('recipe_id').references('id').inTable('recipes')
             })
-            .createTable('month_of_consumption', t => {
+            .createTable('months', t => {
                 t.increments('id').primary()
                 t.string('month', 255)
             })
@@ -52,14 +61,14 @@ exports.up = function (knex) {
                 t.integer('inlist_order')
                 t.integer('id_recipe').references('id').inTable('recipes')
             })
-            .createTable('ingredient_recipe', t => {
+            .createTable('tag_recipe', t => {
                 t.increments('id').primary()
-                t.integer('id_tag_ingredient').references('id').inTable('tag_ingredient')
+                t.integer('id_tag').references('id').inTable('tags')
                 t.integer('id_recipe').references('id').inTable('recipes')
             })
-            .createTable('month_of_consumption_recipe', t => {
+            .createTable('month_of_consumption', t => {
                 t.increments('id').primary()
-                t.integer('id_month_of_consumption').references('id').inTable('month_of_consumption')
+                t.integer('id_month').references('id').inTable('months')
                 t.integer('id_recipe').references('id').inTable('recipes')
             })
             .createTable('like_recipe', t => {
@@ -76,7 +85,7 @@ exports.up = function (knex) {
                 t.integer('id_comment_recipe').references('id').inTable('comment_recipe').nullable()
             })
             .createTable('refresh_tokens', t => {
-                t.string('id').primary()
+                t.increments('id').primary()
                 t.string('token')
             })
     ])

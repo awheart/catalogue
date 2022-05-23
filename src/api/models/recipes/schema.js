@@ -15,12 +15,26 @@ class Recipes extends model {
                 title: { type: 'string' },
                 author: { type: 'string' },
                 description: { type: 'string' },
-                nbr_person: { type: 'integer' },
+                nbr_person: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 10,
+                },
                 is_published: { type: 'boolean' },
-                prep_time: { type: 'decimal' },
-                cook_time: { type: 'decimal' },
+                prep_time: {
+                    type: 'number',
+                    multipleOf: 0.1,
+                    minimum: 0,
+                    maximum: 10080,
+                },
+                cook_time: {
+                    type: 'number',
+                    multipleOf: 0.1,
+                    minimum: 0,
+                    maximum: 10080,
+                },
                 image: { type: 'string' },
-                price: { type: 'decimal' }
+                price: { type: 'string', enum: ['bon marché', 'accessible', 'je me fais plaisir'] }
             }
         }
     }

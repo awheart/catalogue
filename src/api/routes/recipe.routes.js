@@ -2,10 +2,10 @@ const router = require('express').Router({ strict: true })
 const recipesController = require('../controllers/recipe.controller')
 
 // get recipes
-router.get('/', recipesController.list)
+router.get('/', recipesController.getAll)
 
 // get one recipe
-router.get('/:id', recipesController.showOne)
+router.get('/:id', recipesController.findOne)
 
 // create a new recipe
 router.post('/', recipesController.create)

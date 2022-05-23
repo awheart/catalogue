@@ -2,7 +2,7 @@ const model = require('../model')
 
 class RefreshToken extends model {
     static get tableName() {
-        return 'refreshToken'
+        return 'refresh_token'
     }
     static get idColumn() {
         return 'id'

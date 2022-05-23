@@ -1,8 +1,8 @@
 const model = require('../model')
 
-class TagsIngredient extends model {
+class RecipePrice extends model {
     static get tableName() {
-        return 'tagIngredient'
+        return 'recipe_price'
     }
     static get idColumn() {
         return 'id'
@@ -12,10 +12,10 @@ class TagsIngredient extends model {
             type: 'object',
             properties: {
                 id: { type: 'integer' },
-                tag_name: { type: 'string' },
+                price: { type: 'string' }
             }
         }
     }
 }
 
-module.exports = TagsIngredient
+module.exports = RecipePrice

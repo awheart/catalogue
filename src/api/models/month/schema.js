@@ -1,8 +1,8 @@
 const model = require('../model')
 
-class RecipeComment extends model {
+class Months extends model {
     static get tableName() {
-        return 'recipe_comment'
+        return 'months'
     }
     static get idColumn() {
         return 'id'
@@ -12,13 +12,10 @@ class RecipeComment extends model {
             type: 'object',
             properties: {
                 id: { type: 'integer' },
-                content: { type: 'string' },
+                month: { type: 'string' }
             }
         }
     }
-    $beforeInsert() {
-        this.created_at = new Date()
-    }
 }
 
-module.exports = RecipeComment
+module.exports = Months

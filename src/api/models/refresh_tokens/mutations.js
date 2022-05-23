@@ -1,3 +1,3 @@
 const RefreshToken = require('./schema')
 
-exports.create = async user => RefreshToken.query().insert(user)
+exports.create = async token => RefreshToken.query().insert(token)
