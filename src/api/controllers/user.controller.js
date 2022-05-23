@@ -1,4 +1,3 @@
-const { configSecret } = require('../config/config')
 const { getters: userGetter, mutations: userMutation } = require('../models/users')
 const validator = require('express-validator')
 const jwt = require('jsonwebtoken')
@@ -71,7 +70,7 @@ module.exports.login = [
                     name: user.name,
                     role: user.role
                 },
-                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, configSecret.authSecret)
+                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, process.env.JWT_TOKEN)
             })
         } else {
             return res.status(500).json({ message: Error_Messages.invalid_credentials })
@@ -83,7 +82,7 @@ module.exports.login = [
 module.exports.getMe = asyncAction(async (req, res) => {
     const token = req.headers.authorization
     if (token) {
-        jwt.verify(token.replace(/^Bearer\s/, ''), configSecret.authSecret, (err, decoded) => {
+        jwt.verify(token.replace(/^Bearer\s/, ''), process.env.JWT_TOKEN, (err, decoded) => {
             if (err) {
                 return res.status(401).json({ message: Error_Messages.unauthorized_action })
             } else {
@@ -133,11 +132,14 @@ module.exports.updateAdmin = [
         if (!errors.isEmpty()) res.status(422).json({ errors: errors.mapped() });
 
         const data = req.body
-        const id = req.params.id
-        const user = await userGetter.findById({ _id: id })
-        if (!user) return res.status(404).json({ message: Error_Messages.user_not_found })
-        user.update({ data })
-        res.json(user)
+        const { id } = req.params
+        try {
+            const userPatched = await userMutation.patch(id, data)
+            if (!userPatched) return res.status(404).json({ message: Error_Messages.user_not_found })
+            res.json(userPatched)
+        } catch (err) {
+            console.log(err)
+        }
     })
 ]
 
@@ -149,7 +151,7 @@ module.exports.updateUser = [
     validator.body('password').custom(async (value, { req }) => {
         const user = await userGetter.findById(req.params.id)
         if (!user) return Promise.reject(Error_Messages.user_not_found)
-        const isMatch = await encryption.compare(value, user.password)
+        const isMatch = encryption.compare(value, user.password)
         if (!isMatch) return Promise.reject(Error_Messages.invalid_old_password)
     }),
 
@@ -168,20 +170,19 @@ module.exports.updateUser = [
     }),
 
     asyncAction(async (req, res) => {
-        
+
         // throw validation errors
         const errors = validator.validationResult(req);
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
         const { id } = req.params
         const { newPassword } = req.body
-        const user = await userGetter.findById(req.params.id)
 
         try {
             // encrypt password
-            const newUserPassword = await encryption.password(newPassword)
+            const newUserPassword = encryption.password(newPassword)
 
-            const data = { password: newUserPassword, role: user.role }
+            const data = { password: newUserPassword }
 
             const userPatched = await userMutation.patch(id, data)
             if (!userPatched) return res.status(404).json({ message: Error_Messages.user_not_found })

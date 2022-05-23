@@ -27,6 +27,7 @@ exports.up = function (knex) {
                 t.string('author')
                 t.integer('prep_time')
                 t.integer('cook_time')
+                t.integer('nbr_person')
                 t.string('image')
                 t.json('likes')
                 t.boolean('is_published')
@@ -54,7 +55,7 @@ exports.up = function (knex) {
             })
             .createTable('ingredient_recipe', t => {
                 t.increments('id').primary()
-                t.integer('id_tag_ingredient').references('tag_ingredient')
+                t.integer('id_tag_ingredient').references('id').inTable('tag_ingredient')
                 t.integer('id_recipe').references('id').inTable('recipes')
             })
             .createTable('month_of_consumption_recipe', t => {
@@ -75,6 +76,10 @@ exports.up = function (knex) {
                 t.integer('recipe_id').references('id').inTable('recipes')
                 t.integer('id_comment_recipe').references('id').inTable('comment_recipe').nullable()
             })
+            .createTable('refresh_tokens', t => {
+                t.string('id').primary()
+                t.string('token')
+            })
     ])
 }
 
@@ -85,6 +90,7 @@ exports.up = function (knex) {
 exports.down = function (knex) {
     return Promise.all([
         knex.schema
+            .dropTable('refresh_tokens')
             .dropTable('comment_recipe')
             .dropTable('like_recipe')
             .dropTable('month_of_consumption_recipe')

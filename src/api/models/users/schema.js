@@ -1,8 +1,8 @@
 const model = require('../model')
 
-class users extends model {
+class User extends model {
     static get tableName() {
-        return 'users'
+        return 'user'
     }
     static get idColumn() {
         return 'id'
@@ -18,8 +18,7 @@ class users extends model {
                 icone: { type: 'string' },
                 role: {
                     type: 'string',
-                    enum: ['admin', 'user'],
-                    default: 'user'
+                    enum: ['user', 'admin']
                 }
             }
         }
@@ -33,4 +32,4 @@ class users extends model {
     }
 }
 
-module.exports = users
+module.exports = User
