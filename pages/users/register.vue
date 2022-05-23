@@ -5,14 +5,11 @@
 
     <div class="row">
       <div class="col-md-6">
-        <form action=""
-          method="post"
-          @submit.prevent="register()">
+        <form action="" method="post" @submit.prevent="register()">
 
           <div class="form-group">
             <label for="">Nom d'utilisateur</label>
-            <input type="text" class="form-control"
-              :class="{ 'is-invalid': errors && errors.username }"
+            <input type="text" class="form-control" :class="{ 'is-invalid': errors && errors.username }"
               v-model="username" required>
             <div class="invalid-feedback" v-if="errors && errors.username">
               {{ errors.username.msg }}
@@ -21,9 +18,8 @@
 
           <div class="form-group">
             <label for="">Email</label>
-            <input type="text" class="form-control"
-              :class="{ 'is-invalid': errors && errors.email }"
-              v-model="email" required>
+            <input type="email" class="form-control" :class="{ 'is-invalid': errors && errors.email }" v-model="email"
+              required>
             <div class="invalid-feedback" v-if="errors && errors.email">
               {{ errors.email.msg }}
             </div>
@@ -31,8 +27,7 @@
 
           <div class="form-group">
             <label for="">Password</label>
-            <input type="password" class="form-control"
-              :class="{ 'is-invalid': errors && errors.password }"
+            <input type="password" class="form-control" :class="{ 'is-invalid': errors && errors.password }"
               v-model="password" required>
             <div class="invalid-feedback" v-if="errors && errors.password">
               {{ errors.password.msg }}
@@ -41,13 +36,12 @@
 
           <div class="form-group">
             <label for="">Rôle (optional)</label>
-            <input type="text" class="form-control"
-              :class="{ 'is-invalid': errors && errors.role }"
-              v-model="role" placeholder="utilisateur">
+            <input type="text" class="form-control" :class="{ 'is-invalid': errors && errors.role }" v-model="role"
+              placeholder="utilisateur">
             <div class="invalid-feedback" v-if="errors && errors.role">
               {{ errors.role.msg }}
             </div>
-        </div>
+          </div>
 
           <input type="submit" value="S'inscrire et se connecter" class="btn btn-primary mr-3">
           <nuxt-link to="/" class="btn btn-secondary mr-3">Cancel</nuxt-link>
@@ -63,36 +57,43 @@ export default {
   name: 'RegisterPage',
   middleware: 'auth',
   auth: 'guest',
-  data(){
-    return{
-      errors:null,
-      username:null,
-      email:null,
+  data() {
+    return {
+      errors: null,
+      username: null,
+      email: null,
       role: null,
-      password:null,
-      status:false
+      password: null
     }
   },
-  methods:{
-    async register(){
-      const registerSuccessful = await this.$axios.post('/api/users/register', {
+  methods: {
+    async register() {
+      try {
+        const registerSuccessful = await this.$axios.post('/api/users/register', {
           username: this.username,
           email: this.email,
           password: this.password,
-          role: this.role,
+          role: this.role
         })
         if (registerSuccessful) {
-          this.$toast.success('Successfully registered and logged in!', { duration: 2000 })
+          console.log(this.id)
+          this.$toast.success('Inscription réussie, bienvenue !', { duration: 2000 })
           this.$router.push({ path: '/' })
           // log in if successfully registered
-          await this.$auth.loginWith('local', {
-              data: {
-                email: this.email,
-                password: this.password
-              }
-            })
-          }
-        }  
+          const loginSuccessful = await this.$auth.loginWith('local', {
+            data: {
+              email: this.email,
+              password: this.password,
+              id: this.id
+            }
+          })
+          if (loginSuccessful) setTimeout(() => this.$toast.info('Vous êtes maintenant connecté.', { duration: 2000 }), 2001)
+        }
+      } catch (errors) {
+        const { data } = errors.response
+        this.errors = data.errors
+      }
     }
+  }
 }
 </script>
