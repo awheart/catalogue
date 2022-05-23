@@ -132,11 +132,14 @@ module.exports.updateAdmin = [
         if (!errors.isEmpty()) res.status(422).json({ errors: errors.mapped() });
 
         const data = req.body
-        const id = req.params.id
-        const user = await userGetter.findById({ _id: id })
-        if (!user) return res.status(404).json({ message: Error_Messages.user_not_found })
-        user.update({ data })
-        res.json(user)
+        const { id } = req.params
+        try {
+            const userPatched = await userMutation.patch(id, data)
+            if (!userPatched) return res.status(404).json({ message: Error_Messages.user_not_found })
+            res.json(userPatched)
+        } catch (err) {
+            console.log(err)
+        }
     })
 ]
 
@@ -167,7 +170,7 @@ module.exports.updateUser = [
     }),
 
     asyncAction(async (req, res) => {
-        
+
         // throw validation errors
         const errors = validator.validationResult(req);
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
