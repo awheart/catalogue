@@ -194,8 +194,7 @@ module.exports.updateUser = [
 // delete User
 module.exports.delete = asyncAction(async (req, res) => {
     const id = req.params.id
-    const article = await userGetter.findById(id)
-    if (!article) return res.status(404).json({ message: Error_Messages.user_not_found })
-    await userMutation.deleteById(id)
+    const userDeleted = await userMutation.deleteById(id)
+    if (!userDeleted) return res.status(404).json({ message: Error_Messages.user_not_found })
     res.json('L\'utilisateur a bien été supprimé').send()
 })
