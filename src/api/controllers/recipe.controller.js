@@ -32,16 +32,14 @@ module.exports.create = [
 
         // throw validation errors
         const errors = validator.validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.mapped() });
-        }
+        if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
         const recipe = new recipeModel(req.body, err => {
             if (err) return res.status(500).json({ message: Error_Messages.error_saving, error: err })
         })
-        recipe.save((err, recipe) => {
+        recipe.save((err, recipeSaved) => {
             if (err) return res.status(500).json({ message: Error_Messages.error_saving, error: err })
-            res.json(recipe)
+            res.json(recipeSaved)
         })
 
     })
