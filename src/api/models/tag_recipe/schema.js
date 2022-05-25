@@ -12,6 +12,8 @@ class TagRecipe extends model {
             type: 'object',
             properties: {
                 id: { type: 'integer' },
+                tag_id: { type: 'integer' },
+                recipe_id: { type: 'integer' }
             }
         }
     }
