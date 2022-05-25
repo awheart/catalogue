@@ -11,7 +11,9 @@ class MonthOfConsumtion extends model {
         return {
             type: 'object',
             properties: {
-                id: { type: 'integer' }
+                id: { type: 'integer' },
+                month_id: { type: 'integer' },
+                recipe_id: { type: 'integer' }
             }
         }
     }
