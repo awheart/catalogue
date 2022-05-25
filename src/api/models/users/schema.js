@@ -1,4 +1,5 @@
 const model = require('../model')
+const UserRole = require('../user_role/schema')
 
 class Users extends model {
     static get tableName() {
@@ -15,10 +16,18 @@ class Users extends model {
                 username: { type: 'string' },
                 email: { type: 'string' },
                 password: { type: 'string' },
-                icone: { type: 'string' },
-                role: {
-                    type: 'string',
-                    enum: ['user', 'admin']
+                icone: { type: 'string' }
+            }
+        }
+    }
+    static get relationMappings() {
+        return {
+            role: {
+                relation: model.HasOneRelation,
+                modelClass: UserRole,
+                join: {
+                    from: 'users.id',
+                    to: 'user_role.id'
                 }
             }
         }
