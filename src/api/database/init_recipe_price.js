@@ -2,7 +2,7 @@ const { getters: recipePriceGetter, mutations: recipePriceMutations } = require(
 
 const initPrice = async () => {
     try {
-        const existPrice = await recipePriceGetter.getAll('')
+        const existPrice = await recipePriceGetter.getAll()
         if (existPrice.length === 0) {
             await recipePriceMutations.create({ 'price': 'bon marché' })
             await recipePriceMutations.create({ 'price': 'accessible' })
