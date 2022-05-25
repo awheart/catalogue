@@ -11,7 +11,9 @@ class LikeRecipe extends model {
         return {
             type: 'object',
             properties: {
-                id: { type: 'integer' }
+                id: { type: 'integer' },
+                user_id: { type: 'integer' },
+                recipe_id: { type: 'integer' }
             }
         }
     }
