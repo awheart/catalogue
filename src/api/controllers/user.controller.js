@@ -1,4 +1,6 @@
 const { getters: userGetter, mutations: userMutation } = require('../models/users')
+const { getters: userRoleGetter } = require('../models/user_role')
+const { getters: tokenGetters, mutations: tokenMutations } = require('../models/refresh_tokens')
 const validator = require('express-validator')
 const jwt = require('jsonwebtoken')
 const { Error_Messages } = require('../utils/errors_handler')
@@ -30,14 +32,21 @@ module.exports.register = [
         const errors = validator.validationResult(req)
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
-        // check for admin authorization
-        if (req.body.role !== 'admin') req.body.role = 'user'
+        // check role
+        if (req.body.role) {
+            const role = await userRoleGetter.findOne({ role_name: req.body.role })
+            req.body.role = role.id
+        } else {
+            const role = await userRoleGetter.findOne({ role_name: 'user' })
+            req.body.role = role.id
+        }
 
         // encrypt password
         req.body.password = encryption.password(req.body.password)
 
         // create user
         const user = await userMutation.create(req.body)
+        if (!user) return res.json({ message: Error_Messages.unauthorized_action })
         res.json(user)
     })
 ]
@@ -70,7 +79,7 @@ module.exports.login = [
                     name: user.name,
                     role: user.role
                 },
-                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, process.env.JWT_TOKEN)
+                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, process.env.JWT_TOKEN, { expiresIn: '15m' })
             })
         } else {
             return res.status(500).json({ message: Error_Messages.invalid_credentials })
