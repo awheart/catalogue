@@ -5,11 +5,11 @@ module.exports = {
     Recipes: require('./recipes'),
     Recipe_comment: require('./recipe_comments'),
     Steps: require('./steps'),
-    Ingredients: require('./ingredient'),
-    Tags_ingredient: require('tags_ingredient'),
+    Tags: require('./tags'),
+    Tag_recipe: require('./tag_recipe'),
     List_ingredients: require('./list_ingredient'),
     Like_recipe: require('./like_recipe'),
     Refresh_token: require('./refresh_tokens'),
-    Month_of_consumption: require('./month'),
+    Month_of_consumption: require('./months'),
     MonthOfConsumtionRecipe: require('./month_of_consumption')
 }
