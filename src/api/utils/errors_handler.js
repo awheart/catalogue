@@ -14,7 +14,7 @@ exports.Error_Messages = Object.freeze({
     user_existing: 'Utilisateur déjà existant',
     password_is_empty: 'Le mot de passe doit contenir au moins 4 caractères.',
     password_is_needed: 'Veuillez entrer votre mot de passe.',
-    invalid_credentials: 'L\'email ou le mot de passe est incorrecte.',
+    invalid_credentials: 'Mauvais identifiants de connexion.',
     error_saving: 'Une erreur est survenue durant la sauvegarde.',
     incorrect_params: 'Paramètres incorrectes',
     unauthorized_action: 'Vous n\'avez pas les permissions requises pour faire ceci.',
