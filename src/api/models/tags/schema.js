@@ -2,7 +2,7 @@ const model = require('../model')
 
 class Tags extends model {
     static get tableName() {
-        return 'tag'
+        return 'tags'
     }
     static get idColumn() {
         return 'id'
