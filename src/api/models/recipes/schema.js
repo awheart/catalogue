@@ -50,10 +50,10 @@ class Recipes extends model {
                         from: 'tag_recipe.recipe_id',
                         to: 'tag_recipe.tag_id'
                     },
-                    to: 'tag.id'
+                    to: 'tags.id'
                 }
             },
-            months_of_consumption: {
+            months: {
                 relation: model.ManyToManyRelation,
                 modelClass: Months,
                 join: {
@@ -70,7 +70,7 @@ class Recipes extends model {
                 modelClass: ListIngredient,
                 join: {
                     from: 'recipes.id',
-                    to: 'list_ingredient.id'
+                    to: 'list_ingredient.recipe_id'
                 }
             },
             comments: {
@@ -81,7 +81,7 @@ class Recipes extends model {
                     to: 'comments.recipe_id'
                 }
             },
-            likes: {
+            user_like: {
                 relation: model.ManyToManyRelation,
                 modelClass: Users,
                 join: {
