@@ -25,5 +25,7 @@ exports.Error_Messages = Object.freeze({
     new_password_empty: 'Veuillez entrer un nouveau mot de passe.',
     check_password_empty: 'Veuillez répéter votre nouveau mot de passe.',
     password_cannot_match: 'Le nouveau mot de passe doit être différent du mot de passe actuel.',
-    invalid_filter: 'Filtre incorrect.'
+    invalid_filter: 'Filtre incorrect.',
+    not_integer: 'Veuillez entrez un nombre entier',
+    already_liked: 'La recette est déjà dans vos favoris.'
 })
