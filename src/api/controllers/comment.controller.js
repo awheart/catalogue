@@ -1,28 +1,25 @@
 const { getters: commentGetters, mutations: commentMutations } = require('../models/comments')
+const { getters: recipeGetters } = require('../models/recipes')
+const { getters: userGetters } = require('../models/users')
 const validator = require('express-validator')
 const { Error_Messages } = require('../utils/errors_handler')
 
 const asyncAction = (action) => (req, res, next) => action(req, res, next).catch(next)
 
-// get all comments
-module.exports.getAll = asyncAction(async (req, res) => {
-    const filter = req.query
-    const comments = await commentGetters.getAll(filter)
-    res.json(comments)
-})
-
-// get one comment
-module.exports.findOne = asyncAction(async (req, res) => {
-    const id = req.params.id
-    const comment = await commentGetters.findById(id)
-    if (!comment) return res.status(404).json({ message: Error_Messages.comment_not_found })
-    res.json(comment)
-})
-
 // create comment
 module.exports.create = [
     // validations rules
     validator.body('content', Error_Messages.description_is_empty).isLength({ min: 1 }),
+    validator.body('user_id', Error_Messages.not_integer).isInt(),
+    validator.body('user_id').custom(async value => {
+        const user = await userGetters.findById(value)
+        if (!user) return Promise.reject({ message: Error_Messages.user_not_found })
+    }),
+    validator.body('recipe_id', Error_Messages.not_integer).isInt(),
+    validator.body('recipe_id').custom(async value => {
+        const recipe = await recipeGetters.findById(value)
+        if (!recipe) return Promise.reject({ message: Error_Messages.recipe_not_found })
+    }),
 
     asyncAction(async (req, res) => {
         // throw validation errors
@@ -49,7 +46,6 @@ module.exports.update = [
 
         const data = req.body
         const id = req.params.id
-
         try {
             const commentPatched = await commentMutations.patch(id, data)
             if (!commentPatched) return res.status(404).json({ message: Error_Messages.comment_not_found })
