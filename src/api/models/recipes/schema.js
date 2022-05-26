@@ -1,11 +1,4 @@
-const ListIngredient = require('../list_ingredient/schema')
 const model = require('../model')
-const Months = require('../months/schema')
-const RecipeComment = require('../recipe_comments/schema')
-const RecipePrice = require('../recipe_price/schema')
-const Step = require('../steps/schema')
-const Tags = require('../tags/schema')
-const Users = require('../users/schema')
 
 class Recipes extends model {
     static get tableName() {
@@ -15,12 +8,20 @@ class Recipes extends model {
         return 'id'
     }
     static get relationMappings() {
+        // import here to avoid require loop
+        const ListIngredient = require('../list_ingredient/schema')
+        const Months = require('../months/schema')
+        const Comments = require('../comments/schema')
+        const RecipePrice = require('../recipe_price/schema')
+        const Step = require('../steps/schema')
+        const Tags = require('../tags/schema')
+        const Users = require('../users/schema')
         return {
             author: {
                 relation: model.BelongsToOneRelation,
                 modelClass: Users,
                 join: {
-                    from: 'recipes.author_id',
+                    from: 'recipes.user_id',
                     to: 'users.id'
                 }
             },
@@ -32,12 +33,12 @@ class Recipes extends model {
                     to: 'recipe_price.id'
                 }
             },
-            step: {
+            steps: {
                 relation: model.HasManyRelation,
                 modelClass: Step,
                 join: {
                     from: 'recipes.id',
-                    to: 'step.id'
+                    to: 'step.recipe_id'
                 }
             },
             tags: {
@@ -74,10 +75,10 @@ class Recipes extends model {
             },
             comments: {
                 relation: model.HasManyRelation,
-                modelClass: RecipeComment,
+                modelClass: Comments,
                 join: {
                     from: 'recipes.id',
-                    to: 'recipe_comment.id'
+                    to: 'comments.recipe_id'
                 }
             },
             likes: {
@@ -87,7 +88,7 @@ class Recipes extends model {
                     from: 'recipes.id',
                     through: {
                         from: 'like_recipe.recipe_id',
-                        to: 'like_recipe.month_id'
+                        to: 'like_recipe.user_id'
                     },
                     to: 'users.id'
                 }
@@ -121,7 +122,7 @@ class Recipes extends model {
                 },
                 image: { type: 'string' },
                 price_id: { type: 'integer' },
-                author_id: { type: 'integer' }
+                user_id: { type: 'integer' }
             }
         }
     }
