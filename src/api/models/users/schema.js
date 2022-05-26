@@ -1,5 +1,5 @@
 const model = require('../model')
-const UserRole = require('../user_role/schema')
+
 
 class Users extends model {
     static get tableName() {
@@ -16,18 +16,39 @@ class Users extends model {
                 username: { type: 'string' },
                 email: { type: 'string' },
                 password: { type: 'string' },
-                icone: { type: 'string' }
+                icone: { type: 'string' },
+                role_id: { type: 'integer' }
             }
         }
     }
     static get relationMappings() {
+        // import here to avoid require loop
+        const Recipes = require('../recipes/schema')
+        const RecipeComment = require('../comments/schema')
+        const UserRole = require('../user_role/schema')
         return {
             role: {
-                relation: model.HasOneRelation,
+                relation: model.BelongsToOneRelation,
                 modelClass: UserRole,
                 join: {
-                    from: 'users.id',
+                    from: 'users.role_id',
                     to: 'user_role.id'
+                }
+            },
+            recipes: {
+                relation: model.HasManyRelation,
+                modelClass: Recipes,
+                join: {
+                    from: 'users.id',
+                    to: 'recipes.user_id'
+                }
+            },
+            comments: {
+                relation: model.HasManyRelation,
+                modelClass: RecipeComment,
+                join: {
+                    from: 'users.id',
+                    to: 'comments.user_id'
                 }
             }
         }
