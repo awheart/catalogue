@@ -27,18 +27,18 @@ exports.up = function (knex) {
                 t.string('description', 255)
                 t.timestamp('created_at').defaultTo(knex.fn.now())
                 t.timestamp('updated_at').defaultTo(knex.fn.now())
-                t.integer('role').references('id').inTable('user_role')
+                t.integer('role_id').references('id').inTable('user_role')
             })
             .createTable('recipes', t => {
                 t.increments('id').primary()
-                t.string('title', 255).notNullable().unique()
-                t.integer('author_id').references('id').inTable('users')
+                t.string('title', 255)
+                t.integer('user_id').references('id').inTable('users')
                 t.integer('price_id').references('id').inTable('recipe_price')
-                t.integer('prep_time')
-                t.integer('cook_time')
+                t.float('prep_time')
+                t.float('cook_time')
                 t.integer('nbr_person')
                 t.string('image')
-                t.boolean('is_published')
+                t.boolean('is_published').defaultTo('false')
                 t.string('description', 255)
                 t.timestamp('created_at').defaultTo(knex.fn.now())
                 t.timestamp('updated_at').defaultTo(knex.fn.now())
@@ -47,7 +47,7 @@ exports.up = function (knex) {
                 t.increments('id').primary()
                 t.string('content', 255)
                 t.integer('step_order')
-                t.integer('recipe').references('id').inTable('recipes')
+                t.integer('recipe_id').references('id').inTable('recipes')
             })
             .createTable('months', t => {
                 t.increments('id').primary()
@@ -96,6 +96,8 @@ exports.up = function (knex) {
 exports.down = function (knex) {
     return Promise.all([
         knex.schema
+        .dropTable('user_role')
+        .dropTable('recipe_price')
             .dropTable('refresh_tokens')
             .dropTable('comment_recipe')
             .dropTable('like_recipe')
