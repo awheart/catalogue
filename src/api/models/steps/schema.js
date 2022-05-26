@@ -13,7 +13,8 @@ class Step extends model {
             properties: {
                 id: { type: 'integer' },
                 content: { type: 'string' },
-                step_order: { type: 'integer' }
+                step_order: { type: 'integer' },
+                recipe_id: { type: 'integer' }
             }
         }
     }
