@@ -1,6 +1,5 @@
 const model = require('../model')
 
-
 class Users extends model {
     static get tableName() {
         return 'users'
@@ -49,6 +48,18 @@ class Users extends model {
                 join: {
                     from: 'users.id',
                     to: 'comments.user_id'
+                }
+            },
+            liked_recipes: {
+                relation: model.ManyToManyRelation,
+                modelClass: Recipes,
+                join: {
+                    from: 'users.id',
+                    through: {
+                        from: 'like_recipe.user_id',
+                        to: 'like_recipe.recipe_id'
+                    },
+                    to: 'recipes.id'
                 }
             }
         }
