@@ -74,17 +74,12 @@ exports.up = function (knex) {
                 t.integer('user_id').references('id').inTable('users')
                 t.integer('recipe_id').references('id').inTable('recipes')
             })
-            .createTable('comment_recipe', t => {
+            .createTable('comments', t => {
                 t.increments('id').primary()
                 t.string('content', 255)
                 t.timestamp('created_at').defaultTo(knex.fn.now())
-                t.integer('user_id').references('id').inTable('users')
-                t.integer('recipe_id').references('id').inTable('recipes')
-                t.integer('comment_recipe_id').references('id').inTable('comment_recipe').nullable()
-            })
-            .createTable('refresh_tokens', t => {
-                t.increments('id').primary()
-                t.string('token')
+                t.integer('user_id').references('id').inTable('users').onDelete('SET NULL')
+                t.integer('recipe_id').references('id').inTable('recipes').onDelete('SET NULL')
             })
     ])
 }
@@ -96,18 +91,17 @@ exports.up = function (knex) {
 exports.down = function (knex) {
     return Promise.all([
         knex.schema
+        .dropTable('comments')
+        .dropTable('like_recipe')
+        .dropTable('month_of_consumption')
+        .dropTable('tag_recipe')
+        .dropTable('list_ingredient')
+        .dropTable('months')
+        .dropTable('step')
+        .dropTable('recipes')
+        .dropTable('users')
+        .dropTable('tags')
         .dropTable('user_role')
         .dropTable('recipe_price')
-            .dropTable('refresh_tokens')
-            .dropTable('comment_recipe')
-            .dropTable('like_recipe')
-            .dropTable('month_of_consumption_recipe')
-            .dropTable('ingredient_recipe')
-            .dropTable('list_ingredient')
-            .dropTable('month_of_consumption')
-            .dropTable('step')
-            .dropTable('recipes')
-            .dropTable('users')
-            .dropTable('tag_ingredient')
     ])
 }
