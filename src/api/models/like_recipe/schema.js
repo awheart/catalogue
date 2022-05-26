@@ -1,4 +1,6 @@
 const model = require('../model')
+const Recipes = require('../recipes/schema')
+const Users = require('../users/schema')
 
 class LikeRecipe extends model {
     static get tableName() {
