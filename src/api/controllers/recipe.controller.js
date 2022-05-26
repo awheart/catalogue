@@ -1,4 +1,5 @@
 const { getters: recipeGetters, mutations: recipeMutations } = require('../models/recipes')
+const { deleteRecipeCascade: deleteRecipeRelation } = require('../utils/delete_cascade')
 const validator = require('express-validator')
 const { Error_Messages } = require('../utils/errors_handler')
 
@@ -74,8 +75,9 @@ module.exports.update = [
 
 // delete recipe
 module.exports.delete = asyncAction(async (req, res) => {
-    const id = req.params.id
-    const recipeDeleted = await recipeMutations.deleteById(id)
+    const recipe_id = req.params.id
+    await deleteRecipeRelation(recipe_id)
+    const recipeDeleted = await recipeMutations.deleteById(recipe_id)
     if (!recipeDeleted) return res.status(404).json({ message: Error_Messages.recipe_not_found })
     res.json('recipe deleted').send()
 })
