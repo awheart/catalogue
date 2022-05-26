@@ -1,18 +1,17 @@
 const server = require('../../src/api/server')
 const request = require('supertest')
 const data = require('./user.data')
+const { initTables } = require('../../src/api/database/db')
 const { initializeDatabase, destroyDatabase, migrateUp, migrateDown, insertUsers } = require('../helpers/database')
 
 describe('USER', () => {
     beforeAll(async () => {
-        await initializeDatabase()
         await migrateUp()
+        await initTables()
         await insertUsers()
     })
-    afterAll(async () => {
-        await migrateDown()
-        await destroyDatabase()
-    })
+    afterAll(async () => migrateDown())
+
 
     describe('GET', () => {
         test('all', async () => {
