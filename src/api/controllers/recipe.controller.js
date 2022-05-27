@@ -1,4 +1,5 @@
 const { getters: recipeGetters, mutations: recipeMutations } = require('../models/recipes')
+const { getters: userGetters } = require('../models/users')
 const { deleteRecipeCascade: deleteRecipeRelation } = require('../utils/delete_cascade')
 const validator = require('express-validator')
 const { Error_Messages } = require('../utils/errors_handler')
@@ -28,6 +29,12 @@ module.exports.create = [
         const titleCheck = await recipeGetters.findOne({ title: value })
         if (titleCheck) return Promise.reject(Error_Messages.title_existing)
     }),
+    validator.body('user_id', Error_Messages.not_integer).isInt(),
+    validator.body('user_id').custom(async value => {
+        const user = await userGetters.findById(value)
+        if (!user) return Promise.reject({ message: Error_Messages.user_not_found })
+    }),
+    validator.body('steps', Error_Messages.step_is_needed).isLength({ min: 1 }),
     validator.body('description', Error_Messages.description_is_empty).isLength({ min: 1 }),
     asyncAction(async (req, res) => {
 
