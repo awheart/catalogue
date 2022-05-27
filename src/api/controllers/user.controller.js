@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { getters: userGetters, mutations: userMutations } = require('../models/users')
 const { getters: userRoleGetters } = require('../models/user_role')
 const validator = require('express-validator')

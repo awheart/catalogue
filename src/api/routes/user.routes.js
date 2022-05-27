@@ -1,5 +1,6 @@
 const router = require('express').Router({ strict: true })
 const userController = require('../controllers/user.controller')
+const { isAuthenticated } = require('../utils/verify_identity')
 
 // register
 router.post('/register', userController.register)
@@ -8,24 +9,24 @@ router.post('/register', userController.register)
 router.post('/login', userController.login)
 
 // get user
-router.get('/user', userController.getMe)
+router.get('/user', isAuthenticated, userController.getMe)
 
 // get one user by id
-router.get('/:id', userController.findById)
+router.get('/:id', isAuthenticated, userController.findById)
 
 // get one user by filter
-router.get(`/user/who`, userController.findOne)
+router.get(`/user/who`, isAuthenticated, userController.findOne)
 
 // get all users
-router.get('/', userController.getAll)
+router.get('/', isAuthenticated, userController.getAll)
 
 // update user as user
-router.patch('/:id', userController.updateUser)
+router.patch('/:id', isAuthenticated, userController.updateUser)
 
 // update user as admin
-router.patch('/admin/:id', userController.updateAdmin)
+router.patch('/admin/:id', isAuthenticated, userController.updateAdmin)
 
 // delete user
-router.delete('/:id', userController.delete)
+router.delete('/:id', isAuthenticated, userController.delete)
 
 module.exports = router

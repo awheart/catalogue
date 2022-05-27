@@ -64,7 +64,6 @@ exports.users = {
                     comments: [],
                     recipes: [],
                     role: {
-                        id: 2,
                         role_name: 'admin'
                     }
                 },
@@ -83,7 +82,6 @@ exports.users = {
                     liked_recipes: [],
                     recipes: [],
                     role: {
-                        id: 1,
                         role_name: 'user'
                     }
                 },
@@ -102,7 +100,6 @@ exports.users = {
                     liked_recipes: [],
                     recipes: [],
                     role: {
-                        id: 1,
                         role_name: 'user'
                     }
                 },
@@ -121,7 +118,6 @@ exports.users = {
                     liked_recipes: [],
                     recipes: [],
                     role: {
-                        id: 1,
                         role_name: 'user'
                     }
                 },
@@ -140,7 +136,6 @@ exports.users = {
                     liked_recipes: [],
                     recipes: [],
                     role: {
-                        id: 1,
                         role_name: 'user'
                     }
                 },
@@ -159,7 +154,6 @@ exports.users = {
                     liked_recipes: [],
                     recipes: [],
                     role: {
-                        id: 1,
                         role_name: 'user'
                     }
                 }]
@@ -178,10 +172,12 @@ exports.users = {
                     id: 2,
                     password: expect.any(String),
                     role_id: 1,
+                    comments: [],
+                    liked_recipes: [],
+                    recipes: [],
                     updated_at: expect.any(String),
                     username: "user1",
                     role: {
-                        id: 1,
                         role_name: 'user'
                     }
                 }
@@ -208,7 +204,6 @@ exports.users = {
                     liked_recipes: [],
                     comments: [],
                     role: {
-                        id: 1,
                         role_name: 'user'
                     }
                 }]
