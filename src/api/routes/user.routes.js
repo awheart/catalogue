@@ -1,6 +1,5 @@
 const router = require('express').Router({ strict: true })
 const userController = require('../controllers/user.controller')
-const { isAuthenticated } = require('../config/config')
 
 // register
 router.post('/register', userController.register)
@@ -9,7 +8,7 @@ router.post('/register', userController.register)
 router.post('/login', userController.login)
 
 // get user
-router.get('/user', isAuthenticated, userController.getMe)
+router.get('/user', userController.getMe)
 
 // get one user by id
 router.get('/:id', userController.findById)
