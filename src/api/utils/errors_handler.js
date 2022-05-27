@@ -36,5 +36,6 @@ exports.Error_Messages = Object.freeze({
     month_already_added: 'La recette possède déjà ce mois.',
     month_not_found: 'Ce mois n\'existe pas.',
     ingredient_not_found: 'Cet ingrédient n\'existe pas ou n\'appartient pas à cette recette.',
-    like_not_found: 'Vous ne pouvez retirer cette recette de vos favoris car elle ne s\'y trouve pas'
+    like_not_found: 'Vous ne pouvez retirer cette recette de vos favoris car elle ne s\'y trouve pas',
+    step_is_needed: 'Une étape est nécessaire pour créer une recette.'
 })
