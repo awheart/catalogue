@@ -1,13 +1,14 @@
 module.exports = {
     Users: require('./users'),
+    UserRole: require('./user_role'),
+    RecipePrice: require('./recipe_price'),
     Recipes: require('./recipes'),
-    Recipe_comment: require('./recipe_comments'),
+    Recipe_comment: require('./comments'),
     Steps: require('./steps'),
-    Ingredients: require('./ingredient'),
-    Tags_ingredient: require('tags_ingredient'),
+    Tags: require('./tags'),
+    Tag_recipe: require('./tag_recipe'),
     List_ingredients: require('./list_ingredient'),
     Like_recipe: require('./like_recipe'),
-    Refresh_token: require('./refresh_tokens'),
-    Month_of_consumption: require('./month_of_consumption'),
-    MonthOfConsumtionRecipe: require('./month_of_consumption_recipe')
+    Month_of_consumption: require('./months'),
+    MonthOfConsumtionRecipe: require('./month_of_consumption')
 }

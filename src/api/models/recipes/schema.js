@@ -1,11 +1,99 @@
 const model = require('../model')
 
-class Recipe extends model {
+class Recipes extends model {
     static get tableName() {
-        return 'recipe'
+        return 'recipes'
     }
     static get idColumn() {
         return 'id'
+    }
+    static get relationMappings() {
+        // import here to avoid require loop
+        const ListIngredient = require('../list_ingredient/schema')
+        const Months = require('../months/schema')
+        const Comments = require('../comments/schema')
+        const RecipePrice = require('../recipe_price/schema')
+        const Step = require('../steps/schema')
+        const Tags = require('../tags/schema')
+        const Users = require('../users/schema')
+        return {
+            author: {
+                relation: model.BelongsToOneRelation,
+                modelClass: Users,
+                join: {
+                    from: 'recipes.user_id',
+                    to: 'users.id'
+                }
+            },
+            price: {
+                relation: model.BelongsToOneRelation,
+                modelClass: RecipePrice,
+                join: {
+                    from: 'recipes.price_id',
+                    to: 'recipe_price.id'
+                }
+            },
+            steps: {
+                relation: model.HasManyRelation,
+                modelClass: Step,
+                join: {
+                    from: 'recipes.id',
+                    to: 'step.recipe_id'
+                }
+            },
+            tags: {
+                relation: model.ManyToManyRelation,
+                modelClass: Tags,
+                join: {
+                    from: 'recipes.id',
+                    through: {
+                        from: 'tag_recipe.recipe_id',
+                        to: 'tag_recipe.tag_id'
+                    },
+                    to: 'tags.id'
+                }
+            },
+            months: {
+                relation: model.ManyToManyRelation,
+                modelClass: Months,
+                join: {
+                    from: 'recipes.id',
+                    through: {
+                        from: 'month_of_consumption.recipe_id',
+                        to: 'month_of_consumption.month_id'
+                    },
+                    to: 'months.id'
+                }
+            },
+            list_ingredient: {
+                relation: model.HasManyRelation,
+                modelClass: ListIngredient,
+                join: {
+                    from: 'recipes.id',
+                    to: 'list_ingredient.recipe_id'
+                }
+            },
+            comments: {
+                relation: model.HasManyRelation,
+                modelClass: Comments,
+                join: {
+                    from: 'recipes.id',
+                    to: 'comments.recipe_id'
+                }
+            },
+            user_like: {
+                relation: model.ManyToManyRelation,
+                modelClass: Users,
+                join: {
+                    from: 'recipes.id',
+                    through: {
+                        from: 'like_recipe.recipe_id',
+                        to: 'like_recipe.user_id'
+                    },
+                    to: 'users.id'
+                }
+            }
+        }
     }
     static get jsonSchema() {
         return {
@@ -13,14 +101,28 @@ class Recipe extends model {
             properties: {
                 id: { type: 'integer' },
                 title: { type: 'string' },
-                author: { type: 'string' },
                 description: { type: 'string' },
-                nbr_person: { type: 'integer' },
+                nbr_person: {
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 10,
+                },
                 is_published: { type: 'boolean' },
-                prep_time: { type: 'decimal' },
-                cook_time: { type: 'decimal' },
+                prep_time: {
+                    type: 'number',
+                    multipleOf: 0.1,
+                    minimum: 0,
+                    maximum: 10080,
+                },
+                cook_time: {
+                    type: 'number',
+                    multipleOf: 0.1,
+                    minimum: 0,
+                    maximum: 10080,
+                },
                 image: { type: 'string' },
-                price: { type: 'decimal' }
+                price_id: { type: 'integer' },
+                user_id: { type: 'integer' }
             }
         }
     }
@@ -33,4 +135,4 @@ class Recipe extends model {
     }
 }
 
-module.exports = Recipe
+module.exports = Recipes

@@ -2,7 +2,7 @@ const model = require('../model')
 
 class LikeRecipe extends model {
     static get tableName() {
-        return 'likeRecipe'
+        return 'like_recipe'
     }
     static get idColumn() {
         return 'id'
@@ -11,7 +11,9 @@ class LikeRecipe extends model {
         return {
             type: 'object',
             properties: {
-                id: { type: 'integer' }
+                id: { type: 'integer' },
+                user_id: { type: 'integer' },
+                recipe_id: { type: 'integer' }
             }
         }
     }

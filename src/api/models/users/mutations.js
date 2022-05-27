@@ -1,5 +1,5 @@
-const User = require('./schema')
+const Users = require('./schema')
 
-exports.create = async user => User.query().insert(user)
-exports.patch = async (id, inputs) => User.query().updateAndFetchById(id, inputs)
-exports.deleteById = async id => User.query().deleteById(id)
+exports.create = async user => Users.query().insert(user)
+exports.patch = async (id, inputs) => Users.query().updateAndFetchById(id, inputs)
+exports.deleteById = async id => Users.query().deleteById(id)

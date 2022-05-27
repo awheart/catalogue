@@ -1,8 +1,8 @@
 const model = require('../model')
 
-class User extends model {
+class Users extends model {
     static get tableName() {
-        return 'user'
+        return 'users'
     }
     static get idColumn() {
         return 'id'
@@ -16,9 +16,50 @@ class User extends model {
                 email: { type: 'string' },
                 password: { type: 'string' },
                 icone: { type: 'string' },
-                role: {
-                    type: 'string',
-                    enum: ['user', 'admin']
+                role_id: { type: 'integer' }
+            }
+        }
+    }
+    static get relationMappings() {
+        // import here to avoid require loop
+        const Recipes = require('../recipes/schema')
+        const RecipeComment = require('../comments/schema')
+        const UserRole = require('../user_role/schema')
+        return {
+            role: {
+                relation: model.BelongsToOneRelation,
+                modelClass: UserRole,
+                join: {
+                    from: 'users.role_id',
+                    to: 'user_role.id'
+                }
+            },
+            recipes: {
+                relation: model.HasManyRelation,
+                modelClass: Recipes,
+                join: {
+                    from: 'users.id',
+                    to: 'recipes.user_id'
+                }
+            },
+            comments: {
+                relation: model.HasManyRelation,
+                modelClass: RecipeComment,
+                join: {
+                    from: 'users.id',
+                    to: 'comments.user_id'
+                }
+            },
+            liked_recipes: {
+                relation: model.ManyToManyRelation,
+                modelClass: Recipes,
+                join: {
+                    from: 'users.id',
+                    through: {
+                        from: 'like_recipe.user_id',
+                        to: 'like_recipe.recipe_id'
+                    },
+                    to: 'recipes.id'
                 }
             }
         }
@@ -32,4 +73,4 @@ class User extends model {
     }
 }
 
-module.exports = User
+module.exports = Users

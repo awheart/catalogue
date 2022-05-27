@@ -1,7 +1,22 @@
 const router = require('express').Router({ strict: true })
 const users = require('./routes/user.routes')
 const recipes = require('./routes/recipe.routes')
+const comments = require('./routes/comment.routes')
+const steps = require('./routes/step.routes')
+const likes = require('./routes/like.routes')
+const tags = require('./routes/tags.routes')
+const listIngredients = require('./routes/list_ingredient.routes')
+const recipeTags = require('./routes/recipe_tags.routes')
+const monthOfConsumption = require('./routes/month_of_consumption.routes')
 
 router.use('/api/users', users)
-router.use('/api/articles', recipes)
+router.use('/api/recipes', recipes)
+router.use('/api/comments', comments)
+router.use('/api/likes', likes)
+router.use('/api/steps', steps)
+router.use('/api/tags', tags)
+router.use('/api/listIngredients', listIngredients)
+router.use('/api/recipeTags', recipeTags)
+router.use('/api/monthOfConsumption', monthOfConsumption)
+
 module.exports = router

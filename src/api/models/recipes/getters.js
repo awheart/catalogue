@@ -1,5 +1,37 @@
-const Recipe = require('./schema')
+const Recipes = require('./schema')
+const graphFilter = '[price, author(selectDefaultAuthor).[role(selectDefaultRole)], steps(inOrderStep), comments(selectDefaultComment).[author(selectDefaultAuthor)], user_like(selectDefaultAuthor), months, tags, list_ingredient(inOrderList)]'
+const modifiers = {
+    inOrderStep(builder) {
+        builder.select('content', 'id').orderBy('step_order', 'asc')
+    },
+    inOrderList(builder) {
+        builder.select('content', 'id').orderBy('inlist_order', 'asc')
+    },
+    selectDefaultAuthor(builder) {
+        builder.select('users.id', 'users.username')
+    },
+    selectDefaultRole(builder) {
+        builder.select('role_name')
+    },
+    selectDefaultComment(builder) {
+        builder.select('content', 'id')
+    }
+}
+exports.getAll = async filter => Recipes.query()
+    .skipUndefined()
+    .select()
+    .orderBy('created_at', 'desc')
+    .where(filter)
+    .withGraphFetched(graphFilter)
+    .modifiers(modifiers)
 
-exports.getAll = async filter => Recipe.query().select().orderBy('created_at', 'desc').where(filter ? filter : "")
-exports.findById = async id => Recipe.query().select().findById(id)
-exports.findOne = async filter => Recipe.query().findOne(filter)
+exports.findById = async id => Recipes.query()
+    .select()
+    .findById(id)
+    .withGraphFetched(graphFilter)
+    .modifiers(modifiers)
+
+exports.findOne = async filter => Recipes.query()
+    .findOne(filter)
+    .withGraphFetched(graphFilter)
+    .modifiers(modifiers)

@@ -3,47 +3,42 @@ const encrypt = require('../../src/api/utils/encryption')
 exports.insertIntoDB = [
     {
         username: 'user1',
-        // id: 1,
         email: 'user1@example.com',
-        role: 'user',
         birth_date: '1989-05-13',
         icone: 'icone-user1',
+        role_id: 1,
         password: encrypt.password('password'),
     },
     {
         username: 'user2',
-        // id: 2,
         email: 'user2@example.com',
-        role: 'user',
         birth_date: '1996-05-13',
         icone: 'icone-user2',
+        role_id: 1,
         password: encrypt.password('password'),
     },
     {
         username: 'user3',
         email: 'user3@example.com',
-        role: 'user',
         birth_date: '1972-05-13',
-        // id: 3,
         icone: 'icone-user3',
+        role_id: 1,
         password: encrypt.password('password'),
     },
     {
         username: 'user4',
         email: 'user4@example.com',
-        role: 'user',
         birth_date: '1986-05-13',
-        // id: 4,
         icone: 'icone-user4',
+        role_id: 1,
         password: encrypt.password('password'),
     },
     {
         username: 'user5',
         email: 'user5@example.com',
-        role: 'user',
         birth_date: '2000-05-13',
-        // id: 5,
         icone: 'icone-user5',
+        role_id: 1,
         password: encrypt.password('password'),
     }
 ]
@@ -55,16 +50,42 @@ exports.users = {
             inputs: { url: '/api/users' },
             expects: {
                 all: [{
+                    birth_date: null,
+                    created_at: expect.any(String),
+                    description: null,
+                    email: "admin@gmail.com",
+                    icone: null,
+                    id: 1,
+                    password: expect.any(String),
+                    role_id: 2,
+                    updated_at: expect.any(String),
+                    username: "admin",
+                    liked_recipes: [],
+                    comments: [],
+                    recipes: [],
+                    role: {
+                        id: 2,
+                        role_name: 'admin'
+                    }
+                },
+                {
                     birth_date: expect.any(String),
                     created_at: expect.any(String),
                     description: null,
                     email: "user1@example.com",
                     icone: "icone-user1",
-                    id: 1,
+                    id: 2,
                     password: expect.any(String),
-                    role: "user",
+                    role_id: 1,
                     updated_at: expect.any(String),
                     username: "user1",
+                    comments: [],
+                    liked_recipes: [],
+                    recipes: [],
+                    role: {
+                        id: 1,
+                        role_name: 'user'
+                    }
                 },
                 {
                     birth_date: expect.any(String),
@@ -72,11 +93,18 @@ exports.users = {
                     description: null,
                     email: "user2@example.com",
                     icone: "icone-user2",
-                    id: 2,
+                    id: 3,
                     password: expect.any(String),
-                    role: "user",
+                    role_id: 1,
                     updated_at: expect.any(String),
                     username: "user2",
+                    comments: [],
+                    liked_recipes: [],
+                    recipes: [],
+                    role: {
+                        id: 1,
+                        role_name: 'user'
+                    }
                 },
                 {
                     birth_date: expect.any(String),
@@ -84,11 +112,18 @@ exports.users = {
                     description: null,
                     email: "user3@example.com",
                     icone: "icone-user3",
-                    id: 3,
+                    id: 4,
                     password: expect.any(String),
-                    role: "user",
+                    role_id: 1,
                     updated_at: expect.any(String),
                     username: "user3",
+                    comments: [],
+                    liked_recipes: [],
+                    recipes: [],
+                    role: {
+                        id: 1,
+                        role_name: 'user'
+                    }
                 },
                 {
                     birth_date: expect.any(String),
@@ -96,11 +131,18 @@ exports.users = {
                     description: null,
                     email: "user4@example.com",
                     icone: "icone-user4",
-                    id: 4,
+                    id: 5,
                     password: expect.any(String),
-                    role: "user",
+                    role_id: 1,
                     updated_at: expect.any(String),
                     username: "user4",
+                    comments: [],
+                    liked_recipes: [],
+                    recipes: [],
+                    role: {
+                        id: 1,
+                        role_name: 'user'
+                    }
                 },
                 {
                     birth_date: expect.any(String),
@@ -108,29 +150,40 @@ exports.users = {
                     description: null,
                     email: "user5@example.com",
                     icone: "icone-user5",
-                    id: 5,
+                    id: 6,
                     password: expect.any(String),
-                    role: "user",
+                    role_id: 1,
                     updated_at: expect.any(String),
                     username: "user5",
+                    comments: [],
+                    liked_recipes: [],
+                    recipes: [],
+                    role: {
+                        id: 1,
+                        role_name: 'user'
+                    }
                 }]
             }
         },
         by_id: {
             mocks: {},
-            inputs: { url: '/api/users/1' },
+            inputs: { url: '/api/users/2' },
             expects: {
                 by_id: {
-                    "birth_date": expect.any(String),
-                    "created_at": expect.any(String),
-                    "description": null,
-                    "email": "user1@example.com",
-                    "icone": "icone-user1",
-                    "id": 1,
-                    "password": expect.any(String),
-                    "role": "user",
-                    "updated_at": expect.any(String),
-                    "username": "user1"
+                    birth_date: expect.any(String),
+                    created_at: expect.any(String),
+                    description: null,
+                    email: "user1@example.com",
+                    icone: "icone-user1",
+                    id: 2,
+                    password: expect.any(String),
+                    role_id: 1,
+                    updated_at: expect.any(String),
+                    username: "user1",
+                    role: {
+                        id: 1,
+                        role_name: 'user'
+                    }
                 }
             }
         },
@@ -146,11 +199,18 @@ exports.users = {
                     description: null,
                     email: "user1@example.com",
                     icone: "icone-user1",
-                    id: 1,
+                    id: 2,
                     password: expect.any(String),
-                    role: "user",
+                    role_id: 1,
                     updated_at: expect.any(String),
-                    username: "user1"
+                    username: "user1",
+                    recipes: [],
+                    liked_recipes: [],
+                    comments: [],
+                    role: {
+                        id: 1,
+                        role_name: 'user'
+                    }
                 }]
             }
         },
@@ -169,7 +229,7 @@ exports.users = {
     POST: {
         one: {
             mock: {},
-            inputs: { url: '/api/users/register', body: { email: 'userpost@gmail.com', password: 'password', username: 'userpost', role: 'test', icone: 'icone-new-user' } },
+            inputs: { url: '/api/users/register', body: { email: 'userpost@gmail.com', password: 'password', username: 'userpost', icone: 'icone-new-user' } },
             expects: {
                 one: {
                     email: 'userpost@gmail.com',
@@ -178,8 +238,8 @@ exports.users = {
                     password: expect.any(String),
                     username: 'userpost',
                     icone: 'icone-new-user',
-                    role: 'user',
-                    id: 6
+                    role_id: 1,
+                    id: 7
                 }
             }
         },
@@ -206,8 +266,7 @@ exports.users = {
                 body: {
                     email: 'userexisting@gmail.com',
                     password: 'password',
-                    username: 'user2',
-                    role: 'test'
+                    username: 'user2'
                 }
             },
             expects: {
@@ -215,7 +274,7 @@ exports.users = {
                     errors: {
                         username: {
                             location: "body",
-                            msg: "Ce nom d'utilisateur existe déjà",
+                            msg: "Ce nom d'utilisateur existe déjà.",
                             param: "username",
                             value: "user2",
                         },
@@ -228,12 +287,11 @@ exports.users = {
         update_user: {
             mocks: {},
             inputs: {
-                url: '/api/users/3',
+                url: '/api/users/4',
                 body: {
                     password: 'password',
                     newPassword: 'newPassword',
-                    passwordCheck: 'newPassword',
-                    role: 'user'
+                    passwordCheck: 'newPassword'
                 }
             },
             expects: {
@@ -243,9 +301,9 @@ exports.users = {
                     description: null,
                     email: "user3@example.com",
                     icone: 'icone-user3',
-                    id: 3,
+                    id: 4,
                     password: expect.any(String),
-                    role: "user",
+                    role_id: 1,
                     updated_at: expect.any(String),
                     username: "user3",
                 }
@@ -267,7 +325,7 @@ exports.users = {
                     errors: {
                         password: {
                             location: "body",
-                            msg: "Utilisateur introuvable",
+                            msg: "Utilisateur introuvable.",
                             param: "password",
                             value: "password",
                         }
@@ -280,7 +338,7 @@ exports.users = {
         delete_user: {
             mocks: {},
             inputs: {
-                url: '/api/users/1'
+                url: '/api/users/2'
             },
             expects: {
                 delete_user: 'L\'utilisateur a bien été supprimé'
@@ -293,7 +351,7 @@ exports.users = {
             },
             expects: {
                 delete_failed: {
-                    message: 'Utilisateur introuvable'
+                    message: 'Utilisateur introuvable.'
                 }
             }
         }

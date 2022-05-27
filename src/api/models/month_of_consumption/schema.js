@@ -1,8 +1,8 @@
 const model = require('../model')
 
-class MonthOfConsumption extends model {
+class MonthOfConsumtion extends model {
     static get tableName() {
-        return 'monthOfConsumption'
+        return 'month_of_consumption'
     }
     static get idColumn() {
         return 'id'
@@ -12,10 +12,11 @@ class MonthOfConsumption extends model {
             type: 'object',
             properties: {
                 id: { type: 'integer' },
-                month: { type: 'string' }
+                month_id: { type: 'integer' },
+                recipe_id: { type: 'integer' }
             }
         }
     }
 }
 
-module.exports = MonthOfConsumption
+module.exports = MonthOfConsumtion

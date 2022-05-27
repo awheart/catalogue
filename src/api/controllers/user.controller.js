@@ -1,4 +1,5 @@
-const { getters: userGetter, mutations: userMutation } = require('../models/users')
+const { getters: userGetters, mutations: userMutations } = require('../models/users')
+const { getters: userRoleGetters } = require('../models/user_role')
 const validator = require('express-validator')
 const jwt = require('jsonwebtoken')
 const { Error_Messages } = require('../utils/errors_handler')
@@ -12,14 +13,14 @@ module.exports.register = [
     // validations rules
     validator.body('username', Error_Messages.user_is_empty).isLength({ min: 1 }),
     validator.body('username').custom(async value => {
-        const usernameCheck = await userGetter.findOne({ username: value })
+        const usernameCheck = await userGetters.findOne({ username: value })
         if (usernameCheck) return Promise.reject(Error_Messages.username_existing)
     }),
 
     validator.body('email', Error_Messages.email_is_empty).isLength({ min: 1 }),
     validator.body('email', Error_Messages.invalid_email).isEmail(),
     validator.body('email').custom(async value => {
-        const emailCheck = await userGetter.findOne({ email: value })
+        const emailCheck = await userGetters.findOne({ email: value })
         if (emailCheck) return Promise.reject(Error_Messages.email_existing)
     }),
 
@@ -30,14 +31,17 @@ module.exports.register = [
         const errors = validator.validationResult(req)
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
-        // check for admin authorization
-        if (req.body.role !== 'admin') req.body.role = 'user'
+        // check role
+
+        const role = await userRoleGetters.findOne({ role_name: 'user' })
+        req.body.role_id = role.id
 
         // encrypt password
         req.body.password = encryption.password(req.body.password)
 
         // create user
-        const user = await userMutation.create(req.body)
+        const user = await userMutations.create(req.body)
+        if (!user) return res.json({ message: Error_Messages.unauthorized_action })
         res.json(user)
     })
 ]
@@ -56,8 +60,8 @@ module.exports.login = [
 
         // check email & password exist & are correct
         const { email, password } = req.body
-        const user = await userGetter.findOne({ email: email })
-        if (!user) return res.status(404).json({ errors: { msg: Error_Messages.invalid_credentials } })
+        const user = await userGetters.findOne({ email: email })
+        if (!user) return res.status(404).json({ message: Error_Messages.invalid_credentials })
 
         // check password
         const isMatched = encryption.compare(password, user.password)
@@ -70,7 +74,7 @@ module.exports.login = [
                     name: user.name,
                     role: user.role
                 },
-                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, process.env.JWT_TOKEN)
+                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, process.env.JWT_TOKEN, { expiresIn: '15m' })
             })
         } else {
             return res.status(500).json({ message: Error_Messages.invalid_credentials })
@@ -97,7 +101,7 @@ module.exports.getMe = asyncAction(async (req, res) => {
 // get one user by id
 module.exports.findById = asyncAction(async (req, res) => {
     const id = req.params.id
-    const user = await userGetter.findById(id)
+    const user = await userGetters.findById(id)
     if (!user) return res.status(404).json({ message: Error_Messages.user_id_is_invalid })
     res.json(user)
 })
@@ -105,7 +109,7 @@ module.exports.findById = asyncAction(async (req, res) => {
 // get one user by filter
 module.exports.findOne = asyncAction(async (req, res) => {
     const filter = req.query
-    const user = await userGetter.findOne(filter)
+    const user = await userGetters.findOne(filter)
     if (!user) return res.status(404).json({ message: Error_Messages.invalid_filter })
     return res.json(user)
 })
@@ -113,7 +117,7 @@ module.exports.findOne = asyncAction(async (req, res) => {
 // get all users
 module.exports.getAll = asyncAction(async (req, res) => {
     const filter = req.query
-    const users = await userGetter.getAll(filter)
+    const users = await userGetters.getAll(filter)
     return res.json(users)
 })
 
@@ -121,20 +125,18 @@ module.exports.updateAdmin = [
     // validation rules
     validator.body('username', Error_Messages.user_is_empty).isLength({ min: 1 }),
     validator.body('username').custom(async value => {
-        const user = await userGetter.findOne({ username: value })
-        if (user !== null) {
-            return Promise.reject(Error_Messages.username_existing);
-        }
+        const user = await userGetters.findOne({ username: value })
+        if (user) return Promise.reject(Error_Messages.username_existing)
     }),
     asyncAction(async (req, res) => {
         // throw validation errors
         const errors = validator.validationResult(req);
-        if (!errors.isEmpty()) res.status(422).json({ errors: errors.mapped() });
+        if (!errors.isEmpty()) res.status(422).json({ errors: errors.mapped() })
 
         const data = req.body
         const { id } = req.params
         try {
-            const userPatched = await userMutation.patch(id, data)
+            const userPatched = await userMutations.patch(id, data)
             if (!userPatched) return res.status(404).json({ message: Error_Messages.user_not_found })
             res.json(userPatched)
         } catch (err) {
@@ -149,7 +151,7 @@ module.exports.updateUser = [
 
     validator.body('password', Error_Messages.old_password_empty).isLength({ min: 4 }),
     validator.body('password').custom(async (value, { req }) => {
-        const user = await userGetter.findById(req.params.id)
+        const user = await userGetters.findById(req.params.id)
         if (!user) return Promise.reject(Error_Messages.user_not_found)
         const isMatch = encryption.compare(value, user.password)
         if (!isMatch) return Promise.reject(Error_Messages.invalid_old_password)
@@ -184,7 +186,7 @@ module.exports.updateUser = [
 
             const data = { password: newUserPassword }
 
-            const userPatched = await userMutation.patch(id, data)
+            const userPatched = await userMutations.patch(id, data)
             if (!userPatched) return res.status(404).json({ message: Error_Messages.user_not_found })
             res.json(userPatched)
         } catch (err) {
@@ -196,8 +198,7 @@ module.exports.updateUser = [
 // delete User
 module.exports.delete = asyncAction(async (req, res) => {
     const id = req.params.id
-    const article = await userGetter.findById(id)
-    if (!article) return res.status(404).json({ message: Error_Messages.user_not_found })
-    await userMutation.deleteById(id)
+    const userDeleted = await userMutations.deleteById(id)
+    if (!userDeleted) return res.status(404).json({ message: Error_Messages.user_not_found })
     res.json('L\'utilisateur a bien été supprimé').send()
 })

@@ -2,7 +2,7 @@ const model = require('../model')
 
 class ListIngredient extends model {
     static get tableName() {
-        return 'listIngredient'
+        return 'list_ingredient'
     }
     static get idColumn() {
         return 'id'

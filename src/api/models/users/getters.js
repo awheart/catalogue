@@ -1,5 +1,32 @@
-const User = require('./schema')
+const Users = require('./schema')
+const graphFilter = '[role(selectDefaultRole), recipes(selectDefaultRecipes), comments(selectDefaultComment).[recipe(selectDefaultRecipes)], liked_recipes(selectDefaultRecipes)]'
+const modifiers = {
+    selectDefaultRecipes(builder) {
+        builder.select('recipes.id', 'recipes.title')
+    },
+    selectDefaultRole(builder) {
+        builder.select('role_name')
+    },
+    selectDefaultComment(builder) {
+        builder.select('content', 'id')
+    }
+}
 
-exports.getAll = async filter => User.query().select().orderBy('created_at', 'desc').where(filter ? filter : "")
-exports.findById = async id => User.query().select().findById(id)
-exports.findOne = async filter => User.query().findOne(filter)
+exports.getAll = async filter => Users.query()
+    .skipUndefined()
+    .select()
+    .where(filter)
+    .withGraphFetched(graphFilter)
+    .modifiers(modifiers)
+
+exports.findById = async id => Users.query()
+    .select()
+    .findById(id)
+    .withGraphFetched(graphFilter)
+    .modifiers(modifiers)
+
+exports.findOne = async filter => Users.query()
+    .skipUndefined()
+    .findOne(filter)
+    .withGraphFetched(graphFilter)
+    .modifiers(modifiers)
