@@ -2,7 +2,7 @@ const server = require('../../src/api/server')
 const request = require('supertest')
 const data = require('./user.data')
 const { initTables } = require('../../src/api/database/db')
-const { initializeDatabase, destroyDatabase, migrateUp, migrateDown, insertUsers } = require('../helpers/database')
+const { migrateUp, migrateDown, insertUsers } = require('../helpers/database')
 
 describe('USER', () => {
     beforeAll(async () => {
@@ -10,7 +10,9 @@ describe('USER', () => {
         await initTables()
         await insertUsers()
     })
-    afterAll(async () => migrateDown())
+    afterAll(async () => {
+        await migrateDown()
+    })
 
 
     describe('GET', () => {
@@ -19,10 +21,8 @@ describe('USER', () => {
             const res = await request(server)
                 .get(inputs.url)
 
-            console.log(res.error)
             expect(res.statusCode).toBe(200)
             expect(res.body).toEqual(expects.all)
-            console.log(res)
         })
         test('by id', async () => {
             const { inputs, expects } = data.users.GET.by_id
@@ -96,7 +96,7 @@ describe('USER', () => {
             const res = await request(server)
                 .patch(inputs.url)
                 .send(inputs.body)
-            console.log(res.error)
+
             expect(res.statusCode).toBe(422)
             expect(res.body).toEqual(expects.update_failed)
         })

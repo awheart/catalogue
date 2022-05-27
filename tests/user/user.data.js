@@ -60,6 +60,7 @@ exports.users = {
                     role_id: 2,
                     updated_at: expect.any(String),
                     username: "admin",
+                    liked_recipes: [],
                     comments: [],
                     recipes: [],
                     role: {
@@ -79,6 +80,7 @@ exports.users = {
                     updated_at: expect.any(String),
                     username: "user1",
                     comments: [],
+                    liked_recipes: [],
                     recipes: [],
                     role: {
                         id: 1,
@@ -97,6 +99,7 @@ exports.users = {
                     updated_at: expect.any(String),
                     username: "user2",
                     comments: [],
+                    liked_recipes: [],
                     recipes: [],
                     role: {
                         id: 1,
@@ -115,6 +118,7 @@ exports.users = {
                     updated_at: expect.any(String),
                     username: "user3",
                     comments: [],
+                    liked_recipes: [],
                     recipes: [],
                     role: {
                         id: 1,
@@ -133,6 +137,7 @@ exports.users = {
                     updated_at: expect.any(String),
                     username: "user4",
                     comments: [],
+                    liked_recipes: [],
                     recipes: [],
                     role: {
                         id: 1,
@@ -151,6 +156,7 @@ exports.users = {
                     updated_at: expect.any(String),
                     username: "user5",
                     comments: [],
+                    liked_recipes: [],
                     recipes: [],
                     role: {
                         id: 1,
@@ -199,6 +205,7 @@ exports.users = {
                     updated_at: expect.any(String),
                     username: "user1",
                     recipes: [],
+                    liked_recipes: [],
                     comments: [],
                     role: {
                         id: 1,
@@ -267,7 +274,7 @@ exports.users = {
                     errors: {
                         username: {
                             location: "body",
-                            msg: "Ce nom d'utilisateur existe déjà",
+                            msg: "Ce nom d'utilisateur existe déjà.",
                             param: "username",
                             value: "user2",
                         },
@@ -318,7 +325,7 @@ exports.users = {
                     errors: {
                         password: {
                             location: "body",
-                            msg: "Utilisateur introuvable",
+                            msg: "Utilisateur introuvable.",
                             param: "password",
                             value: "password",
                         }
@@ -344,7 +351,7 @@ exports.users = {
             },
             expects: {
                 delete_failed: {
-                    message: 'Utilisateur introuvable'
+                    message: 'Utilisateur introuvable.'
                 }
             }
         }
