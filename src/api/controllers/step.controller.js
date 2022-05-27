@@ -12,8 +12,9 @@ module.exports.create = [
     validator.body('recipe_id', Error_Messages.not_integer).isInt(),
     validator.body('recipe_id').custom(async value => {
         const recipe = await recipeGetters.findById(value)
-        if (!recipe) return Promise.reject({ message: Error_Messages.user_not_found })
+        if (!recipe) return Promise.reject({ message: Error_Messages.recipe_not_found })
     }),
+    validator.body('step_order', Error_Messages.not_integer).isInt(),
 
     asyncAction(async (req, res) => {
         // throw validation errors
@@ -32,6 +33,7 @@ module.exports.create = [
 module.exports.update = [
     // validations rules
     validator.body('content', Error_Messages.description_is_empty).isLength({ min: 1 }),
+    validator.body('step_order', Error_Messages.not_integer).isInt(),
 
     asyncAction(async (req, res) => {
         // throw validation errors
