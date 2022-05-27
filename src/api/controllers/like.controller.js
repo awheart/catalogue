@@ -39,11 +39,12 @@ module.exports.create = [
     })
 ]
 
-// delete comment
+// delete like
 module.exports.delete = asyncAction(async (req, res) => {
-    const id = req.params.id
-    const like = await likeGetters.findOne({ recipe_id: id })
+    const { recipe_id, user_id } = req.body
+    const like = await likeGetters.findOne({ recipe_id, user_id })
+    if (!like) return res.status(404).json({ message: Error_Messages.like_not_found })
     const likeDeleted = await likeMutations.deleteById(like.id)
-    if (!likeDeleted) return res.status(404).json({ message: Error_Messages.comment_not_found })
+    if (!likeDeleted) return res.status(404).json({ message: Error_Messages.like_not_found })
     res.json('like deleted').send()
 })
