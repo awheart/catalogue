@@ -1,4 +1,4 @@
-const { getters: stepGetters, mutations: stepMutations } = require('../models/steps')
+const { mutations: stepMutations } = require('../models/steps')
 const { getters: recipeGetters } = require('../models/recipes')
 const validator = require('express-validator')
 const { Error_Messages } = require('../utils/errors_handler')

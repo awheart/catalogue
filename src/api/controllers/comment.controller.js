@@ -1,4 +1,4 @@
-const { getters: commentGetters, mutations: commentMutations } = require('../models/comments')
+const { mutations: commentMutations } = require('../models/comments')
 const { getters: recipeGetters } = require('../models/recipes')
 const { getters: userGetters } = require('../models/users')
 const validator = require('express-validator')

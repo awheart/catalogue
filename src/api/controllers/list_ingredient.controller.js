@@ -1,4 +1,4 @@
-const { getters: listIngredientGetters, mutations: listIngredientMutations } = require('../models/list_ingredient')
+const { mutations: listIngredientMutations } = require('../models/list_ingredient')
 const { getters: recipeGetters } = require('../models/recipes')
 const validator = require('express-validator')
 const { Error_Messages } = require('../utils/errors_handler')
