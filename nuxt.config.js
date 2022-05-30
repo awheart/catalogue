@@ -18,7 +18,7 @@ export default {
   ssr: true,
   target: 'server',
 
-  
+
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
@@ -63,6 +63,19 @@ export default {
       {
         name: 'success',
         message: 'Successfully registered !'
+      }
+    ],
+    logout: [
+      {
+        name: 'error',
+        message: 'Oops...Something went wrong',
+        options: {
+          type: 'error'
+        }
+      },
+      {
+        name: 'success',
+        message: 'yes'
       }
     ]
   },
@@ -110,7 +123,7 @@ export default {
       logout: '/', // User will be redirected to this path if after logout, current route is protected
       home: '/' // User will be redirect to this path after login if accessed login page directly
     },
-    rewriteRedirects: true,
+    rewriteRedirects: false,
   },
 
   serverMiddleware: [
