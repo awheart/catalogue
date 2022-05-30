@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Wecome aboard players !</h1> <hr>
+    <h1>Bienvenue</h1>
   </div>
 </template>
 
@@ -9,3 +9,6 @@ export default {
   name: 'IndexPage'
 }
 </script>
+
+<style>
+</style>

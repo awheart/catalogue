@@ -17,12 +17,12 @@
                 <tr v-for="user of Users" :key="user.id">
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.role }}</td>
+                    <td>{{ user.role.role_name }}</td>
                     <td>{{ user.age }}</td>
                     <td>{{ user.icone }}</td>
                     <td>{{ user.id }}</td>
                     <td>
-                        <button @click="deleteUser(user)" class="btn btn-danger">delete</button>
+                        <button v-if="user.role_id !== 2" @click="deleteUser(user)" class="btn btn-danger">delete</button>
                     </td>
                     <td>
                         <button @click="$router.push(`/users/${user.id}/details`)"
@@ -87,7 +87,7 @@ export default {
             if (this.$auth.user.email == user.email) return alert('cannot delete the account currently connected.')
             if (confirm('Are you sure you want to delete') === true) {
                 try {
-                    const res = await this.$axios.delete(`/api/users/${user.users_id}`)
+                    const res = await this.$axios.delete(`/api/users/${user.id}`)
                     if (res) {
                         const userData = await this.$axios.get('/api/users')
                         if (user) this.Users = userData.data

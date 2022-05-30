@@ -34,15 +34,6 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label for="">Rôle (optional)</label>
-            <input type="text" class="form-control" :class="{ 'is-invalid': errors && errors.role }" v-model="role"
-              placeholder="utilisateur">
-            <div class="invalid-feedback" v-if="errors && errors.role">
-              {{ errors.role.msg }}
-            </div>
-          </div>
-
           <input type="submit" value="S'inscrire et se connecter" class="btn btn-primary mr-3">
           <nuxt-link to="/" class="btn btn-secondary mr-3">Cancel</nuxt-link>
 
@@ -63,7 +54,7 @@ export default {
       username: null,
       email: null,
       role: null,
-      password: null
+      password: null,
     }
   },
   methods: {
@@ -76,7 +67,6 @@ export default {
           role: this.role
         })
         if (registerSuccessful) {
-          console.log(this.id)
           this.$toast.success('Inscription réussie, bienvenue !', { duration: 2000 })
           this.$router.push({ path: '/' })
           // log in if successfully registered

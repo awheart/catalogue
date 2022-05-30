@@ -14,9 +14,7 @@ export default {
 
   async asyncData(context) {
     await context.$auth.logout()
-  },
-  updated() {
-    this.$toast.success('Vous avez été déconnecté.', { duration: 1000 })
+    await context.$toast.info('Vous avez été déconnectez.', { duration: 2000 })
   }
 }
 </script>

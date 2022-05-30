@@ -51,7 +51,6 @@ export default {
       email: null,
       password: null,
       role: null,
-      status: false,
       id: null
     }
   },
@@ -67,9 +66,8 @@ export default {
         })
         this.$toast.success(`Vous êtes connecté.`, { duration: 1000 })
       } catch (err) {
-        return this.errors = err.response.data.errors
+        this.errors = err.response.data.errors
       }
-
     }
   }
 }
