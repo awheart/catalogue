@@ -7,6 +7,9 @@ class Users extends model {
     static get idColumn() {
         return 'id'
     }
+    static get virtualAttributes() {
+        return ['age']
+    }
     static get jsonSchema() {
         return {
             type: 'object',
@@ -16,9 +19,21 @@ class Users extends model {
                 email: { type: 'string' },
                 password: { type: 'string' },
                 icone: { type: 'string' },
+                birth_date: { type: 'string' },
                 role_id: { type: 'integer' }
             }
         }
+    }
+    get age() {
+        if(!this.birth_date) return null
+        const united = this.birth_date.split('-').join('')
+        var year = Number(united.substring(0, 4))
+        var month = Number(united.substring(4, 6)) - 1
+        var day = Number(united.substring(6, 8))
+        var today = new Date()
+        var age = today.getFullYear() - year
+        if (today.getMonth() < month || (today.getMonth() == month && today.getDate() < day)) age--
+        return age
     }
     static get relationMappings() {
         // import here to avoid require loop
