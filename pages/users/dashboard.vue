@@ -1,65 +1,74 @@
 <template>
     <div>
-        <button @click="isUser=true">Utilisateur</button>
-        <button @click="isUser=false">Recettes</button>
-        <table v-if="isUser" class="table table-stripped table-borderes">
-            <thead>
-                <tr>
-                    <th>Nom d'utilisateur</th>
-                    <th>email</th>
-                    <th>rôle</th>
-                    <th>tranche d'âge</th>
-                    <th>icône</th>
-                    <th>id</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="user of Users" :key="user.id">
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.role.role_name }}</td>
-                    <td>{{ user.age }}</td>
-                    <td>{{ user.icone }}</td>
-                    <td>{{ user.id }}</td>
-                    <td>
-                        <button v-if="user.role_id !== 2" @click="deleteUser(user)" class="btn btn-danger">delete</button>
-                    </td>
-                    <td>
-                        <button @click="$router.push(`/users/${user.id}/details`)"
-                            class="btn btn-primary mr-3">Détails</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <table v-if="!isUser" class="table table-stripped table-borderes">
-            <thead>
-                <tr>
-                    <th>Titre</th>
-                    <th>Créateur</th>
-                    <th>Date de création</th>
-                    <th>Nombre de like</th>
-                    <th>Image</th>
-                    <th>id</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="recipe of Recipes" :key="recipe.id">
-                    <td>{{ recipe.title }}</td>
-                    <td>{{ recipe.author }}</td>
-                    <td>{{ recipe.created_at }}</td>
-                    <td>{{ recipe.like }}</td>
-                    <td>{{ recipe.icone }}</td>
-                    <td>{{ recipe.id }}</td>
-                    <td>
-                        <button @click="deleteRecipe(recipe)" class="btn btn-danger">delete</button>
-                    </td>
-                    <td>
-                        <button @click="$router.push(`/recipes/${recipe.id}/details`)"
-                            class="btn btn-primary mr-3">Détails</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="tomato-bg">
+            <NavBar />
+            <div class="wrap">
+                test
+                <h1>Bienvenue</h1>
+                <button @click="isUser = true">Utilisateur</button>
+                <button @click="isUser = false">Recettes</button>
+                <table v-if="isUser" class="table table-stripped table-borderes">
+                    <thead>
+                        <tr>
+                            <th>Nom d'utilisateur</th>
+                            <th>email</th>
+                            <th>rôle</th>
+                            <th>tranche d'âge</th>
+                            <th>icône</th>
+                            <th>id</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="user of Users" :key="user.id">
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.role.role_name }}</td>
+                            <td>{{ user.age }}</td>
+                            <td>{{ user.icone }}</td>
+                            <td>{{ user.id }}</td>
+                            <td>
+                                <button v-if="user.role_id !== 2" @click="deleteUser(user)"
+                                    class="btn btn-danger">delete</button>
+                            </td>
+                            <td>
+                                <button @click="$router.push(`/users/details/${user.id}`)"
+                                    class="btn btn-primary mr-3">Détails</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table v-if="!isUser" class="table table-stripped table-borderes">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Créateur</th>
+                            <th>Date de création</th>
+                            <th>Nombre de like</th>
+                            <th>Image</th>
+                            <th>id</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="recipe of Recipes" :key="recipe.id">
+                            <td>{{ recipe.title }}</td>
+                            <td>{{ recipe.author }}</td>
+                            <td>{{ recipe.created_at }}</td>
+                            <td>{{ recipe.like }}</td>
+                            <td>{{ recipe.icone }}</td>
+                            <td>{{ recipe.id }}</td>
+                            <td>
+                                <button @click="deleteRecipe(recipe)" class="btn btn-danger">delete</button>
+                            </td>
+                            <td>
+                                <button @click="$router.push(`/recipes/details/${recipe.id}`)"
+                                    class="btn btn-primary mr-3">Détails</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <FooterMain />
+        </div>
     </div>
 </template>
 

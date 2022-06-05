@@ -1,40 +1,44 @@
 <template>
-  <div>
-    <h1>Login</h1>
-    <hr>
+  <div class="login-bg">
+    <NavBar />
+    <div class="wrap">
+      <h1>Login</h1>
+      <hr>
 
-    <div class="alert alert-success" v-if="$route.params.registered == 'yes'">You have registered successfully</div>
+      <div class="alert alert-success" v-if="$route.params.registered == 'yes'">You have registered successfully</div>
 
-    <div class="row">
-      <div class="col-md-6">
-        <form action="" method="post" @submit.prevent="login()">
+      <div class="row">
+        <div class="col-md-6">
+          <form action="" method="post" @submit.prevent="login()">
 
-        <div class="text-danger" v-if="errors && errors.msg">{{ errors.msg }}</div>
+            <div class="text-danger" v-if="errors && errors.msg">{{ errors.msg }}</div>
 
-          <div class="form-group">
-            <label for="">Email</label>
-            <input type="text" class="form-control" :class="{ 'is-invalid': errors && errors.email }" v-model="email">
-            <div class="invalid-feedback" v-if="errors && errors.email">
-              {{ errors.email.msg }}
+            <div class="form-group">
+              <label for="">Email</label>
+              <input type="text" class="form-control" :class="{ 'is-invalid': errors && errors.email }" v-model="email">
+              <div class="invalid-feedback" v-if="errors && errors.email">
+                {{ errors.email.msg }}
+              </div>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label for="">Password</label>
-            <input type="password" class="form-control" :class="{ 'is-invalid': errors && errors.password }"
-              v-model="password">
-            <div class="invalid-feedback" v-if="errors && errors.password">
-              {{ errors.password.msg }}
+            <div class="form-group">
+              <label for="">Password</label>
+              <input type="password" class="form-control" :class="{ 'is-invalid': errors && errors.password }"
+                v-model="password">
+              <div class="invalid-feedback" v-if="errors && errors.password">
+                {{ errors.password.msg }}
+              </div>
             </div>
-          </div>
 
-          <div class="alert alert-danger" v-if="login_error">{{ login_error }}</div>
+            <div class="alert alert-danger" v-if="login_error">{{ login_error }}</div>
 
-          <input type="submit" value="Login" class="btn btn-primary mr-3">
-          <nuxt-link to="/" class="btn btn-secondary mr-3">Cancel</nuxt-link>
-          <nuxt-link to="/users/register">S'inscrire</nuxt-link>
-        </form>
+            <input type="submit" value="Login" class="btn btn-primary mr-3">
+            <nuxt-link to="/" class="btn btn-secondary mr-3">Cancel</nuxt-link>
+            <nuxt-link to="/users/register">S'inscrire</nuxt-link>
+          </form>
+        </div>
       </div>
+      <FooterMain />
     </div>
   </div>
 </template>

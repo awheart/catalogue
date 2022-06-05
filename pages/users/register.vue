@@ -1,44 +1,50 @@
 <template>
   <div>
-    <h1>Register</h1>
-    <hr>
+    <div class="tomato-bg">
+      <NavBar />
+      <div class="wrap">
+        <h1>Register</h1>
+        <hr>
 
-    <div class="row">
-      <div class="col-md-6">
-        <form action="" method="post" @submit.prevent="register()">
+        <div class="row">
+          <div class="col-md-6">
+            <form action="" method="post" @submit.prevent="register()">
 
-          <div class="form-group">
-            <label for="">Nom d'utilisateur</label>
-            <input type="text" class="form-control" :class="{ 'is-invalid': errors && errors.username }"
-              v-model="username" required>
-            <div class="invalid-feedback" v-if="errors && errors.username">
-              {{ errors.username.msg }}
-            </div>
+              <div class="form-group">
+                <label for="">Nom d'utilisateur</label>
+                <input type="text" class="form-control" :class="{ 'is-invalid': errors && errors.username }"
+                  v-model="username" required>
+                <div class="invalid-feedback" v-if="errors && errors.username">
+                  {{ errors.username.msg }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="">Email</label>
+                <input type="email" class="form-control" :class="{ 'is-invalid': errors && errors.email }"
+                  v-model="email" required>
+                <div class="invalid-feedback" v-if="errors && errors.email">
+                  {{ errors.email.msg }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="">Password</label>
+                <input type="password" class="form-control" :class="{ 'is-invalid': errors && errors.password }"
+                  v-model="password" required>
+                <div class="invalid-feedback" v-if="errors && errors.password">
+                  {{ errors.password.msg }}
+                </div>
+              </div>
+
+              <input type="submit" value="S'inscrire et se connecter" class="btn btn-primary mr-3">
+              <nuxt-link to="/" class="btn btn-secondary mr-3">Cancel</nuxt-link>
+
+            </form>
           </div>
-
-          <div class="form-group">
-            <label for="">Email</label>
-            <input type="email" class="form-control" :class="{ 'is-invalid': errors && errors.email }" v-model="email"
-              required>
-            <div class="invalid-feedback" v-if="errors && errors.email">
-              {{ errors.email.msg }}
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="">Password</label>
-            <input type="password" class="form-control" :class="{ 'is-invalid': errors && errors.password }"
-              v-model="password" required>
-            <div class="invalid-feedback" v-if="errors && errors.password">
-              {{ errors.password.msg }}
-            </div>
-          </div>
-
-          <input type="submit" value="S'inscrire et se connecter" class="btn btn-primary mr-3">
-          <nuxt-link to="/" class="btn btn-secondary mr-3">Cancel</nuxt-link>
-
-        </form>
+        </div>
       </div>
+      <FooterMain />
     </div>
   </div>
 </template>
@@ -53,7 +59,6 @@ export default {
       errors: null,
       username: null,
       email: null,
-      role: null,
       password: null,
     }
   },
@@ -63,8 +68,7 @@ export default {
         const registerSuccessful = await this.$axios.post('/api/users/register', {
           username: this.username,
           email: this.email,
-          password: this.password,
-          role: this.role
+          password: this.password
         })
         if (registerSuccessful) {
           this.$toast.success('Inscription réussie, bienvenue !', { duration: 2000 })
