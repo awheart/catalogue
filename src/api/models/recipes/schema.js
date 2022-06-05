@@ -81,7 +81,7 @@ class Recipes extends model {
                     to: 'comments.recipe_id'
                 }
             },
-            user_like: {
+            likes: {
                 relation: model.ManyToManyRelation,
                 modelClass: Users,
                 join: {
@@ -94,6 +94,9 @@ class Recipes extends model {
                 }
             }
         }
+    }
+    static get virtualAttributes() {
+        return ['total_time']
     }
     static get jsonSchema() {
         return {
@@ -110,13 +113,13 @@ class Recipes extends model {
                 is_published: { type: 'boolean' },
                 prep_time: {
                     type: 'number',
-                    multipleOf: 0.1,
+                    multipleOf: 0.01,
                     minimum: 0,
                     maximum: 10080,
                 },
                 cook_time: {
                     type: 'number',
-                    multipleOf: 0.1,
+                    multipleOf: 0.01,
                     minimum: 0,
                     maximum: 10080,
                 },
@@ -125,6 +128,9 @@ class Recipes extends model {
                 user_id: { type: 'integer' }
             }
         }
+    }
+    get total_time() {
+        return this.prep_time + this.cook_time
     }
     $beforeInsert() {
         this.created_at = new Date()
