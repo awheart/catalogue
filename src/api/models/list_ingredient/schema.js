@@ -14,6 +14,7 @@ class ListIngredient extends model {
                 id: { type: 'integer' },
                 content: { type: 'string' },
                 inlist_order: { type: 'integer' },
+                recipe_id: { type: 'integer' }
             }
         }
     }
