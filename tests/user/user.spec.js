@@ -2,13 +2,13 @@ const server = require('../../src/api/server')
 const request = require('supertest')
 const data = require('./user.data')
 const { initTables } = require('../../src/api/database/db')
-const { migrateUp, migrateDown, insertUsers } = require('../helpers/database')
+const { migrateUp, migrateDown, insertUsers, initializeDatabase, destroyDatabase } = require('../helpers/database')
 jest.setTimeout(10000)
 
 let token
-
 describe('USER', () => {
     beforeAll(async () => {
+        await initializeDatabase()
         await migrateUp()
         await initTables()
         await insertUsers()
@@ -22,6 +22,7 @@ describe('USER', () => {
     })
     afterAll(async () => {
         await migrateDown()
+        await destroyDatabase()
     })
 
 
@@ -31,7 +32,6 @@ describe('USER', () => {
             const res = await request(server)
                 .get(inputs.url)
                 .set('Authorization', `Bearer ${token}`)
-
             expect(res.statusCode).toBe(200)
             expect(res.body).toEqual(expects.all)
         })
@@ -62,7 +62,6 @@ describe('USER', () => {
             expect(res.statusCode).toBe(404)
             expect(res.body).toEqual(expects.invalid_id)
         })
-
     })
     describe('POST', () => {
         test('one', async () => {

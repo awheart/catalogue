@@ -51,10 +51,11 @@ exports.users = {
             expects: {
                 all: [{
                     birth_date: null,
+                    age: null,
                     created_at: expect.any(String),
                     description: null,
                     email: "admin@gmail.com",
-                    icone: null,
+                    icone: expect.any(String),
                     id: 1,
                     password: expect.any(String),
                     role_id: 2,
@@ -69,6 +70,7 @@ exports.users = {
                 },
                 {
                     birth_date: expect.any(String),
+                    age: 33,
                     created_at: expect.any(String),
                     description: null,
                     email: "user1@example.com",
@@ -87,6 +89,7 @@ exports.users = {
                 },
                 {
                     birth_date: expect.any(String),
+                    age: 26,
                     created_at: expect.any(String),
                     description: null,
                     email: "user2@example.com",
@@ -105,6 +108,7 @@ exports.users = {
                 },
                 {
                     birth_date: expect.any(String),
+                    age: 50,
                     created_at: expect.any(String),
                     description: null,
                     email: "user3@example.com",
@@ -123,6 +127,7 @@ exports.users = {
                 },
                 {
                     birth_date: expect.any(String),
+                    age: 36,
                     created_at: expect.any(String),
                     description: null,
                     email: "user4@example.com",
@@ -141,6 +146,7 @@ exports.users = {
                 },
                 {
                     birth_date: expect.any(String),
+                    age: 22,
                     created_at: expect.any(String),
                     description: null,
                     email: "user5@example.com",
@@ -165,6 +171,7 @@ exports.users = {
             expects: {
                 by_id: {
                     birth_date: expect.any(String),
+                    age: 33,
                     created_at: expect.any(String),
                     description: null,
                     email: "user1@example.com",
@@ -191,6 +198,7 @@ exports.users = {
             expects: {
                 by_filter: [{
                     birth_date: expect.any(String),
+                    age: 33,
                     created_at: expect.any(String),
                     description: null,
                     email: "user1@example.com",
@@ -229,6 +237,7 @@ exports.users = {
                 one: {
                     email: 'userpost@gmail.com',
                     created_at: expect.any(String),
+                    age: null,
                     updated_at: expect.any(String),
                     password: expect.any(String),
                     username: 'userpost',
@@ -284,6 +293,7 @@ exports.users = {
             inputs: {
                 url: '/api/users/4',
                 body: {
+                    username: 'user3',
                     password: 'password',
                     newPassword: 'newPassword',
                     passwordCheck: 'newPassword'
@@ -292,6 +302,7 @@ exports.users = {
             expects: {
                 update_user: {
                     birth_date: expect.any(String),
+                    age: 50,
                     created_at: expect.any(String),
                     description: null,
                     email: "user3@example.com",
@@ -323,6 +334,11 @@ exports.users = {
                             msg: "Utilisateur introuvable.",
                             param: "password",
                             value: "password",
+                        },
+                        username: {
+                            location: "body",
+                            msg: "L'utilisateur doit être renseigné.",
+                            param: "username",
                         }
                     }
                 }

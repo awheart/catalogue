@@ -7,28 +7,28 @@ const recipeData = require('../recipe/recipe.data')
 const { mutations: userMutations } = require('../../src/api/models/users')
 const { mutations: recipeMutations } = require('../../src/api/models/recipes')
 
-const initDBTest = knex(config.test)
+const dbDev = knex(config.development)
 
 exports.initializeDatabase = async () => {
-    try {
-      await initDBTest.raw('DROP DATABASE IF EXISTS test_database')
-      await initDBTest.raw('CREATE DATABASE test_database')
-    } catch (err) {
-      console.log('init test_database', err)
-    }
+  try {
+    await dbDev.raw('DROP DATABASE IF EXISTS test_database')
+    await dbDev.raw('CREATE DATABASE test_database')
+  } catch (err) {
+    console.log('init test_database', err)
   }
-  
-  exports.destroyDatabase = async () => {
-    try {
-      await database.destroy()
-      await initDBTest.raw('DROP DATABASE IF EXISTS test_database')
-    } catch (err) {
-      console.log(err)
-    } finally {
-      await initDBTest.destroy()
-    }
+}
+
+exports.destroyDatabase = async () => {
+  try {
+    await database.destroy()
+    await dbDev.raw('DROP DATABASE IF EXISTS test_database WITH (FORCE)')
+  } catch (err) {
+    console.log(err)
+  } finally {
+    await dbDev.destroy()
   }
-  
+}
+
 
 exports.migrateUp = async () => database.migrate.up()
 
