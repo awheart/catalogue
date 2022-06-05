@@ -3,8 +3,10 @@
         <nav class="custom-navbar">
             <ul class="custom-nav nav-logo">
                 <li class="navigation-item">
-                    <img src="https://res.cloudinary.com/catalogue-recipe/image/upload/c_scale,w_150/v1653911048/logo_transparent_background_rtr96w.png"
-                        alt="logo vos recettes faciles">
+                    <nuxt-link to="/"><img
+                            src="https://res.cloudinary.com/catalogue-recipe/image/upload/c_scale,w_200/v1653911048/logo_transparent_background_rtr96w.png"
+                            alt="logo vos recettes faciles">
+                    </nuxt-link>
                 </li>
             </ul>
             <ul class="custom-nav nav-page">
@@ -36,7 +38,7 @@
 
             </ul>
             <ul class="custom-nav nav-user" v-if="$auth.loggedIn">
-            <li class="navigation-icon" v-if="$auth.user.role.role_name == 'admin'">
+                <li class="navigation-icon" v-if="$auth.user.role.role_name == 'admin'">
                     <nuxt-link class="icon-link" to="/users/dashboard" alt="panneau d'administration">
                         <b-icon icon='gear-fill' width="48px" height="48px"></b-icon>
                     </nuxt-link>
@@ -91,25 +93,28 @@
 }
 
 .custom-navbar {
-    position: relative;
-    width: 100%;
+    position: fixed;
+    z-index: 999;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100vw;
     align-items: center;
     justify-content: space-evenly;
     background-color: rgb(255, 255, 255);
     border: dashed #FF5700;
     padding: 0.5rem 1rem;
-    height: 10vh;
+    top: 0;
+    min-height: 140px;
     border-radius: 0 0 50px 50px;
-    display: flex;
-    flex-wrap: wrap;
-    padding-left: 0;
     margin-bottom: 0;
+    padding-left: 0;
     list-style: none;
 }
 
 .navigation-item {
     margin-right: 5vw;
 }
+
 a {
     padding: 0.5rem 1rem;
 }
