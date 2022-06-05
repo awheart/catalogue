@@ -37,5 +37,7 @@ exports.Error_Messages = Object.freeze({
     month_not_found: 'Ce mois n\'existe pas.',
     ingredient_not_found: 'Cet ingrédient n\'existe pas ou n\'appartient pas à cette recette.',
     like_not_found: 'Vous ne pouvez retirer cette recette de vos favoris car elle ne s\'y trouve pas',
-    step_is_needed: 'Une étape est nécessaire pour créer une recette.'
+    step_is_needed: 'Une étape est nécessaire pour créer une recette.',
+    ingredient_is_needed: 'Un ingrédient est nécessaire pour créer une recette.',
+    order_is_needed: "Veuillez donner un ordre valide."
 })
