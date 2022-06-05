@@ -27,3 +27,33 @@
     box-sizing: border-box;
     margin: 0;
 }
+.wrap {
+    width: 70vw;
+    margin: 0 auto;
+    min-height: 85vh;
+    margin-top: 140px;
+    background-color: #fff;
+    border-right: 1px dashed #FFBB87;
+    border-left: 1px dashed #FFBB87;
+}
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    background: none;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: none;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #FF5700;
+    border-radius: 8px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #e44c00;
+  }
