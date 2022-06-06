@@ -13,7 +13,7 @@
     "lintfix": "npm run lint:js -- --fix",
     "heroku-postbuild": "npm run build",
     "heroku-deploy-master": "git push heroku master:main",
-    "tests": "NODE_ENV=test npx jest --coverage --detectOpenHandles --forceExit",
+    "tests": "npx jest --detectOpenHandles --forceExit",
     "docker-tests": "docker-compose -f docker-compose.yml run catalogue npm run tests"
   },
   "dependencies": {
@@ -40,6 +40,7 @@
     "vue": "^2.6.14",
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
+    "vuedraggable": "^2.24.3",
     "webpack": "^4.46.0"
   },
   "devDependencies": {

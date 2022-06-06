@@ -34,8 +34,8 @@ module.exports.create = [
         const user = await userGetters.findById(value)
         if (!user) return Promise.reject({ message: Error_Messages.user_not_found })
     }),
-    validator.body('steps', Error_Messages.step_is_needed).isLength({ min: 1 }),
-    validator.body('list_ingredient', Error_Messages.ingredient_is_needed).isLength({ min: 1 }),
+    validator.body('steps', Error_Messages.step_is_needed).notEmpty(),
+    validator.body('list_ingredient', Error_Messages.ingredient_is_needed).notEmpty(),
     validator.body('description', Error_Messages.description_is_empty).isLength({ min: 1 }),
     asyncAction(async (req, res) => {
 
@@ -61,12 +61,13 @@ module.exports.update = [
         if (titleCheck && (titleCheck.id != id)) return Promise.reject(Error_Messages.title_existing)
     }),
     validator.body('id').isInt().custom(async value => {
-        console.log('id: ', value)
         const recipe = await recipeGetters.findById(value)
         if (!recipe) return Promise.reject(Error_Messages.recipe_not_found)
     }),
-    validator.body('steps', Error_Messages.step_is_needed).notEmpty(),
-    validator.body('steps.*.step_order', Error_Messages.order_is_needed).isInt(),
+    validator.body('steps', Error_Messages.step_is_needed).exists({ checkNull: true }).notEmpty(),
+    validator.body('steps.*.step_order', Error_Messages.order_is_needed)
+        .if(validator.body('steps', Error_Messages.step_is_needed).notEmpty())
+        .isInt(),
     validator.body('list_ingredient', Error_Messages.ingredient_is_needed).notEmpty(),
     validator.body('list_ingredient.*.inlist_order', Error_Messages.order_is_needed).isInt(),
     validator.body('description', Error_Messages.description_is_empty).isLength({ min: 1 }),

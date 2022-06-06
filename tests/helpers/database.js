@@ -6,6 +6,7 @@ const recipeData = require('../recipe/recipe.data')
 
 const { mutations: userMutations } = require('../../src/api/models/users')
 const { mutations: recipeMutations } = require('../../src/api/models/recipes')
+const { mutations: tagMutations } = require('../../src/api/models/tags')
 
 const dbDev = knex(config.development)
 
@@ -36,3 +37,4 @@ exports.migrateDown = async () => database.migrate.rollback()
 
 exports.insertUsers = async () => userMutations.create(userData.insertIntoDB)
 exports.insertRecipes = async () => recipeMutations.create(recipeData.insertIntoDB)
+exports.insertTags = async () => tagMutations.create({ tag_name: 'sel' })

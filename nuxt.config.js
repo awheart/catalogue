@@ -12,6 +12,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
+      { rel: "stylesheet", href: "https://www.w3schools.com/w3css/4/w3.css" }
       // { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
@@ -84,7 +85,16 @@ export default {
   build: {
   },
   axios: {
-    baseURL: 'http://localhost:3000', // Used as fallback if no runtime config is provided
+    baseURL: "localhost:3000",
+    proxy: true
+  },
+
+  proxy: {
+    // Simple proxy
+    "/api/": {
+      target: "https://localhost:3000/",
+      pathRewrite: { "^/api/": "" }
+    }
   },
 
   publicRuntimeConfig: {
@@ -123,7 +133,7 @@ export default {
       logout: '/', // User will be redirected to this path if after logout, current route is protected
       home: '/' // User will be redirect to this path after login if accessed login page directly
     },
-    rewriteRedirects: false,
+    rewriteRedirects: true,
   },
 
   serverMiddleware: [
