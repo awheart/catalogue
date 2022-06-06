@@ -23,8 +23,8 @@
                             <td>{{ user.username }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.role.role_name }}</td>
-                            <td>{{ user.age }}</td>
-                            <td>{{ user.icone }}</td>
+                            <td class="user-icone">{{ user.age }}</td>
+                            <td><img :src="user.icone" alt=""></td>
                             <td>{{ user.id }}</td>
                             <td>
                                 <button v-if="user.role_id !== 2" @click="deleteUser(user)"
@@ -81,6 +81,9 @@ export default {
             Recipes: [],
             isUser: true
         }
+    },
+    beforeCreate() {
+        if (!this.$auth.loggedIn || this.$auth.user.role.role_name != 'admin') this.$router.push({ path: '/users/login' })
     },
     async mounted() {
         try {

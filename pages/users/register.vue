@@ -13,7 +13,7 @@
               <div class="form-group">
                 <label for="">Nom d'utilisateur</label>
                 <input type="text" class="form-control" :class="{ 'is-invalid': errors && errors.username }"
-                  v-model="username" required>
+                  v-model="username">
                 <div class="invalid-feedback" v-if="errors && errors.username">
                   {{ errors.username.msg }}
                 </div>
@@ -22,7 +22,7 @@
               <div class="form-group">
                 <label for="">Email</label>
                 <input type="email" class="form-control" :class="{ 'is-invalid': errors && errors.email }"
-                  v-model="email" required>
+                  v-model="email">
                 <div class="invalid-feedback" v-if="errors && errors.email">
                   {{ errors.email.msg }}
                 </div>
@@ -31,7 +31,7 @@
               <div class="form-group">
                 <label for="">Password</label>
                 <input type="password" class="form-control" :class="{ 'is-invalid': errors && errors.password }"
-                  v-model="password" required>
+                  v-model="password">
                 <div class="invalid-feedback" v-if="errors && errors.password">
                   {{ errors.password.msg }}
                 </div>
@@ -85,6 +85,7 @@ export default {
         }
       } catch (errors) {
         const { data } = errors.response
+        console.log('data: ', data)
         this.errors = data.errors
       }
     }

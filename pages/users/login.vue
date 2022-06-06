@@ -70,7 +70,8 @@ export default {
         })
         this.$toast.success(`Vous êtes connecté.`, { duration: 1000 })
       } catch (err) {
-        this.errors = err.response.data.errors
+        console.log(err)
+        this.errors = err.response
       }
     }
   }
