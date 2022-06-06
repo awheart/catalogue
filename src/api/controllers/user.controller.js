@@ -3,6 +3,7 @@ const { getters: userGetters, mutations: userMutations } = require('../models/us
 const { getters: userRoleGetters } = require('../models/user_role')
 const validator = require('express-validator')
 const jwt = require('jsonwebtoken')
+const config = require('../config/config')
 const { Error_Messages } = require('../utils/errors_handler')
 const encryption = require('../utils/encryption')
 
@@ -75,7 +76,7 @@ module.exports.login = [
                     name: user.name,
                     role: user.role
                 },
-                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, process.env.JWT_TOKEN || 'secret', { expiresIn: '15m' })
+                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, config.jwt.token, { expiresIn: '15m' })
             })
         } else {
             return res.status(500).json({ message: Error_Messages.invalid_credentials })
