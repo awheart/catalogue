@@ -199,7 +199,6 @@ module.exports.updateUser = [
                 body.password = newUserPassword
                 delete body.newPassword
                 delete body.passwordCheck
-                console.log('body: ', body)
                 req.body.password = newUserPassword
             }
 
