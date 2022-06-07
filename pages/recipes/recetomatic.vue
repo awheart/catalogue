@@ -52,6 +52,7 @@
             </div>
             <div class="item error" v-if="recipes && recipes.length === 0">
               <h1>Pas de recettes trouvées.</h1>
+              <router-link to="/recipes/add">Partager vos idées ici!</router-link>
             </div>
           </div>
         </div>
@@ -127,6 +128,26 @@ export default {
 </script>
 
 <style scoped>
+.tool-btn {
+  height: 50px;
+  color: #fff;
+  border-radius: 15px;
+  border: none;
+  vertical-align: middle;
+  padding: auto;
+  font-size: 22px;
+  background-color: #FF5700;
+  margin: 1vh 0;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid #fff;
+}
+
+.tool-btn:hover {
+  border: 1px solid #FF5700;
+  background-color: #fff;
+  color: #FF5700;
+}
+
 .recipe-bg {
   display: flex;
   flex-direction: column;
@@ -241,9 +262,10 @@ input[type=search] {
 .error {
   height: 30vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  grid-column: 2 / 4;
+  grid-column: 2 / 3;
   background-color: red;
 }
 
@@ -269,8 +291,9 @@ input[type=search] {
 
 .recetomatic-bg {
   top: 0;
+  position: absolute;
   width: 100%;
-  height: 100%;
+  height: min-content;
   background-image: url('https://res.cloudinary.com/catalogue-recipe/image/upload//v1653928693/tool_bg.jpg');
   background-size: cover;
 }
