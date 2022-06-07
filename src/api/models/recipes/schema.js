@@ -113,13 +113,13 @@ class Recipes extends model {
                 is_published: { type: 'boolean' },
                 prep_time: {
                     type: 'number',
-                    multipleOf: 0.01,
+                    multipleOf: 0.5,
                     minimum: 0,
                     maximum: 10080,
                 },
                 cook_time: {
                     type: 'number',
-                    multipleOf: 0.01,
+                    multipleOf: 0.5,
                     minimum: 0,
                     maximum: 10080,
                 },
