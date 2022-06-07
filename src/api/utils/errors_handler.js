@@ -4,7 +4,7 @@ exports.Error_Messages = Object.freeze({
     user_is_empty: 'L\'utilisateur doit être renseigné.',
     email_is_empty: 'L\'email doit être renseignée.',
     title_is_empty: 'Le titre doit être renseigné.',
-    description_is_empty: 'Veuillez ajouter une description d\au moins 10 caractères.',
+    description_is_empty: 'Veuillez ajouter une description d\'au moins 10 caractères.',
     user_not_found: 'Utilisateur introuvable.',
     recipe_not_found: 'Recette introuvable.',
     email_existing: 'Email déjà existante.',
