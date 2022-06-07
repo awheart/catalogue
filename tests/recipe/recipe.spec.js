@@ -33,8 +33,6 @@ describe('RECIPES', () => {
             .set('Authorization', `Bearer ${token}`)
             .send(inputs.body)
 
-        console.log('recipe error: ', res.error)
-
         expect(res.statusCode).toBe(200)
         expect(res.body).toEqual(expects.update_recipe)
     })
