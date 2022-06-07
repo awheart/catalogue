@@ -8,13 +8,14 @@
         <input type="text" name="title" v-model="title" :class="{ 'is-invalid': errors && errors.title }"
           placeholder="Entrer le nom de la recette">
         <label for="description">Rapide description de la recette</label>
-        <textarea name="description" id="description-textarea" cols="30" rows="5" maxlength="150"></textarea>
-        <input type="number" name="prep_time" min="0">
+        <textarea name="description" v-model="description" id="description-textarea" cols="30" rows="5" maxlength="150"
+          :class="{ 'is-invalid': errors && errors.description }"></textarea>
+        <input type="number" name="prep_time" min="0" :class="{ 'is-invalid': errors && errors.prep_time }">
         <label for="prep_time">Minutes de préparation</label>
-        <input type="number" name="cook_time" min="0">
+        <input type="number" name="cook_time" min="0" :class="{ 'is-invalid': errors && errors.cooki_time }">
         <label for="cook_time">Minutes de temps de cuisson</label>
-        <input type="number" name="nbr_person">
-        <label for="nbr_person">Personnes</label>
+        <input type="number" name="nbr_person" :class="{ 'is-invalid': errors && errors.nbr_person }">
+        <label for=" nbr_person">Personnes</label>
 
         <h2>Préparation</h2>
         <div class="tag-errors" v-if="errors && errors.step">
@@ -25,7 +26,7 @@
         <draggable v-model="steps" group="steps" handle=".sort-handle">
           <transition-group name="list">
             <div v-for="(input, index) in steps" :key="input">
-              Étape: {{ index + 1 }}
+              Étape {{ index + 1 }}:
               <input type="text" v-model="input.content" placeholder="Décrivez l'étape..." />
               <b-icon @click="addStep()" icon="plus-circle" width="17px" height="17px"></b-icon>
               <b-icon v-show="steps.length > 1" @click="removeStep(index)" icon="x-lg" width="15px" height="15px">
@@ -39,7 +40,7 @@
         <draggable v-model="listIngredient" group="ingredients" handle=".sort-handle">
           <transition-group name="list">
             <div v-for="(input, index) in listIngredient" :key="input">
-              Ingrédient: {{ index + 1 }}
+              Ingrédient {{ index + 1 }}:
               <input type="text" v-model="input.content" placeholder="Entrez un ingrédient" />
               <b-icon @click="addIngredient()" icon="plus-circle" width="17px" height="17px"></b-icon>
               <b-icon v-show="listIngredient.length > 1" @click="removeIngredient(index)" icon="x-lg" width="15px"
@@ -51,7 +52,7 @@
         </draggable>
 
         <label for="image">Image de la recette</label>
-        <input id="uploadImage" type="file" name="image" @change="previewImage()">
+        <input id="uploadImage" type="file" name="image" @change="previewImage()" accept="image/jpeg">
         <img id="previewImage" alt="pré vision de l'image">
 
         <input type="submit" value="Créer la recette">
@@ -99,35 +100,66 @@ export default {
     return {
       errors: [],
       title: null,
-      steps: [{ content: '' }],
-      listIngredient: [{ content: '' }],
-      stepsInput: [{ content: '' }],
-      listIngredientInput: [{ content: '' }]
+      description: null,
+      image: null,
+      steps: [{ content: null }],
+      user: null,
+      listIngredient: [{ content: null }]
     }
   },
   beforeCreate() {
     if (!this.$auth.loggedIn) this.$router.push({ path: '/users/login' })
   },
+  async mounted() {
+    const userAuth = await this.$axios.get(`/api/users/user/who?email=${this.$auth.user.email}`)
+    this.user = userAuth.data
+  },
   methods: {
     previewImage() {
       const reader = new FileReader()
-      const url = reader.readAsDataURL(document.getElementById('uploadImage').files[0])
-      console.log('url: ', url)
+      reader.readAsDataURL(document.getElementById('uploadImage').files[0])
       reader.onload = previewEvent => {
         document.getElementById('previewImage').src = previewEvent.target.result
+        console.log('image: ', previewEvent.target.result)
+        this.image = previewEvent.target.result
       }
     },
     addStep() {
-      this.steps.push({ content: '' })
+      this.steps.push({ content: null })
     },
     addIngredient() {
-      this.listIngredient.push({ content: '' })
+      this.listIngredient.push({ content: null })
     },
     removeStep(index) {
       return this.steps.splice(index, 1)
     },
     removeIngredient(index) {
       return this.listIngredient.splice(index, 1)
+    },
+    async createRecipe() {
+      try {
+        const newSteps = this.steps.map((step, index) => {
+          return { ...step, ...{ step_order: index + 1 } }
+        })
+        const newIngredient = this.listIngredient.map((ingredient, index) => {
+          return { ...ingredient, ...{ inlist_order: index + 1 } }
+        })
+        const recipePosted = await this.$axios.post('/api/recipes', {
+          title: this.title,
+          description: this.description,
+          steps: newSteps,
+          list_ingredient: newIngredient,
+          user_id: this.user.id,
+          image: this.image
+        })
+        if (recipePosted) {
+          this.$toast.success('Recette créée avec succès !', { duration: 2000 })
+        }
+      } catch (err) {
+        this.errors = err.response.data
+      }
+
+
     }
   }
 }
