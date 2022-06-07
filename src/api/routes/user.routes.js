@@ -21,10 +21,7 @@ router.get(`/user/who`, isAuthenticated, userController.findOne)
 router.get('/', isAuthenticated, userController.getAll)
 
 // update user as user
-router.patch('/:id', isAuthenticated, userController.updateUser)
-
-// update user as admin
-router.patch('/admin/:id', isAuthenticated, userController.updateAdmin)
+router.patch('/:id', isAuthenticated, userController.update)
 
 // delete user
 router.delete('/:id', isAuthenticated, userController.delete)
