@@ -6,7 +6,7 @@
       <h1>Toutes les recettes</h1>
       <div class="box-content">
         <div class="recipe-cards">
-          <div class="item cards" v-for="recipes in filteredList" :key="recipes"
+          <div class="item cards" v-for="recipes in filteredList" :key="recipes.id"
             @click="$router.push(`/recipes/details/${recipes.id}`)">
             <img class="recipe-bg" :src="recipes.image" alt="image de la recette">
             <h2 class="recipe-title">{{ recipes.title }}</h2>
@@ -52,9 +52,11 @@ export default {
 .book-bg {
   top: 0;
   position: absolute;
+  height: min-content;
   width: 100%;
-  height: 100%;
-  background-image: url('https://res.cloudinary.com/catalogue-recipe/image/upload/c_fit,w_1920/v1653928693/recipe_bg.jpg');
+  background-image: url('https://res.cloudinary.com/catalogue-recipe/image/upload/v1653928693/recipe_bg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 h1 {
@@ -62,10 +64,9 @@ h1 {
 }
 
 .recipe-bg {
-  display: flex;
-  flex-direction: column;
-  max-height: 45%;
-  width: auto;
+  object-fit: cover;
+  width: 100%;
+  max-height: 100%;
 }
 
 .recipe-title {
