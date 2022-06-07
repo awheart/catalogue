@@ -76,7 +76,7 @@ module.exports.login = [
                     name: user.name,
                     role: user.role
                 },
-                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, config.jwt.token, { expiresIn: '15m' })
+                token: jwt.sign({ _id: user._id, email: user.email, username: user.username, role: user.role }, config.jwt.token, { expiresIn: '24h' })
             })
         } else {
             return res.status(500).json({ message: Error_Messages.invalid_credentials })
@@ -123,39 +123,16 @@ module.exports.getAll = asyncAction(async (req, res) => {
     return res.json(users)
 })
 
-module.exports.updateAdmin = [
-    // validation rules
-    validator.body('username', Error_Messages.user_is_empty).isLength({ min: 4 }),
-    validator.body('username').custom(async value => {
-        const user = await userGetters.findOne({ username: value })
-        if (user) return Promise.reject(Error_Messages.username_existing)
-    }),
-    asyncAction(async (req, res) => {
-        // throw validation errors
-        const errors = validator.validationResult(req);
-        if (!errors.isEmpty()) res.status(422).json({ errors: errors.mapped() })
-
-        const data = req.body
-        const { id } = req.params
-        try {
-            const userPatched = await userMutations.patch(id, data)
-            if (!userPatched) return res.status(404).json({ message: Error_Messages.user_not_found })
-            res.json(userPatched)
-        } catch (err) {
-            console.log(err)
-        }
-    })
-]
-
 // update User
-module.exports.updateUser = [
+module.exports.update = [
     // validation rules
 
     validator.body('username', Error_Messages.user_is_empty).isLength({ min: 4 }),
     validator.body('username').custom(async (value, { req }) => {
         const { id } = req.params
+        console.log('id params: ', id)
         const user = await userGetters.findOne({ username: value })
-        if (user.id != id) return Promise.reject(Error_Messages.username_existing)
+        if (user && user.id != id) return Promise.reject(Error_Messages.username_existing)
     }),
     validator.body('password', Error_Messages.old_password_empty)
         .if(validator.body('newPassword').exists({ checkNull: true }))
@@ -204,6 +181,7 @@ module.exports.updateUser = [
             }
 
             const data = req.body
+            console.log('data: ', data)
 
             const userPatched = await userMutations.patch(id, data)
             if (!userPatched) return res.status(404).json({ message: Error_Messages.user_not_found })
