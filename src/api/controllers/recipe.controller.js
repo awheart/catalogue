@@ -37,18 +37,20 @@ module.exports.create = [
     }),
     validator.body('steps.*.content', Error_Messages.step_is_needed).notEmpty().exists({ checkFalsy: true }),
     validator.body('steps.*.step_order', Error_Messages.order_is_needed).isInt(),
+    validator.body('cook_time', Error_Messages.cooktime_is_needed).exists({ checkNull: true }),
+    validator.body('prep_time', Error_Messages.preptime_is_needed).exists({ checkNull: true }),
+    validator.body('nbr_person', Error_Messages.person_is_needed).exists({ checkNull: true }),
     validator.body('list_ingredient.*.content', Error_Messages.ingredient_is_needed).notEmpty().exists({ checkFalsy: true }),
     validator.body('list_ingredient.*.inlist_order', Error_Messages.order_is_needed).isInt(),
     validator.body('description', Error_Messages.description_is_empty).isLength({ min: 10 }),
-    asyncAction(async (req, res) => {
 
+    asyncAction(async (req, res) => {
         // throw validation errors
-        const errors = validator.validationResult(req);
+        const errors = validator.validationResult(req)
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
 
         try {
             if (req.body.image != null) {
-                console.log('name: ', req.body.title)
                 const name = req.body.title
                 const imageURL = await image_upload.uploadCustomName(req.body.image, 'recipe', name)
                 req.body.image = imageURL.url
@@ -76,6 +78,9 @@ module.exports.update = [
     }),
     validator.body('steps.*.content', Error_Messages.step_is_needed).notEmpty().exists({ checkFalsy: true }),
     validator.body('steps.*.step_order', Error_Messages.order_is_needed).isInt(),
+    validator.body('cook_time', Error_Messages.cooktime_is_needed).notEmpty(),
+    validator.body('prep_time', Error_Messages.preptime_is_needed).notEmpty(),
+    validator.body('nbr_person', Error_Messages.person_is_needed).notEmpty(),
     validator.body('list_ingredient.*.content', Error_Messages.ingredient_is_needed).notEmpty().exists({ checkFalsy: true }),
     validator.body('list_ingredient.*.inlist_order', Error_Messages.order_is_needed).isInt(),
     validator.body('description', Error_Messages.description_is_empty).isLength({ min: 10 }),
