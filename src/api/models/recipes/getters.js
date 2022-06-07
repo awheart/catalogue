@@ -19,7 +19,6 @@ const modifiers = {
 }
 
 exports.getAll = async filter => Recipes.query()
-    .skipUndefined()
     .select()
     .where(filter)
     .withGraphFetched(graphFilter)
