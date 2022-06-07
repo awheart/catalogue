@@ -39,5 +39,8 @@ exports.Error_Messages = Object.freeze({
     like_not_found: 'Vous ne pouvez retirer cette recette de vos favoris car elle ne s\'y trouve pas',
     step_is_needed: 'Une étape est nécessaire pour créer une recette.',
     ingredient_is_needed: 'Un ingrédient est nécessaire pour créer une recette.',
-    order_is_needed: "Veuillez donner un ordre valide."
+    order_is_needed: "Veuillez donner un ordre valide.",
+    preptime_is_needed: "Veuillez déterminer un temps de préparation.",
+    cooktime_is_needed: "Veuillez déterminer un temps de cuisson.",
+    person_is_needed: "Veuillez déterminer le nombre de couverts prévus pour la recette."
 })
