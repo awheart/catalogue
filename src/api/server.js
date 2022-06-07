@@ -6,8 +6,8 @@ const { initTables } = require('./database/db')
 
 const api = express()
 
-api.use(express.json())
-api.use(express.urlencoded({ extended: true }))
+api.use(express.json({ limit: '50mb' }))
+api.use(express.urlencoded({ extended: true, limit: '50mb' }))
 api.use(router)
 api.use(routes)
 
