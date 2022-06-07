@@ -58,9 +58,11 @@ export default {
     async submitForm() {
       try {
         const data = { username: this.username }
-        await this.$axios.patch('/api/users/admin/' + this.$route.params.id, data)
-        this.$toast.success('updated', { duration: 2000 })
-        this.$router.push({ path: '/users/dashboard/', params: { updated: 'yes', id: this.$route.params.id } })
+        const userUpdated = await this.$axios.patch('/api/users/' + this.$route.params.id, data)
+        if (userUpdated) {
+          this.$toast.success('Utilisateur mis à jour.', { duration: 2000 })
+          this.$router.push({ path: '/users/dashboard/' })
+        }
       } catch (error) {
         if (error.response.data.errors) this.errors = error.response.data.errors
       }
