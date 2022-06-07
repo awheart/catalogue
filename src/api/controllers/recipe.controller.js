@@ -3,6 +3,7 @@ const { getters: userGetters } = require('../models/users')
 const { deleteRecipeCascade: deleteRecipeRelation } = require('../utils/delete_cascade')
 const validator = require('express-validator')
 const { Error_Messages } = require('../utils/errors_handler')
+const image_upload = require('../utils/image_upload')
 
 const asyncAction = (action) => (req, res, next) => action(req, res, next).catch(next)
 
@@ -34,15 +35,24 @@ module.exports.create = [
         const user = await userGetters.findById(value)
         if (!user) return Promise.reject({ message: Error_Messages.user_not_found })
     }),
-    validator.body('steps', Error_Messages.step_is_needed).notEmpty(),
-    validator.body('list_ingredient', Error_Messages.ingredient_is_needed).notEmpty(),
-    validator.body('description', Error_Messages.description_is_empty).isLength({ min: 1 }),
+    validator.body('steps.*.content', Error_Messages.step_is_needed).notEmpty().exists({ checkFalsy: true }),
+    validator.body('steps.*.step_order', Error_Messages.order_is_needed).isInt(),
+    validator.body('list_ingredient.*.content', Error_Messages.ingredient_is_needed).notEmpty().exists({ checkFalsy: true }),
+    validator.body('list_ingredient.*.inlist_order', Error_Messages.order_is_needed).isInt(),
+    validator.body('description', Error_Messages.description_is_empty).isLength({ min: 10 }),
     asyncAction(async (req, res) => {
 
         // throw validation errors
         const errors = validator.validationResult(req);
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
+
         try {
+            if (req.body.image != null) {
+                console.log('name: ', req.body.title)
+                const name = req.body.title
+                const imageURL = await image_upload.uploadCustomName(req.body.image, 'recipe', name)
+                req.body.image = imageURL.url
+            }
             const recipe = await recipeMutations.create(req.body)
             res.json(recipe)
         } catch (err) {
@@ -64,13 +74,11 @@ module.exports.update = [
         const recipe = await recipeGetters.findById(value)
         if (!recipe) return Promise.reject(Error_Messages.recipe_not_found)
     }),
-    validator.body('steps', Error_Messages.step_is_needed).exists({ checkNull: true }).notEmpty(),
-    validator.body('steps.*.step_order', Error_Messages.order_is_needed)
-        .if(validator.body('steps', Error_Messages.step_is_needed).notEmpty())
-        .isInt(),
-    validator.body('list_ingredient', Error_Messages.ingredient_is_needed).notEmpty(),
+    validator.body('steps.*.content', Error_Messages.step_is_needed).notEmpty().exists({ checkFalsy: true }),
+    validator.body('steps.*.step_order', Error_Messages.order_is_needed).isInt(),
+    validator.body('list_ingredient.*.content', Error_Messages.ingredient_is_needed).notEmpty().exists({ checkFalsy: true }),
     validator.body('list_ingredient.*.inlist_order', Error_Messages.order_is_needed).isInt(),
-    validator.body('description', Error_Messages.description_is_empty).isLength({ min: 1 }),
+    validator.body('description', Error_Messages.description_is_empty).isLength({ min: 10 }),
 
     asyncAction(async (req, res) => {
         // throw validation errors
