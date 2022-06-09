@@ -13,6 +13,10 @@
 
         <div class="recipe-header-div">
           <div class="recipe-div">
+            <label for="">Auteur de la recette</label>
+            <input v-model="author" type="text" disabled />
+          </div>
+          <div class="recipe-div">
             <label for="">Description de la recette</label>
             <textarea v-model="description" id="description-textarea" cols="30" rows="5" disabled></textarea>
           </div>
@@ -211,6 +215,7 @@ export default {
       prep_time: null,
       steps: null,
       list_ingredient: null,
+      author: null,
       author_id: null,
       user_id: null
     }
@@ -232,6 +237,7 @@ export default {
     this.steps = this.recipe.steps
     this.list_ingredient = this.recipe.list_ingredient
     this.author_id = this.recipe.author.id
+    this.author = this.recipe.author.username
     console.log(this.author_id, this.user_id)
   }
 }
