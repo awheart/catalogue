@@ -3,10 +3,7 @@
     <div class="tomato-bg">
       <NavBar />
       <div class="wrap">
-        test
-        <h1>Bienvenue</h1>
-        <h1>Update User</h1>
-        <hr>
+        <h1>Mis à jour du nom d'utilisateur</h1>
 
         <div class="row">
           <div class="col-md-6">
@@ -21,14 +18,14 @@
                 </div>
               </div>
               <input type="submit" value="Valider" class="btn btn-primary mr-3">
-              <nuxt-link :to="'/users/' + $route.params.id + '/details'" class="btn btn-secondary mr-3">Annuler
+              <nuxt-link :to="`/users/details/${$route.params.id}`" class="btn btn-secondary mr-3">Annuler
               </nuxt-link>
             </form>
           </div>
         </div>
       </div>
-      <FooterMain />
     </div>
+    <FooterMain />
   </div>
 </template>
 
@@ -61,7 +58,7 @@ export default {
         const userUpdated = await this.$axios.patch('/api/users/' + this.$route.params.id, data)
         if (userUpdated) {
           this.$toast.success('Utilisateur mis à jour.', { duration: 2000 })
-          this.$router.push({ path: '/users/dashboard/' })
+          this.$router.push({ path: '/' })
         }
       } catch (error) {
         if (error.response.data.errors) this.errors = error.response.data.errors
