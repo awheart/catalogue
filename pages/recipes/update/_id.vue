@@ -127,7 +127,8 @@
                         </transition-group>
                     </draggable>
                 </div>
-                <div class="publishRecipe" v-if="$auth.user.role.role_name == 'admin' && recipe_is_published == false"
+                <div class="publishRecipe"
+                    v-if="$auth.loggedIn && $auth.user.role.role_name == 'admin' && recipe_is_published == false"
                     @change="is_published = !is_published">
                     <label for="publish">Publier la recette ?</label>
                     <input type="checkbox" name="publish">
@@ -386,8 +387,7 @@ export default {
             author_id: null,
             user_id: null,
             is_published: false,
-            recipe_is_published: null,
-            tags: [{ tag_name: null }]
+            recipe_is_published: null
         }
     },
     async mounted() {
@@ -408,12 +408,6 @@ export default {
         this.recipe_is_published = this.recipe.is_published
     },
     methods: {
-        addTag() {
-            this.tags.push({ tag_name: null })
-        },
-        removeTag(index) {
-            return this.tags.splice(index, 1)
-        },
         previewImage() {
             const reader = new FileReader()
             reader.readAsDataURL(document.getElementById('uploadImage').files[0])
@@ -443,11 +437,6 @@ export default {
                 const newIngredient = this.list_ingredient.map((ingredient, index) => {
                     return { ...ingredient, ...{ inlist_order: index + 1 } }
                 })
-                const newTags = this.tags.map((tag) => {
-                    console.log('test: ', this.$route.params.id)
-                    return { ...tag, ...{ recipe_id: this.$route.params.id } }
-                })
-                console.log('tags: ', this.tags)
                 const recipePatched = await this.$axios.patch(`/api/recipes/${this.recipe_id}`, {
                     id: this.recipe_id,
                     title: this.title,
@@ -459,7 +448,6 @@ export default {
                     cook_time: parseFloat(this.cook_time),
                     prep_time: parseFloat(this.prep_time),
                     nbr_person: parseInt(this.nbr_person),
-                    tags: newTags,
                     is_published: this.is_published
                 })
                 if (recipePatched) {
@@ -468,7 +456,7 @@ export default {
                 }
             } catch (errors) {
                 this.$toast.error('Erreur durant la modification de la recette.', { duration: 2000 })
-                // this.errors = errors.response.data.errors
+                this.errors = errors.response.data.errors
                 console.log(errors)
             }
             setTimeout(() => document.getElementById('loading').style.display = 'none', 500)
