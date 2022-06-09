@@ -88,7 +88,7 @@ module.exports.login = [
 module.exports.getMe = asyncAction(async (req, res) => {
     const token = req.headers.authorization
     if (token) {
-        jwt.verify(token.replace(/^Bearer\s/, ''), process.env.JWT_TOKEN, (err, decoded) => {
+        jwt.verify(token.replace(/^Bearer\s/, ''), config.jwt.token, (err, decoded) => {
             if (err) {
                 return res.status(401).json({ message: Error_Messages.unauthorized_action })
             } else {
@@ -171,17 +171,15 @@ module.exports.update = [
         const body = req.body
 
         try {
-            if (body.newPassword) {
+            if (body.newPassword && body.password && body.passwordCheck) {
                 // encrypt password
                 const newUserPassword = encryption.password(body.newPassword)
                 body.password = newUserPassword
                 delete body.newPassword
                 delete body.passwordCheck
-                req.body.password = newUserPassword
             }
 
             const data = req.body
-            console.log('data: ', data)
 
             const userPatched = await userMutations.patch(id, data)
             if (!userPatched) return res.status(404).json({ message: Error_Messages.user_not_found })
