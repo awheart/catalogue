@@ -1,7 +1,7 @@
 <template>
-    <div class="tomato-bg">
+    <div class="detail-bg">
         <NavBar />
-        <div class="wrap">
+        <div class="wrap detail-wrap">
             test
             <h1>Bienvenue</h1>
             <div>
@@ -23,6 +23,15 @@
         <FooterMain />
     </div>
 </template>
+
+<style scoped>
+.account-bg {
+    position: absolute;
+    min-height: 100vh;
+    width: 100%;
+    background-image: url('https://res.cloudinary.com/catalogue-recipe/image/upload/c_scale,w_auto,q_auto:low,x_20,y_396/v1653928715/tomato_bg.jpg');
+}
+</style>
 
 <script>
 export default {
