@@ -4,94 +4,110 @@
     <div class="wrap recipe-wrap">
       <h1>Ajouter une recette</h1>
       <form action="" method="post" @submit.prevent="createRecipe()">
-
-        <label for="">Nom de la recette</label>
-        <input type="text" v-model="title" class="form-control" :class="{ 'is-invalid': errors && errors.title }"
-          placeholder="Entrer le nom de la recette">
-        <div class="invalid-feedback" v-if="errors && errors.title">
-          {{ errors.title.msg }}
-        </div>
-
-        <div class="form-group">
-          <label for="">Rapide description de la recette</label>
-          <textarea v-model="description" id="description-textarea" cols="30" rows="5" maxlength="150"
-            class="form-control" :class="{ 'is-invalid': errors && errors.description }"
-            placeholder="Ceci est une recette qui..."></textarea>
-
-          <div class="invalid-feedback" v-if="errors && errors.description">
-            {{ errors.description.msg }}
+        <div class="recipe-image">
+          <div class="preview-div">
+            <img id="previewImage" alt="aperçu de l'image">
           </div>
-
+          <input id="uploadImage" class="btn-image" type="file" name="image" @change="previewImage()"
+            accept="image/jpeg">
         </div>
 
-
-        <input type="number" v-model="prep_time" min="0" class="prep-time"
-          :class="{ 'is-invalid': errors && errors.prep_time }" step="0.5">
-        <div class="invalid-feedback" v-if="errors && errors.prep_time">
-          {{ errors.prep_time.msg }}
-        </div>
-        <label for="prep_time">Minutes de préparation</label>
-        <input type="number" v-model="cook_time" min="0" class="cook-time"
-          :class="{ 'is-invalid': errors && errors.cook_time }" step="0.5">
-        <div class="invalid-feedback" v-if="errors && errors.cook_time">
-          {{ errors.cook_time.msg }}
-        </div>
-        <label for="cook_time">Minutes de temps de cuisson</label>
-        <input type="number" v-model="nbr_person" class="form-control"
-          :class="{ 'is-invalid': errors && errors.nbr_person }">
-        <div class="invalid-feedback" v-if="errors && errors.nbr_person">
-          {{ errors.nbr_person.msg }}
-        </div>
-        <label for=" nbr_person">Personnes</label>
-
-        <h2>Préparation</h2>
-        <div class="invalid-feedback" v-if="errors && stepsErrors">
-          <div v-for="(error, index) in errors" :key="index">
-            {{ steps.msg }}
-          </div>
-        </div>
-
-
-        <draggable v-model="steps" group="steps" handle=".sort-handle">
-          <transition-group name="list">
-            <div v-for="(input, index) in steps" :key="input">
-              Étape {{ index + 1 }}:
-              <input type="text" v-model="input.content" placeholder="Décrivez l'étape..." />
-              <b-icon @click="addStep()" icon="plus-circle" width="17px" height="17px"></b-icon>
-              <b-icon v-show="steps.length > 1" @click="removeStep(index)" icon="x-lg" width="15px" height="15px">
-              </b-icon>
-              <b-icon class="sort-handle" icon="arrow-down-up"></b-icon>
+        <div class="recipe-header-div">
+          <div class="recipe-div">
+            <label for="">Titre de la recette</label>
+            <input type="text" v-model="title" :class="{ 'is-invalid': errors && errors.title }"
+              placeholder="Entrer le nom de la recette">
+            <div class="invalid-feedback" v-if="errors && errors.title">
+              {{ errors.title.msg }}
             </div>
-          </transition-group>
-        </draggable>
+          </div>
+          <div class="recipe-div">
+            <label for="">Rapide description de la recette</label>
+            <textarea v-model="description" id="description-textarea" cols="30" rows="5" maxlength="150"
+              :class="{ 'is-invalid': errors && errors.description }"
+              placeholder="Ceci est une recette qui..."></textarea>
 
-        <h2>Ingrédients</h2>
-        <draggable v-model="listIngredient" group="ingredients" handle=".sort-handle">
-          <transition-group name="list">
-            <div v-for="(input, index) in listIngredient" :key="input">
-              Ingrédient {{ index + 1 }}:
-
-              <input type="text" v-model="input.content" placeholder="Entrez un ingrédient"
-                :class="{ 'is-invalid': errors && errors[`list_ingredient[${index}].content`] }" />
-
-
-              <b-icon @click="addIngredient()" icon="plus-circle" width="17px" height="17px"></b-icon>
-              <b-icon v-show="listIngredient.length > 1" @click="removeIngredient(index)" icon="x-lg" width="15px"
-                height="15px">
-              </b-icon>
-              <b-icon class="sort-handle" icon="arrow-down-up"></b-icon>
-              <div class="invalid-feedback" v-if="errors && errors[`list_ingredient[${index}].content`]">
-                {{ errors[`list_ingredient[${index}].content`].msg }}
+            <div class="invalid-feedback" v-if="errors && errors.description">
+              {{ errors.description.msg }}
+            </div>
+          </div>
+          <div class="time-input">
+            <div class="div-time">
+              <b-icon icon="clock-history" width="50px" height="50px" class="time-icon"></b-icon>
+              <input type="number" v-model="prep_time" min="0" class="prep-time"
+                :class="{ 'is-invalid': errors && errors.prep_time }" step="0.5">
+              <p>Minutes de préparation</p>
+              <div class="invalid-feedback" v-if="errors && errors.prep_time">
+                {{ errors.prep_time.msg }}
               </div>
             </div>
-          </transition-group>
-        </draggable>
+            <div class="div-time">
+              <b-icon icon="hourglass" width="50px" height="50px" class="time-icon"></b-icon>
+              <input type="number" v-model="cook_time" min="0" class="cook-time"
+                :class="{ 'is-invalid': errors && errors.cook_time }" step="0.5">
+              <p>Minutes de cuisson</p>
+              <div class="invalid-feedback" v-if="errors && errors.cook_time">
+                {{ errors.cook_time.msg }}
+              </div>
+            </div>
 
-        <label for="image">Image de la recette</label>
-        <input id="uploadImage" type="file" name="image" @change="previewImage()" accept="image/jpeg">
-        <img id="previewImage" alt="pré vision de l'image">
+            <div class="div-time">
+              <b-icon icon="person" width="50px" height="50px" class="time-icon"></b-icon>
+              <input type="number" v-model="nbr_person" class="form-input"
+                :class="{ 'is-invalid': errors && errors.nbr_person }">
+              <p>Personnes</p>
+              <div class="invalid-feedback" v-if="errors && errors.nbr_person">
+                {{ errors.nbr_person.msg }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="add-div ingredient-div">
+          <h2>Ingrédients</h2>
+          <draggable v-model="listIngredient" group="ingredients" handle=".sort-handle">
+            <transition-group name="list">
+              <div v-for="(input, index) in listIngredient" :key="input">
+                Ingrédient {{ index + 1 }}:
 
-        <input type="submit" value="Créer la recette">
+                <input type="text" v-model="input.content" placeholder="Entrez un ingrédient"
+                  :class="{ 'is-invalid': errors && errors[`list_ingredient[${index}].content`] }" />
+
+
+                <b-icon @click="addIngredient()" icon="plus-circle" width="17px" height="17px"></b-icon>
+                <b-icon v-show="listIngredient.length > 1" @click="removeIngredient(index)" icon="x-lg" width="15px"
+                  height="15px">
+                </b-icon>
+                <b-icon class="sort-handle" icon="arrow-down-up"></b-icon>
+                <div class="invalid-feedback" v-if="errors && errors[`list_ingredient[${index}].content`]">
+                  {{ errors[`list_ingredient[${index}].content`].msg }}
+                </div>
+              </div>
+            </transition-group>
+          </draggable>
+        </div>
+        <div class="add-div steps-div">
+          <h2>Préparation</h2>
+          <draggable v-model="steps" group="steps" handle=".sort-handle">
+            <transition-group name="list">
+              <div v-for="(input, index) in steps" :key="input">
+                Étape {{ index + 1 }}:
+
+                <input type="text" v-model="input.content" placeholder="Décrivez l'étape..."
+                  :class="{ 'is-invalid': errors && errors[`steps[${index}].content`] }" />
+                <b-icon @click="addStep()" icon="plus-circle" width="17px" height="17px"></b-icon>
+                <b-icon v-show="steps.length > 1" @click="removeStep(index)" icon="x-lg" width="15px" height="15px">
+                </b-icon>
+                <b-icon class="sort-handle" icon="arrow-down-up"></b-icon>
+                <div class="invalid-feedback" v-if="errors && errors[`list_ingredient[${index}].content`]">
+                  {{ errors[`steps[${index}].content`].msg }}
+                </div>
+              </div>
+            </transition-group>
+          </draggable>
+        </div>
+
+
+        <input type="submit" class="catalogue-btn" value="Créer la recette">
       </form>
 
       <div id="loading">
@@ -107,6 +123,90 @@
 </template>
 
 <style scoped>
+form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  border: #FF5700 2px solid;
+  text-align: center;
+  width: 90%;
+  margin: 1vh auto;
+  padding: 15px 20px;
+  border-radius: 15px;
+}
+
+.recipe-div {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-div {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 3% 2%;
+  text-align: left;
+}
+
+.div-time {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.time-input {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+.time-icon {
+  margin: 20px 0;
+}
+
+input[type="number"] {
+  width: 65px;
+}
+
+input[type="file"] {
+  width: 75%;
+}
+
+.recipe-image {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 3% 2%;
+  text-align: center;
+}
+
+.recipe-header-div {
+  width: 40%;
+  float: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin: 3% 2%;
+  text-align: center;
+}
+
+.preview-div {
+  border: #FF5700 1px solid;
+  height: 400px;
+  width: 100%;
+  margin-bottom: 1%;
+  border-radius: 15px;
+}
+
+
+
 #loading {
   position: absolute;
   background-color: #00000670;
@@ -195,8 +295,9 @@ h2 {
 }
 
 #previewImage {
-  width: 15vw;
-  height: auto;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
   border-radius: 15px;
 }
 
@@ -218,6 +319,22 @@ h2 {
   opacity: 0;
   transform: translateX(30px);
 }
+
+@media screen and (max-width:800px) {
+  form {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .recipe-image,
+  .recipe-header-div,
+  .recipe-div,
+  .add-div,
+  .ingredient-div {
+    width: 100%;
+  }
+}
 </style>
 
 <script>
@@ -230,8 +347,6 @@ export default {
   data() {
     return {
       errors: null,
-      stepsErrors: null,
-      listIngredientErrors: null,
       title: null,
       description: null,
       image: null,
@@ -246,10 +361,9 @@ export default {
   beforeCreate() {
     if (!this.$auth.loggedIn) {
       this.$router.push({ path: '/users/login' })
-      this.$toast.info('Vous devez être connecter pour accéder à cette page.', { duration: 2000 })
     }
   },
-  async afterCreate() {
+  async mounted() {
     const userAuth = await this.$axios.get(`/api/users/user/who?email=${this.$auth.user.email}`)
     this.user = userAuth.data
   },
@@ -275,7 +389,6 @@ export default {
       return this.listIngredient.splice(index, 1)
     },
     async createRecipe() {
-      if (this.cook_time == null) return { ...this.errors, ...{ cook_time: { msg: 'Le champs temps de cuisson ne peut être vide.' } } }
       document.getElementById('loading').style.display = 'flex'
       try {
         const newSteps = this.steps.map((step, index) => {
@@ -284,6 +397,7 @@ export default {
         const newIngredient = this.listIngredient.map((ingredient, index) => {
           return { ...ingredient, ...{ inlist_order: index + 1 } }
         })
+        console.log('user id', this.user)
         const recipePosted = await this.$axios.post('/api/recipes', {
           title: this.title,
           description: this.description,
@@ -300,8 +414,7 @@ export default {
         }
       } catch (errors) {
         this.$toast.error('Erreur durant la création de la recette.', { duration: 2000 })
-        const { data } = errors.response
-        this.errors = data.errors
+        this.errors = errors.response.data.errors
       }
       setTimeout(() => document.getElementById('loading').style.display = 'none', 500)
     }
