@@ -13,6 +13,8 @@
           </div>
           <div class="item error" v-if="recipes.length === 0">
             <h1>Pas de recettes trouvées.</h1>
+            <button class="catalogue-btn" @click="$router.push({ path: `/recipes/add` })">Partager vos idées
+              ici!</button>
           </div>
         </div>
       </div>
@@ -32,7 +34,7 @@ export default {
   },
   async mounted() {
     try {
-      const recipesData = await this.$axios.get(`/api/recipes`)
+      const recipesData = await this.$axios.get(`/api/recipes?is_published=true`)
       this.recipes = recipesData.data
     } catch (err) {
       console.log(err)
@@ -84,19 +86,7 @@ h1 {
   flex-direction: column;
 }
 
-input {
-  display: block;
-  width: 80%;
-  margin: 20px auto;
-  padding: 10px 45px;
-  background: white url("../../src/assets/img/search.svg") no-repeat 15px center;
-  background-size: 15px 15px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
-    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-}
+
 
 .item {
   width: 80%;
@@ -153,15 +143,22 @@ input {
 }
 
 .error {
-  height: 30vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  border: #FF5700 1px solid;
   grid-column: 2 / 4;
-  background-color: red;
+  background-color: #fff;
 }
 
 .error h1 {
-  color: #fff;
+  color: #FF5700;
+}
+
+@media screen and (max-width: 1816px) {
+  .error {
+    grid-column: 1/4;
+  }
 }
 </style>
