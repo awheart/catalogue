@@ -68,19 +68,20 @@ module.exports.update = [
     // validations rules
     validator.body('title', Error_Messages.title_is_empty).isLength({ min: 1 }),
     validator.body('title').custom(async (value, { req }) => {
-        const { id } = req.body
+        const { id } = req.params
         const titleCheck = await recipeGetters.findOne({ title: value })
-        if (titleCheck && (titleCheck.id != id)) return Promise.reject(Error_Messages.title_existing)
+        if (titleCheck && titleCheck.id != id) return Promise.reject(Error_Messages.title_existing)
     }),
-    validator.body('id').isInt().custom(async value => {
-        const recipe = await recipeGetters.findById(value)
-        if (!recipe) return Promise.reject(Error_Messages.recipe_not_found)
+    validator.body('user_id', Error_Messages.not_integer).isInt(),
+    validator.body('user_id').custom(async value => {
+        const user = await userGetters.findById(value)
+        if (!user) return Promise.reject({ message: Error_Messages.user_not_found })
     }),
     validator.body('steps.*.content', Error_Messages.step_is_needed).notEmpty().exists({ checkFalsy: true }),
     validator.body('steps.*.step_order', Error_Messages.order_is_needed).isInt(),
-    validator.body('cook_time', Error_Messages.cooktime_is_needed).notEmpty(),
-    validator.body('prep_time', Error_Messages.preptime_is_needed).notEmpty(),
-    validator.body('nbr_person', Error_Messages.person_is_needed).notEmpty(),
+    validator.body('cook_time', Error_Messages.cooktime_is_needed).exists({ checkNull: true }),
+    validator.body('prep_time', Error_Messages.preptime_is_needed).exists({ checkNull: true }),
+    validator.body('nbr_person', Error_Messages.person_is_needed).exists({ checkNull: true }),
     validator.body('list_ingredient.*.content', Error_Messages.ingredient_is_needed).notEmpty().exists({ checkFalsy: true }),
     validator.body('list_ingredient.*.inlist_order', Error_Messages.order_is_needed).isInt(),
     validator.body('description', Error_Messages.description_is_empty).isLength({ min: 10 }),
@@ -95,6 +96,11 @@ module.exports.update = [
         const data = req.body
 
         try {
+            if (req.body.image != null) {
+                const name = req.body.title
+                const imageURL = await image_upload.uploadCustomName(req.body.image, 'recipe', name)
+                req.body.image = imageURL.url
+            }
             const recipePatched = await recipeMutations.patch(data)
             res.json(recipePatched)
         } catch (err) {
