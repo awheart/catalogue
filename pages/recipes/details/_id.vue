@@ -221,9 +221,12 @@ export default {
     }
   },
   async mounted() {
-    const userAuth = await this.$axios.get(`/api/users/user/who?email=${this.$auth.user.email}`)
-    console.log('user: ', userAuth)
-    this.user_id = userAuth.data.id
+    if (this.$auth.loggedIn) {
+      const userAuth = await this.$axios.get(`/api/users/user/who?email=${this.$auth.user.email}`)
+      console.log('user: ', userAuth)
+      this.user_id = userAuth.data.id
+    }
+
     const recipeFetch = await this.$axios.get(`/api/recipes/${this.$route.params.id}`)
     console.log('recipe: ', recipeFetch.data.author.id)
     this.recipe = recipeFetch.data

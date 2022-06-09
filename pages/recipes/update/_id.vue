@@ -452,7 +452,7 @@ export default {
                 })
                 if (recipePatched) {
                     this.$toast.success('Recette modifiée avec succès !', { duration: 2000 })
-                    this.$router.push({ path: `/api/recipes/details/${this.recipe_id}` })
+                    this.$router.push({ path: `/recipes/details/${this.recipe_id}` })
                 }
             } catch (errors) {
                 this.$toast.error('Erreur durant la modification de la recette.', { duration: 2000 })
