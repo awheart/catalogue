@@ -41,7 +41,7 @@
               </li>
             </ul>
           </div>
-          <button class="tool-btn" type="submit">Je cherche une recette</button>
+          <button class="catalogue-btn" type="submit">Je cherche une recette</button>
         </form>
         <div class="box-content" v-if="recipes">
           <div class="recipe-cards">
@@ -52,7 +52,8 @@
             </div>
             <div class="item error" v-if="recipes && recipes.length === 0">
               <h1>Pas de recettes trouvées.</h1>
-              <router-link to="/recipes/add">Partager vos idées ici!</router-link>
+              <button class="catalogue-btn" @click="$router.push({ path: `/recipes/add` })">Partager vos idées
+                ici!</button>
             </div>
           </div>
         </div>
@@ -128,20 +129,6 @@ export default {
 </script>
 
 <style scoped>
-.tool-btn {
-  height: 50px;
-  color: #fff;
-  border-radius: 15px;
-  border: none;
-  vertical-align: middle;
-  padding: auto;
-  font-size: 22px;
-  background-color: #FF5700;
-  margin: 1vh 0;
-  transition: all 0.2s ease-in-out;
-  border: 1px solid #fff;
-}
-
 .tool-btn:hover {
   border: 1px solid #FF5700;
   background-color: #fff;
@@ -219,7 +206,7 @@ input[type=search] {
   max-height: 100%;
   width: 51vw;
   border: 2px solid #FF5700;
-  margin: 0 auto;
+  margin: 3vh auto;
   overflow: hidden;
   border-radius: 15px;
   padding: 1px;
@@ -230,7 +217,7 @@ input[type=search] {
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   grid-auto-flow: column;
   grid-auto-columns: minmax(240px, 1fr);
-  height: 34vh;
+  height: 50vh;
   width: 50vw;
   overflow-x: scroll;
   border-radius: 15px;
@@ -244,7 +231,6 @@ input[type=search] {
   color: #fff;
   border: 1px solid #FF5700;
   margin: 2vh;
-  height: 25vh;
   box-sizing: content-box;
   cursor: pointer;
   transition: 200ms ease-in-out;
@@ -260,17 +246,17 @@ input[type=search] {
 }
 
 .error {
-  height: 30vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border: #FF5700 1px solid;
   grid-column: 2 / 3;
-  background-color: red;
+  background-color: #fff;
 }
 
 .error h1 {
-  color: #fff;
+  color: #FF5700;
 }
 
 .selected-tags {
@@ -302,6 +288,15 @@ h1,
 h3 {
   margin: 1vh 0;
   color: #FF5700;
+}
+
+.recipe-title {
+  position: absolute;
+  width: 93%;
+  border-radius: 8px;
+  background-color: #FF5700;
+  bottom: 0;
+  transition: 200ms ease-in-out;
 }
 
 .recetomatic-wrap {
@@ -340,5 +335,17 @@ h3 {
   background-color: #fff;
   color: #FF5700;
   padding: 25px;
+}
+
+@media screen and (max-width:1438px) {
+  .error {
+    grid-column: 1/3;
+  }
+}
+
+@media screen and (max-width:960px) {
+  .error {
+    grid-column: 1/2;
+  }
 }
 </style>
