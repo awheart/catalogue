@@ -12,13 +12,14 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
+      { rel: "stylesheet", href: "https://www.w3schools.com/w3css/4/w3.css" }
       // { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
   ssr: true,
   target: 'server',
 
-  
+
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
@@ -64,6 +65,19 @@ export default {
         name: 'success',
         message: 'Successfully registered !'
       }
+    ],
+    logout: [
+      {
+        name: 'error',
+        message: 'Oops...Something went wrong',
+        options: {
+          type: 'error'
+        }
+      },
+      {
+        name: 'success',
+        message: 'yes'
+      }
     ]
   },
 
@@ -71,7 +85,16 @@ export default {
   build: {
   },
   axios: {
-    baseURL: 'http://localhost:3000', // Used as fallback if no runtime config is provided
+    baseURL: "localhost:3000",
+    proxy: true
+  },
+
+  proxy: {
+    // Simple proxy
+    "/api/": {
+      target: "https://localhost:3000/",
+      pathRewrite: { "^/api/": "" }
+    }
   },
 
   publicRuntimeConfig: {

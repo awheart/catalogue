@@ -1,13 +1,14 @@
 const router = require('express').Router({ strict: true })
 const listIngredientsController = require('../controllers/list_ingredient.controller')
+const { isAuthenticated } = require('../utils/verify_identity')
 
-// create a new step
-router.post('/', listIngredientsController.create)
+// get all list ingredient
+router.get('/', isAuthenticated, listIngredientsController.getAll)
 
-// update a step
-router.patch('/:id', listIngredientsController.update)
+// create a new ingredient
+router.post('/', isAuthenticated, listIngredientsController.create)
 
-// delete a step
-router.delete('/:id', listIngredientsController.delete)
+// delete a ingredient
+router.delete('/:id', isAuthenticated, listIngredientsController.delete)
 
 module.exports = router

@@ -1,15 +1,12 @@
 <template>
-  <div>
-    <NavBar />
-    <nuxt />
-  </div>
+  <nuxt />
 </template>
 
 <script>
 export default {
-    name: "HomePage",
+  name: "HomePage",
 }
 </script>
 
-<style>
+<style scoped>
 </style>

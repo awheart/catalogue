@@ -2,7 +2,7 @@ exports.insertIntoDB = [
     {
         title: 'recette1',
         description: 'recette description',
-        user_id: 2,
+        user_id: 1,
         steps: [
             {
                 content: 'étape 1',
@@ -11,13 +11,23 @@ exports.insertIntoDB = [
             {
                 content: 'étape 2',
                 step_order: 2
+            }
+        ],
+        list_ingredient: [
+            {
+                content: 'ingredient 1',
+                inlist_order: 1
+            },
+            {
+                content: 'ingredient 2',
+                inlist_order: 2
             }
         ]
     },
     {
         title: 'recette2',
         description: 'recette description',
-        user_id: 2,
+        user_id: 1,
         steps: [
             {
                 content: 'étape 1',
@@ -27,12 +37,22 @@ exports.insertIntoDB = [
                 content: 'étape 2',
                 step_order: 2
             }
+        ],
+        list_ingredient: [
+            {
+                content: 'ingredient 1',
+                inlist_order: 1
+            },
+            {
+                content: 'ingredient 2',
+                inlist_order: 2
+            }
         ]
     },
     {
         title: 'recette3',
         description: 'recette description',
-        user_id: 5,
+        user_id: 1,
         steps: [
             {
                 content: 'étape 1',
@@ -41,6 +61,16 @@ exports.insertIntoDB = [
             {
                 content: 'étape 2',
                 step_order: 2
+            }
+        ],
+        list_ingredient: [
+            {
+                content: 'ingredient 1',
+                inlist_order: 1
+            },
+            {
+                content: 'ingredient 2',
+                inlist_order: 2
             }
         ]
     },
@@ -57,6 +87,16 @@ exports.insertIntoDB = [
                 content: 'étape 2',
                 step_order: 2
             }
+        ],
+        list_ingredient: [
+            {
+                content: 'ingredient 1',
+                inlist_order: 1
+            },
+            {
+                content: 'ingredient 2',
+                inlist_order: 2
+            }
         ]
     },
     {
@@ -71,6 +111,16 @@ exports.insertIntoDB = [
             {
                 content: 'étape 2',
                 step_order: 2
+            }
+        ],
+        list_ingredient: [
+            {
+                content: 'ingredient 1',
+                inlist_order: 1
+            },
+            {
+                content: 'ingredient 2',
+                inlist_order: 2
             }
         ]
     }
@@ -211,22 +261,88 @@ exports.recipes = {
             inputs: {
                 url: '/api/recipes/4',
                 body: {
-                    password: 'password',
-                    newPassword: 'newPassword',
-                    passwordCheck: 'newPassword'
+                    id: 4,
+                    title: 'recette4',
+                    description: 'new description',
+                    steps: [
+                        {
+                            content: 'étape 1',
+                            step_order: 1
+                        },
+                        {
+                            content: 'étape 2',
+                            step_order: 2
+                        }
+                    ],
+                    list_ingredient: [
+                        {
+                            content: 'ingredient 1',
+                            inlist_order: 1
+                        },
+                        {
+                            content: 'ingredient 2',
+                            inlist_order: 2
+                        }
+                    ],
+                    tags: [
+                        {
+                            id: 1
+                        }
+                    ],
+                    nbr_person: 4,
+                    cook_time: 2.5,
+                    prep_time: 3.4
                 }
             },
             expects: {
                 update_recipe: {
-                    birth_date: expect.any(String),
+                    title: 'recette4',
                     created_at: expect.any(String),
-                    description: null,
-                    icone: 'icone-recipe3',
+                    description: 'new description',
+                    image: expect.any(String),
                     id: 4,
-                    password: expect.any(String),
-                    role_id: 1,
+                    steps: [
+                        {
+                            id: expect.any(Number),
+                            content: 'étape 1',
+                            step_order: 1,
+                            recipe_id: 4
+                        },
+                        {
+                            id: expect.any(Number),
+                            content: 'étape 2',
+                            step_order: 2,
+                            recipe_id: 4
+                        }
+                    ],
+                    list_ingredient: [
+                        {
+                            id: expect.any(Number),
+                            content: 'ingredient 1',
+                            inlist_order: 1,
+                            recipe_id: 4
+                        },
+                        {
+                            id: expect.any(Number),
+                            content: 'ingredient 2',
+                            inlist_order: 2,
+                            recipe_id: 4
+                        }
+                    ],
+                    tags: [
+                        {
+                            tag_name: 'sel',
+                            id: 1
+                        }
+                    ],
                     updated_at: expect.any(String),
-                    title: "recipe3",
+                    is_published: false,
+                    nbr_person: 4,
+                    cook_time: 2.5,
+                    prep_time: 3.4,
+                    total_time: 5.9,
+                    price_id: null,
+                    user_id: 3
                 }
             }
         },

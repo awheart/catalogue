@@ -13,7 +13,6 @@ const modifiers = {
 }
 
 exports.getAll = async filter => Users.query()
-    .skipUndefined()
     .select()
     .where(filter)
     .withGraphFetched(graphFilter)
@@ -26,7 +25,6 @@ exports.findById = async id => Users.query()
     .modifiers(modifiers)
 
 exports.findOne = async filter => Users.query()
-    .skipUndefined()
     .findOne(filter)
     .withGraphFetched(graphFilter)
     .modifiers(modifiers)

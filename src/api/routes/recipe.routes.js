@@ -1,5 +1,6 @@
 const router = require('express').Router({ strict: true })
 const recipesController = require('../controllers/recipe.controller')
+const { isAuthenticated } = require('../utils/verify_identity')
 
 // get recipes
 router.get('/', recipesController.getAll)
@@ -8,12 +9,12 @@ router.get('/', recipesController.getAll)
 router.get('/:id', recipesController.findOne)
 
 // create a new recipe
-router.post('/', recipesController.create)
+router.post('/', isAuthenticated, recipesController.create)
 
 // update a recipe
-router.patch('/:id', recipesController.update)
+router.patch('/:id', isAuthenticated, recipesController.update)
 
 // delete a recipe
-router.delete('/:id', recipesController.delete)
+router.delete('/:id', isAuthenticated, recipesController.delete)
 
 module.exports = router

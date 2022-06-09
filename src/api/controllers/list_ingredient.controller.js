@@ -1,9 +1,16 @@
-const { mutations: listIngredientMutations } = require('../models/list_ingredient')
+const { getters: listIngredientGetters, mutations: listIngredientMutations } = require('../models/list_ingredient')
 const { getters: recipeGetters } = require('../models/recipes')
 const validator = require('express-validator')
 const { Error_Messages } = require('../utils/errors_handler')
 
 const asyncAction = (action) => (req, res, next) => action(req, res, next).catch(next)
+
+// get all list ingredient
+module.exports.getAll = asyncAction(async (req, res) => {
+    const filter = req.query
+    const ingredients = await listIngredientGetters.getAll(filter)
+    return res.json(ingredients)
+})
 
 // create lists ingredient
 module.exports.create = [
@@ -14,7 +21,7 @@ module.exports.create = [
         const listIngredient = await recipeGetters.findById(value)
         if (!listIngredient) return Promise.reject({ message: Error_Messages.recipe_not_found })
     }),
-    validator.body('inlist_order', Error_Messages.not_integer).isInt(),
+    validator.body('inlist_order', Error_Messages.order_is_needed).notEmpty().isInt(),
 
     asyncAction(async (req, res) => {
         // throw validation errors

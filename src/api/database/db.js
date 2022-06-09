@@ -7,7 +7,7 @@ exports.initTables = async () => {
         await initMonths()
         await initAdmin()
     } catch (err) {
-        console.log('errrrrr: ', err)
+        console.log('error: ', err)
     }
 }
 

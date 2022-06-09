@@ -3,6 +3,7 @@ const { getters: userGetters } = require('../models/users')
 const { deleteRecipeCascade: deleteRecipeRelation } = require('../utils/delete_cascade')
 const validator = require('express-validator')
 const { Error_Messages } = require('../utils/errors_handler')
+const image_upload = require('../utils/image_upload')
 
 const asyncAction = (action) => (req, res, next) => action(req, res, next).catch(next)
 
@@ -34,14 +35,26 @@ module.exports.create = [
         const user = await userGetters.findById(value)
         if (!user) return Promise.reject({ message: Error_Messages.user_not_found })
     }),
-    validator.body('steps', Error_Messages.step_is_needed).isLength({ min: 1 }),
-    validator.body('description', Error_Messages.description_is_empty).isLength({ min: 1 }),
-    asyncAction(async (req, res) => {
+    validator.body('steps.*.content', Error_Messages.step_is_needed).notEmpty().exists({ checkFalsy: true }),
+    validator.body('steps.*.step_order', Error_Messages.order_is_needed).isInt(),
+    validator.body('cook_time', Error_Messages.cooktime_is_needed).exists({ checkNull: true }),
+    validator.body('prep_time', Error_Messages.preptime_is_needed).exists({ checkNull: true }),
+    validator.body('nbr_person', Error_Messages.person_is_needed).exists({ checkNull: true }),
+    validator.body('list_ingredient.*.content', Error_Messages.ingredient_is_needed).notEmpty().exists({ checkFalsy: true }),
+    validator.body('list_ingredient.*.inlist_order', Error_Messages.order_is_needed).isInt(),
+    validator.body('description', Error_Messages.description_is_empty).isLength({ min: 10 }),
 
+    asyncAction(async (req, res) => {
         // throw validation errors
-        const errors = validator.validationResult(req);
+        const errors = validator.validationResult(req)
         if (!errors.isEmpty()) return res.status(422).json({ errors: errors.mapped() })
+
         try {
+            if (req.body.image != null) {
+                const name = req.body.title
+                const imageURL = await image_upload.uploadCustomName(req.body.image, 'recipe', name)
+                req.body.image = imageURL.url
+            }
             const recipe = await recipeMutations.create(req.body)
             res.json(recipe)
         } catch (err) {
@@ -54,11 +67,24 @@ module.exports.create = [
 module.exports.update = [
     // validations rules
     validator.body('title', Error_Messages.title_is_empty).isLength({ min: 1 }),
-    validator.body('title').custom(async value => {
+    validator.body('title').custom(async (value, { req }) => {
+        const { id } = req.params
         const titleCheck = await recipeGetters.findOne({ title: value })
-        if (titleCheck) return Promise.reject(Error_Messages.title_existing)
+        if (titleCheck && titleCheck.id != id) return Promise.reject(Error_Messages.title_existing)
     }),
-    validator.body('description', Error_Messages.description_is_empty).isLength({ min: 1 }),
+    validator.body('user_id', Error_Messages.not_integer).isInt(),
+    validator.body('user_id').custom(async value => {
+        const user = await userGetters.findById(value)
+        if (!user) return Promise.reject({ message: Error_Messages.user_not_found })
+    }),
+    validator.body('steps.*.content', Error_Messages.step_is_needed).notEmpty().exists({ checkFalsy: true }),
+    validator.body('steps.*.step_order', Error_Messages.order_is_needed).isInt(),
+    validator.body('cook_time', Error_Messages.cooktime_is_needed).exists({ checkNull: true }),
+    validator.body('prep_time', Error_Messages.preptime_is_needed).exists({ checkNull: true }),
+    validator.body('nbr_person', Error_Messages.person_is_needed).exists({ checkNull: true }),
+    validator.body('list_ingredient.*.content', Error_Messages.ingredient_is_needed).notEmpty().exists({ checkFalsy: true }),
+    validator.body('list_ingredient.*.inlist_order', Error_Messages.order_is_needed).isInt(),
+    validator.body('description', Error_Messages.description_is_empty).isLength({ min: 10 }),
 
     asyncAction(async (req, res) => {
         // throw validation errors
@@ -68,11 +94,14 @@ module.exports.update = [
         }
 
         const data = req.body
-        const id = req.params.id
 
         try {
-            const recipePatched = await recipeMutations.patch(id, data)
-            if (!recipePatched) return res.status(404).json({ message: Error_Messages.recipe_not_found })
+            if (req.body.image != null) {
+                const name = req.body.title
+                const imageURL = await image_upload.uploadCustomName(req.body.image, 'recipe', name)
+                req.body.image = imageURL.url
+            }
+            const recipePatched = await recipeMutations.patch(data)
             res.json(recipePatched)
         } catch (err) {
             console.log(err)

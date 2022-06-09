@@ -1,5 +1,5 @@
 const Recipes = require('./schema')
-const graphFilter = '[price, author(selectDefaultAuthor).[role(selectDefaultRole)], steps(inOrderStep), comments(selectDefaultComment).[author(selectDefaultAuthor)], user_like(selectDefaultAuthor), months, tags, list_ingredient(inOrderList)]'
+const graphFilter = '[price, author(selectDefaultAuthor).[role(selectDefaultRole)], steps(inOrderStep), comments(selectDefaultComment).[author(selectDefaultAuthor)], likes(selectDefaultAuthor), months, tags, list_ingredient(inOrderList)]'
 const modifiers = {
     inOrderStep(builder) {
         builder.select('content', 'id').orderBy('step_order', 'asc')
@@ -17,10 +17,9 @@ const modifiers = {
         builder.select('content', 'id')
     }
 }
+
 exports.getAll = async filter => Recipes.query()
-    .skipUndefined()
     .select()
-    .orderBy('created_at', 'desc')
     .where(filter)
     .withGraphFetched(graphFilter)
     .modifiers(modifiers)
