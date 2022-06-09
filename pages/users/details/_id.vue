@@ -1,5 +1,5 @@
 <template>
-    <div class="detail-bg">
+    <div class="tomato-bg">
         <NavBar />
         <div class="wrap detail-wrap">
             test
