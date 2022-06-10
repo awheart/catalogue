@@ -2,7 +2,7 @@ const model = require('../model')
 
 class RecipePrice extends model {
     static get tableName() {
-        return 'recipe_price'
+        return 'price'
     }
     static get idColumn() {
         return 'id'
@@ -12,7 +12,7 @@ class RecipePrice extends model {
             type: 'object',
             properties: {
                 id: { type: 'integer' },
-                price: { type: 'string' }
+                price_name: { type: 'string' }
             }
         }
     }
