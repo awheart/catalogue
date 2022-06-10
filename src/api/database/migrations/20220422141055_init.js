@@ -9,9 +9,9 @@ exports.up = function (knex) {
                 t.increments('id').primary()
                 t.string('role_name')
             })
-            .createTable('recipe_price', t => {
+            .createTable('price', t => {
                 t.increments('id').primary()
-                t.string('price')
+                t.string('price_name')
             })
             .createTable('tags', t => {
                 t.increments('id').primary()
@@ -33,7 +33,7 @@ exports.up = function (knex) {
                 t.increments('id').primary()
                 t.string('title', 255)
                 t.integer('user_id').references('id').inTable('users')
-                t.integer('price_id').references('id').inTable('recipe_price')
+                t.integer('price_id').references('id').inTable('price')
                 t.float('prep_time').defaultTo(0)
                 t.float('cook_time').defaultTo(0)
                 t.integer('nbr_person').defaultTo(0)
@@ -78,8 +78,8 @@ exports.up = function (knex) {
                 t.increments('id').primary()
                 t.string('content', 255)
                 t.timestamp('created_at').defaultTo(knex.fn.now())
-                t.integer('user_id').references('id').inTable('users').onDelete('SET NULL')
-                t.integer('recipe_id').references('id').inTable('recipes').onDelete('SET NULL')
+                t.integer('user_id').references('id').inTable('users')
+                t.integer('recipe_id').references('id').inTable('recipes')
             })
     ])
 }
