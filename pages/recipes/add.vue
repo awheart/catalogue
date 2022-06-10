@@ -6,7 +6,9 @@
       <form action="" method="post" @submit.prevent="createRecipe()">
         <div class="recipe-image">
           <div class="preview-div">
-            <img id="previewImage" alt="aperçu de l'image">
+            <img id="previewImage"
+              src="https://res.cloudinary.com/catalogue-recipe/image/upload/v1653911048/logo_transparent_background.png"
+              alt="aperçu de l'image">
           </div>
           <input id="uploadImage" class="btn-image" type="file" name="image" @change="previewImage()"
             accept="image/jpeg">
@@ -19,6 +21,17 @@
               placeholder="Entrer le nom de la recette">
             <div class="invalid-feedback" v-if="errors && errors.title">
               {{ errors.title.msg }}
+            </div>
+          </div>
+          <div class="recipe-div">
+            <label for="">Coût de la recette</label>
+            <select v-model="default_price" :class="{ 'is-invalid': errors && errors.title }">
+              <option v-for="price in prices" :value="price" :key="price.id">
+                {{ price.id }} - {{ price.price_name }}
+              </option>
+            </select>
+            <div class="invalid-feedback" v-if="errors && errors.price">
+              {{ errors.price.msg }}
             </div>
           </div>
           <div class="recipe-div">
@@ -121,6 +134,98 @@
     <FooterMain />
   </div>
 </template>
+
+
+
+<script>
+import draggable from 'vuedraggable'
+export default {
+  components: {
+    draggable,
+  },
+  name: 'RecipeAdd',
+  data() {
+    return {
+      errors: null,
+      title: null,
+      description: null,
+      image: null,
+      prep_time: 0,
+      cook_time: 0,
+      nbr_person: 0,
+      steps: [{ content: null }],
+      listIngredient: [{ content: null }],
+      prices: null,
+      default_price: null,
+      user: null
+    }
+  },
+  beforeCreate() {
+    if (!this.$auth.loggedIn) {
+      this.$router.push({ path: '/users/login' })
+    }
+  },
+  async mounted() {
+    const userAuth = await this.$axios.get(`/api/users/user/who?email=${this.$auth.user.email}`)
+    this.user = userAuth.data
+    const priceFetched = await this.$axios.get('/api/prices')
+    this.prices = priceFetched.data
+    this.default_price = this.prices[0]
+  },
+  methods: {
+    previewImage() {
+      const reader = new FileReader()
+      reader.readAsDataURL(document.getElementById('uploadImage').files[0])
+      reader.onload = previewEvent => {
+        document.getElementById('previewImage').src = previewEvent.target.result
+        this.image = previewEvent.target.result
+      }
+    },
+    addStep() {
+      this.steps.push({ content: null })
+    },
+    addIngredient() {
+      this.listIngredient.push({ content: null })
+    },
+    removeStep(index) {
+      return this.steps.splice(index, 1)
+    },
+    removeIngredient(index) {
+      return this.listIngredient.splice(index, 1)
+    },
+    async createRecipe() {
+      document.getElementById('loading').style.display = 'flex'
+      try {
+        const newSteps = this.steps.map((step, index) => {
+          return { ...step, ...{ step_order: index + 1 } }
+        })
+        const newIngredient = this.listIngredient.map((ingredient, index) => {
+          return { ...ingredient, ...{ inlist_order: index + 1 } }
+        })
+        const recipePosted = await this.$axios.post('/api/recipes', {
+          title: this.title,
+          description: this.description,
+          steps: newSteps,
+          list_ingredient: newIngredient,
+          user_id: this.user.id,
+          image: this.image,
+          price_id: this.prices.id,
+          cook_time: parseFloat(this.cook_time),
+          prep_time: parseFloat(this.prep_time),
+          nbr_person: parseInt(this.nbr_person)
+        })
+        if (recipePosted) {
+          this.$toast.success('Recette créée avec succès !', { duration: 2000 })
+        }
+      } catch (errors) {
+        this.$toast.error('Erreur durant la création de la recette.', { duration: 2000 })
+        if (errors.response.data.errors) this.errors = errors.response.data.errors
+      }
+      setTimeout(() => document.getElementById('loading').style.display = 'none', 500)
+    }
+  }
+}
+</script>
 
 <style scoped>
 form {
@@ -295,7 +400,7 @@ h2 {
 }
 
 #previewImage {
-  object-fit: cover;
+  object-fit: contain;
   width: 100%;
   height: 100%;
   border-radius: 15px;
@@ -336,88 +441,3 @@ h2 {
   }
 }
 </style>
-
-<script>
-import draggable from 'vuedraggable'
-export default {
-  components: {
-    draggable,
-  },
-  name: 'RecipeAdd',
-  data() {
-    return {
-      errors: null,
-      title: null,
-      description: null,
-      image: null,
-      prep_time: null,
-      cook_time: null,
-      nbr_person: null,
-      steps: [{ content: null }],
-      listIngredient: [{ content: null }],
-      user: null
-    }
-  },
-  beforeCreate() {
-    if (!this.$auth.loggedIn) {
-      this.$router.push({ path: '/users/login' })
-    }
-  },
-  async mounted() {
-    const userAuth = await this.$axios.get(`/api/users/user/who?email=${this.$auth.user.email}`)
-    this.user = userAuth.data
-  },
-  methods: {
-    previewImage() {
-      const reader = new FileReader()
-      reader.readAsDataURL(document.getElementById('uploadImage').files[0])
-      reader.onload = previewEvent => {
-        document.getElementById('previewImage').src = previewEvent.target.result
-        this.image = previewEvent.target.result
-      }
-    },
-    addStep() {
-      this.steps.push({ content: null })
-    },
-    addIngredient() {
-      this.listIngredient.push({ content: null })
-    },
-    removeStep(index) {
-      return this.steps.splice(index, 1)
-    },
-    removeIngredient(index) {
-      return this.listIngredient.splice(index, 1)
-    },
-    async createRecipe() {
-      document.getElementById('loading').style.display = 'flex'
-      try {
-        const newSteps = this.steps.map((step, index) => {
-          return { ...step, ...{ step_order: index + 1 } }
-        })
-        const newIngredient = this.listIngredient.map((ingredient, index) => {
-          return { ...ingredient, ...{ inlist_order: index + 1 } }
-        })
-        console.log('user id', this.user)
-        const recipePosted = await this.$axios.post('/api/recipes', {
-          title: this.title,
-          description: this.description,
-          steps: newSteps,
-          list_ingredient: newIngredient,
-          user_id: this.user.id,
-          image: this.image,
-          cook_time: parseFloat(this.cook_time),
-          prep_time: parseFloat(this.prep_time),
-          nbr_person: parseInt(this.nbr_person)
-        })
-        if (recipePosted) {
-          this.$toast.success('Recette créée avec succès !', { duration: 2000 })
-        }
-      } catch (errors) {
-        this.$toast.error('Erreur durant la création de la recette.', { duration: 2000 })
-        this.errors = errors.response.data.errors
-      }
-      setTimeout(() => document.getElementById('loading').style.display = 'none', 500)
-    }
-  }
-}
-</script>
