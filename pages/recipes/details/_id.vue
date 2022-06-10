@@ -17,6 +17,10 @@
             <input v-model="author" type="text" disabled />
           </div>
           <div class="recipe-div">
+            <label for="">Prix de la recette</label>
+            <input v-model="recipe_price" type="text" disabled />
+          </div>
+          <div class="recipe-div">
             <label for="">Description de la recette</label>
             <textarea v-model="description" id="description-textarea" cols="30" rows="5" disabled></textarea>
           </div>
@@ -60,6 +64,53 @@
     <FooterMain />
   </div>
 </template>
+
+
+<script>
+export default {
+  name: 'RecipeDetail',
+  data() {
+    return {
+      errors: null,
+      recipe_id: null,
+      recipe: null,
+      title: null,
+      description: null,
+      image: null,
+      nbr_person: null,
+      cook_time: null,
+      prep_time: null,
+      steps: null,
+      list_ingredient: null,
+      author: null,
+      author_id: null,
+      recipe_price: null,
+      user_id: null
+    }
+  },
+  async mounted() {
+    if (this.$auth.loggedIn) {
+      const userAuth = await this.$axios.get(`/api/users/user/who?email=${this.$auth.user.email}`)
+      this.user_id = userAuth.data.id
+    }
+
+    const recipeFetch = await this.$axios.get(`/api/recipes/${this.$route.params.id}`)
+    this.recipe = recipeFetch.data
+    this.recipe_id = this.recipe.id
+    this.title = this.recipe.title
+    this.description = this.recipe.description
+    this.image = this.recipe.image
+    this.prep_time = this.recipe.prep_time
+    this.cook_time = this.recipe.cook_time
+    this.nbr_person = this.recipe.nbr_person
+    this.steps = this.recipe.steps
+    this.list_ingredient = this.recipe.list_ingredient
+    this.author_id = this.recipe.author.id
+    this.author = this.recipe.author.username
+    this.recipe_price = this.recipe.price.price_name
+  }
+}
+</script>
 
 <style scoped>
 .form {
@@ -198,50 +249,3 @@ h2 {
   }
 }
 </style>
-
-<script>
-export default {
-  name: 'RecipeDetail',
-  data() {
-    return {
-      errors: null,
-      recipe_id: null,
-      recipe: null,
-      title: null,
-      description: null,
-      image: null,
-      nbr_person: null,
-      cook_time: null,
-      prep_time: null,
-      steps: null,
-      list_ingredient: null,
-      author: null,
-      author_id: null,
-      user_id: null
-    }
-  },
-  async mounted() {
-    if (this.$auth.loggedIn) {
-      const userAuth = await this.$axios.get(`/api/users/user/who?email=${this.$auth.user.email}`)
-      console.log('user: ', userAuth)
-      this.user_id = userAuth.data.id
-    }
-
-    const recipeFetch = await this.$axios.get(`/api/recipes/${this.$route.params.id}`)
-    console.log('recipe: ', recipeFetch.data.author.id)
-    this.recipe = recipeFetch.data
-    this.recipe_id = this.recipe.id
-    this.title = this.recipe.title
-    this.description = this.recipe.description
-    this.image = this.recipe.image
-    this.prep_time = this.recipe.prep_time
-    this.cook_time = this.recipe.cook_time
-    this.nbr_person = this.recipe.nbr_person
-    this.steps = this.recipe.steps
-    this.list_ingredient = this.recipe.list_ingredient
-    this.author_id = this.recipe.author.id
-    this.author = this.recipe.author.username
-    console.log(this.author_id, this.user_id)
-  }
-}
-</script>
