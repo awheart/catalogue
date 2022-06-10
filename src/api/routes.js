@@ -8,6 +8,7 @@ const tags = require('./routes/tags.routes')
 const listIngredients = require('./routes/list_ingredient.routes')
 const recipeTags = require('./routes/recipe_tags.routes')
 const monthOfConsumption = require('./routes/month_of_consumption.routes')
+const price = require('./routes/price.routes')
 
 router.use('/api/users', users)
 router.use('/api/recipes', recipes)
@@ -18,5 +19,6 @@ router.use('/api/tags', tags)
 router.use('/api/listIngredients', listIngredients)
 router.use('/api/recipeTags', recipeTags)
 router.use('/api/monthOfConsumption', monthOfConsumption)
+router.use('/api/prices', price)
 
 module.exports = router
