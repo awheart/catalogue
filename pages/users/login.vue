@@ -156,6 +156,11 @@ export default {
       role: null
     }
   },
+  mounted() {
+    if (this.$route.params.unauthorized == 'yes') {
+      this.$toast.error('Vous n\'êtes pas autorisé à accéder à cette page.', { duration: 2000 })
+    }
+  },
   methods: {
     async login() {
       this.errors = null
