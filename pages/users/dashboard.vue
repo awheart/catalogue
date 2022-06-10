@@ -185,7 +185,7 @@ export default {
     },
     beforeCreate() {
         if (!this.$auth.loggedIn || this.$auth.user.role.role_name != 'admin') {
-            this.$router.push({ path: '/users/login' })
+            this.$router.push({ name: 'users-login', params: { unauthorized: 'yes' } })
         }
     },
     async mounted() {
