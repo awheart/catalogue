@@ -108,7 +108,7 @@ class Recipes extends model {
                 nbr_person: {
                     type: 'integer',
                     minimum: 0,
-                    maximum: 10,
+                    maximum: 100,
                 },
                 is_published: { type: 'boolean' },
                 prep_time: {
