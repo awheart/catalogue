@@ -12,7 +12,7 @@ class Recipes extends model {
         const ListIngredient = require('../list_ingredient/schema')
         const Months = require('../months/schema')
         const Comments = require('../comments/schema')
-        const RecipePrice = require('../recipe_price/schema')
+        const RecipePrice = require('../price/schema')
         const Step = require('../steps/schema')
         const Tags = require('../tags/schema')
         const Users = require('../users/schema')
@@ -30,7 +30,7 @@ class Recipes extends model {
                 modelClass: RecipePrice,
                 join: {
                     from: 'recipes.price_id',
-                    to: 'recipe_price.id'
+                    to: 'price.id'
                 }
             },
             steps: {
@@ -123,7 +123,6 @@ class Recipes extends model {
                     minimum: 0,
                     maximum: 10080,
                 },
-                image: { type: 'string' },
                 price_id: { type: 'integer' },
                 user_id: { type: 'integer' }
             }
