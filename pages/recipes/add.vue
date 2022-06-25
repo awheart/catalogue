@@ -160,12 +160,10 @@ export default {
       user: null
     }
   },
-  beforeCreate() {
+  async mounted() {
     if (!this.$auth.loggedIn) {
       this.$router.push({ path: '/users/login' })
     }
-  },
-  async mounted() {
     const userAuth = await this.$axios.get(`/api/users/user/who?email=${this.$auth.user.email}`)
     this.user = userAuth.data
     const priceFetched = await this.$axios.get('/api/prices')
