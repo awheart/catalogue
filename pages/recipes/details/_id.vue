@@ -42,6 +42,13 @@
               <p>Personnes</p>
             </div>
           </div>
+          <div class="div-tag">
+            <h2>Tags</h2>
+            <div v-for="(tag, index) in recipe_tags" :key="index">
+              tag {{ index + 1 }}:
+              <input type="text" v-model="tag.tag_name" disabled />
+            </div>
+          </div>
         </div>
         <div class="add-div ingredient-div">
           <h2>Ingrédients</h2>
@@ -85,6 +92,7 @@ export default {
       author: null,
       author_id: null,
       recipe_price: null,
+      recipe_tags: null,
       user_id: null
     }
   },
@@ -108,6 +116,8 @@ export default {
     this.author_id = this.recipe.author.id
     this.author = this.recipe.author.username
     this.recipe_price = this.recipe.price.price_name
+    this.recipe_tags = this.recipe.tags
+    console.log(this.recipe_tags)
   }
 }
 </script>
