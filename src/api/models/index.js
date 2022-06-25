@@ -1,7 +1,7 @@
 module.exports = {
     Users: require('./users'),
     UserRole: require('./user_role'),
-    RecipePrice: require('./recipe_price'),
+    RecipePrice: require('./price'),
     Recipes: require('./recipes'),
     Recipe_comment: require('./comments'),
     Steps: require('./steps'),

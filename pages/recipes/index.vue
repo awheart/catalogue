@@ -42,6 +42,7 @@ export default {
   },
   computed: {
     filteredList() {
+      if (this.recipes.length == 0) return
       return this.recipes.filter(recipe =>
         recipe.title.toLowerCase().includes(this.input.toLowerCase())
       )

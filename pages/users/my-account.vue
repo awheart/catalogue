@@ -186,6 +186,12 @@ h1 {
     grid-column: 1/2;
   }
 }
+
+@media screen and (min-width:1920px) {
+  .error {
+    grid-column: 2/4;
+  }
+}
 </style>
 
 <script>
